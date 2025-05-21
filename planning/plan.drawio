@@ -1,0 +1,22 @@
+<mxfile host="65bd71144e">
+    <diagram id="CZBIALPAyTslq9S1ibVV" name="Page-1">
+        <mxGraphModel dx="1261" dy="589" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="6" value="W1&lt;div&gt;Twisted Plains&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=17;" vertex="1" parent="1">
+                    <mxGeometry x="255" y="220" width="170" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="W2&lt;div&gt;Cozy Caverns&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=17;" vertex="1" parent="1">
+                    <mxGeometry x="425" y="220" width="170" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="W3&lt;div&gt;Tumeken&#39;s Oasis&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=17;" vertex="1" parent="1">
+                    <mxGeometry x="255" y="310" width="170" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="W4&lt;div&gt;Castle Drakan&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=17;" vertex="1" parent="1">
+                    <mxGeometry x="425" y="310" width="170" height="90" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
