@@ -1,0 +1,16 @@
+POST http://localhost:5000/teams
+Content-Type: application/json
+
+{
+    "team_name": "Team Name",
+    "players": [
+        {
+            "discord_id": "2438432823489",
+            "runescape_accounts": ["rsn1", "rsn2"]
+        },
+        {
+            "discord_id": "589423983489",
+            "runescape_accounts": ["rsn3"]
+        }
+    ]
+}
