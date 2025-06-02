@@ -7,4 +7,4 @@ class Team:
     team_name: str
     players: List[Player]
     current_tile: int = 0
-    current_world: Optional[str] = None
+    current_world: int = 0
