@@ -4,12 +4,12 @@ from models.player import Player
 from dataclasses import asdict
 from flask import current_app as app
 
-tms_bp = Blueprint('teams', __name__)
+teams_blueprint = Blueprint('teams', __name__)
 
 def get_db():
     return app.config['DB']
 
-@tms_bp.route("/teams", methods=["POST"])
+@teams_blueprint.route("/teams", methods=["POST"])
 def create_team():
     db = get_db()
     data = request.get_json()
@@ -17,6 +17,7 @@ def create_team():
     team = Team(
         team_name=data["team_name"],
         players=players,
+        discord_channel_id=data["discord_channel_id"]
         current_tile=1,
         current_world=1
     )
@@ -28,7 +29,7 @@ def create_team():
         inserted_team["_id"] = str(inserted_team["_id"])
     return jsonify(inserted_team), 201
 
-@tms_bp.route("/teams/<team_name>", methods=["GET"])
+@teams_blueprint.route("/teams/<team_name>", methods=["GET"])
 def get_team(team_name):
     db = get_db()
     team = db.teams.find_one({"team_name": team_name})
@@ -39,7 +40,7 @@ def get_team(team_name):
         team["_id"] = str(team["_id"])
     return jsonify(team), 200
 
-@tms_bp.route("/teams/<team_name>/advance_tile", methods=["POST"])
+@teams_blueprint.route("/teams/<team_name>/advance_tile", methods=["POST"])
 def advance_tile(team_name):
     db = get_db()
     team = db.teams.find_one({"team_name": team_name})

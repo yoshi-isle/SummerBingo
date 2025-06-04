@@ -2,7 +2,8 @@ POST http://localhost:5000/teams
 Content-Type: application/json
 
 {
-    "team_name": "Team Name",
+    "team_name": "Winners",
+    "discord_channel_id": "00000",
     "players": [
         {
             "discord_id": "2438432823489",

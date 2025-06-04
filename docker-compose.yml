@@ -19,6 +19,8 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+    restart: unless-stopped
+    
   discord_bot:
     build: ./discord_bot
     env_file:

@@ -5,8 +5,7 @@ from typing import List, Optional
 import os
 from models.player import Player
 from models.team import Team
-from controllers.teams_controller import tms_bp
-from controllers.players_controller import plyr_bp
+from controllers.teams_controller import teams_blueprint
 
 app = Flask(__name__)
 
@@ -15,23 +14,7 @@ client = MongoClient(MONGO_URI)
 db = client["summer_bingo"]
 app.config['DB'] = db
 
-def player_from_dict(data):
-    return Player(
-        discord_id=data["discord_id"],
-        runescape_accounts=data["runescape_accounts"]
-    )
-
-def team_from_dict(data):
-    players = [player_from_dict(p) for p in data["players"]]
-    return Team(
-        team_name=data["team_name"],
-        players=players,
-        current_tile=data.get("current_tile", 0),
-        current_world=data.get("current_world")
-    )
-
-app.register_blueprint(tms_bp)
-app.register_blueprint(plyr_bp)
+app.register_blueprint(teams_blueprint)
 
 @app.route("/", methods=["GET"])
 def health_check():

@@ -27,7 +27,9 @@ class Bot(commands.Bot):
         self.add_view(InformationView(self))
 
         # Load cogs
-        await self.load_extension("cogs.information_cog")
+        for cog in ["cogs.information_cog", "cogs.admin_cog"]:
+            await self.load_extension(cog)
+            print(f"{cog} loaded")
 
     async def on_ready(self):
         await self.tree.sync()

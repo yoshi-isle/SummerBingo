@@ -5,6 +5,7 @@ from .player import Player
 @dataclass
 class Team:
     team_name: str
+    discord_channel_id: str
     players: List[Player]
     current_tile: int = 0
     current_world: int = 0
