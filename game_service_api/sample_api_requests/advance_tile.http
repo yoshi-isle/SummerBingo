@@ -1,1 +1,1 @@
-POST http://localhost:5000/teams/Winners/advance_tile
+POST http://localhost:5000/teams/nya/advance_tile

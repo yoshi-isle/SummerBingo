@@ -1,1 +1,1 @@
-GET http://localhost:5000/images/world1/0.png
+GET http://localhost:5000/images/world1/tiles/0.png
