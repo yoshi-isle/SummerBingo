@@ -9,3 +9,4 @@ class Team:
     players: List[Player]
     current_tile: int = 0
     current_world: int = 0
+    world1_shuffled_tiles: Optional[List[int]] = None
