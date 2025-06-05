@@ -121,3 +121,34 @@ def advance_tile(team_name):
     if "_id" in team:
         team["_id"] = str(team["_id"])
     return jsonify(team), 200
+
+@teams_blueprint.route("/teams/discord/<discord_user_id>/current_tile", methods=["GET"])
+def get_current_tile_by_discord_id(discord_user_id):
+    """
+    Get the current tile's full info for a team by discord user id.
+    Returns the tile object from world1_tiles["world_tiles"] matching the current tile's id.
+    """
+    db = get_db()
+    team = db.teams.find_one({"players.discord_id": discord_user_id})
+    if not team:
+        abort(404, description="Team not found")
+
+    current_tile = team.get("current_tile")
+    
+    # Handle if current_tile is a dict or just an int (id)
+    if not current_tile:
+        abort(400, description="Current tile not set")
+    if isinstance(current_tile, dict):
+        tile_id = current_tile.get("id")
+        if tile_id is None:
+            abort(400, description="Current tile missing id")
+    elif isinstance(current_tile, int):
+        tile_id = current_tile
+    else:
+        abort(400, description="Current tile has unexpected type")
+
+    # Find the tile in world1_tiles["world_tiles"] with matching id
+    tile_info = next((t for t in world1_tiles["world_tiles"] if t["id"] == tile_id), None)
+    if not tile_info:
+        abort(404, description="Tile info not found")
+    return jsonify(tile_info), 200

@@ -27,7 +27,7 @@ class Bot(commands.Bot):
         self.add_view(InformationView(self))
 
         # Load cogs
-        for cog in ["cogs.information_cog", "cogs.admin_cog"]:
+        for cog in ["cogs.information_cog", "cogs.admin_cog", "cogs.player_cog"]:
             await self.load_extension(cog)
             print(f"{cog} loaded")
 

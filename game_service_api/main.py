@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, abort
+from flask import Flask, request, jsonify, abort, send_from_directory
 from pymongo import MongoClient
 from dataclasses import asdict, field
 from typing import List, Optional
@@ -24,6 +24,10 @@ def health_check():
     except Exception as e:
         mongo_status = f"error: {str(e)}"
     return jsonify({"status": "ok", "mongo": mongo_status}), 200
+
+@app.route("/images/<path:filename>")
+def serve_image(filename):
+    return send_from_directory(os.path.join(os.path.dirname(__file__), 'images'), filename)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
