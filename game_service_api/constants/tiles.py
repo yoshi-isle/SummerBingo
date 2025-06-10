@@ -29,3 +29,68 @@ world1_tiles = {
     "boss_tile":
         {"id": 0, "tile_name": "Any Megarare from CoX. Elder/Kodai/TBow", "description": "Showdown on Mount Quidamortem", "completion_counter": 1, "image_url": "world1/boss/0.png"},
 }
+
+world2_tiles = {
+    "world_tiles": [
+        {"id": 0, "tile_name": "Magic Seed from Zilyana", "description": "Magic Seed from Zilyana", "completion_counter": 1, "image_url": "world2/tiles/0.png"},
+        {"id": 1, "tile_name": "3x Armadyl Armor Pieces", "description": "3x Armadyl Armor Pieces", "completion_counter": 3, "image_url": "world2/tiles/1.png"},
+        {"id": 2, "tile_name": "Zamorak Hilt", "description": "", "completion_counter": 1, "image_url": "world2/tiles/2.png"},
+        {"id": 3, "tile_name": "Rune Sword from General Graardor", "description": "", "completion_counter": 2, "image_url": "world2/tiles/3.png"},
+        {"id": 4, "tile_name": "10 Awakener's Orbs from Duke Sucellus", "description": "", "completion_counter": 10, "image_url": "world2/tiles/4.png"},
+        {"id": 5, "tile_name": "Rune Platebody + Platelegs from Amoxiatl", "description": "", "completion_counter": 2, "image_url": "world2/tiles/5.png"},
+        {"id": 6, "tile_name": "4x Guild Hunter Pieces", "description": "", "completion_counter": 4, "image_url": "world2/tiles/6.png"},
+        {"id": 7, "tile_name": "Dragon Hunter Wand", "description": "", "completion_counter": 1, "image_url": "world2/tiles/7.png"},
+        {"id": 8, "tile_name": "5x Venator Shards", "description": "", "completion_counter": 5, "image_url": "world2/tiles/8.png"},
+        {"id": 9, "tile_name": "4x Blue Moon Pieces", "description": "", "completion_counter": 4, "image_url": "world2/tiles/9.png"},
+        {"id": 10, "tile_name": "4x DKS Rings", "description": "", "completion_counter": 4, "image_url": "world2/tiles/10.png"},
+        {"id": 11, "tile_name": "Bruma Torch", "description": "", "completion_counter": 1, "image_url": "world2/tiles/11.png"},
+        {"id": 12, "tile_name": "Any Torva piece from Nex ", "description": "", "completion_counter": 1, "image_url": "world2/tiles/12.png"},
+        {"id": 13, "tile_name": "Bear Feet", "description": "", "completion_counter": 1, "image_url": "world2/tiles/13.png"},
+        {"id": 14, "tile_name": "Any orn kit from clues (all tiers)", "description": "", "completion_counter": 1, "image_url": "world2/tiles/14.png"},
+        {"id": 15, "tile_name": "Basilisk Jaw OR Head", "description": "", "completion_counter": 1, "image_url": "world2/tiles/15.png"},
+        {"id": 16, "tile_name": "Glacial Temotli AND Sulphur Blades", "description": "", "completion_counter": 2, "image_url": "world2/tiles/16.png"},
+        {"id": 17, "tile_name": "Broken Zombie Helmet", "description": "", "completion_counter": 1, "image_url": "world2/tiles/17.png"},
+        {"id": 18, "tile_name": "Gnome scarf", "description": "", "completion_counter": 1, "image_url": "world2/tiles/18.png"},
+        {"id": 19, "tile_name": "Fire & Ice Staff Crown pieces", "description": "", "completion_counter": 2, "image_url": "world2/tiles/19.png"},
+    ],
+    "key_tiles": [
+        {"id": 0, "tile_name": "3 Chromium Ingots from Whisperer", "description": "", "completion_counter": 3, "image_url": "world2/keys/0.png"},
+        {"id": 1, "tile_name": "10x Vorkath Heads", "description": "Premium tools", "completion_counter": 10, "image_url": "world2/keys/1.png"},
+        {"id": 2, "tile_name": "Full Ancient Ceremonial Robes", "description": "", "completion_counter": 5, "image_url": "world2/keys/2.png"},
+        {"id": 3, "tile_name": "Moxi", "description": "", "completion_counter": 1, "image_url": "world2/keys/3.png"},
+        {"id": 4, "tile_name": "Any Tome", "description": "", "completion_counter": 1, "image_url": "world2/keys/4.png"}
+    ],
+    "boss_tile":
+        {"id": 0, "tile_name": "Zaryte Crossbow from scratch", "description": "Ancient Prison Break", "completion_counter": 1, "image_url": "world2/boss/0.png"},
+}
+
+world3_tiles = {
+    "world_tiles": [
+        {"id": 0, "tile_name": "Mole pet", "description": "", "completion_counter": 1, "image_url": "world3/tiles/0.png"},
+        {"id": 1, "tile_name": "Broken Dragon Pickaxe", "description": "", "completion_counter": 1, "image_url": "world3/tiles/1.png"},
+        {"id": 2, "tile_name": "2x Dragon 2h from KQ", "description": "", "completion_counter": 2, "image_url": "world3/tiles/2.png"},
+        {"id": 3, "tile_name": "Leviathan's Lure OR Virtus piece from Leviathan", "description": "", "completion_counter": 1, "image_url": "world3/tiles/3.png"},
+        {"id": 4, "tile_name": "4x Eclipse Moon Pieces", "description": "", "completion_counter": 4, "image_url": "world3/tiles/4.png"},
+        {"id": 5, "tile_name": "5x D Scims from Scorpia", "description": "", "completion_counter": 5, "image_url": "world3/tiles/5.png"},
+        {"id": 6, "tile_name": "Big Harpoonfish", "description": "", "completion_counter": 1, "image_url": "world3/tiles/6.png"},
+        {"id": 7, "tile_name": "3x Fangs OR Lightbearers", "description": "", "completion_counter": 3, "image_url": "world3/tiles/7.png"},
+        {"id": 8, "tile_name": "Jar of Eyes", "description": "", "completion_counter": 1, "image_url": "world3/tiles/8.png"},
+        {"id": 9, "tile_name": "5x Fedoras from Crazy Arch", "description": "", "completion_counter": 5, "image_url": "world3/tiles/9.png"},
+        {"id": 10, "tile_name": "3x Sunfire Fanatic Pieces", "description": "", "completion_counter": 3, "image_url": "world3/tiles/10.png"},
+        {"id": 11, "tile_name": "Mole slippers", "description": "", "completion_counter": 1, "image_url": "world3/tiles/11.png"},
+        {"id": 12, "tile_name": "Cat mask", "description": "", "completion_counter": 1, "image_url": "world3/tiles/12.png"},
+        {"id": 13, "tile_name": "4x Angler Pieces from Fishing Trawler", "description": "", "completion_counter": 4, "image_url": "world3/tiles/13.png"},
+        {"id": 14, "tile_name": "Any dye from GOTR", "description": "", "completion_counter": 1, "image_url": "world3/tiles/14.png"},
+        {"id": 15, "tile_name": "Jogre Champion Scroll", "description": "", "completion_counter": 1, "image_url": "world3/tiles/15.png"},
+        {"id": 16, "tile_name": "Dark Bow", "description": "", "completion_counter": 2, "image_url": "world3/tiles/16.png"},
+    ],
+    "key_tiles": [
+        {"id": 0, "tile_name": "Golden Tench", "description": "", "completion_counter": 1, "image_url": "world3/keys/0.png"},
+        {"id": 1, "tile_name": "5x Obsidian Armor Pieces ", "description": "Premium tools", "completion_counter": 10, "image_url": "world3/keys/1.png"},
+        {"id": 2, "tile_name": "Uncut Onyx", "description": "", "completion_counter": 5, "image_url": "world3/keys/2.png"},
+        {"id": 3, "tile_name": "3x Cerberus Crystals", "description": "", "completion_counter": 1, "image_url": "world3/keys/3.png"},
+        {"id": 4, "tile_name": "Any ToA Purple", "description": "", "completion_counter": 1, "image_url": "world3/keys/4.png"}
+    ],
+    "boss_tile":
+        {"id": 0, "tile_name": "Tonalztics of ralos", "description": "Fancy Footwork", "completion_counter": 1, "image_url": "world3/boss/0.png"},
+}
