@@ -1,0 +1,8 @@
+POST http://localhost:5000/submission
+Content-Type: application/json
+
+{
+    "discord_user_id":"726237123857874975",
+    "approved":"false",
+    "admin_approval_embed_id":"1380229858688237753"
+}

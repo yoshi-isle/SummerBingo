@@ -3,7 +3,7 @@ from .player import Player
 
 @dataclass
 class Submission:
-    discord_user_id: str
-    submitted_by: Player
-    approved: bool
+    submitted_by: str
+    approved_by: str
     admin_approval_embed_id: str
+    approved: bool
