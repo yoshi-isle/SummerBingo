@@ -7,6 +7,7 @@ from models.player import Player
 from models.team import Team
 from controllers.teams_controller import teams_blueprint
 from controllers.submission_controller import submissions_blueprint
+from controllers.image_controller import image_blueprint
 
 app = Flask(__name__)
 
@@ -17,6 +18,7 @@ app.config['DB'] = db
 
 app.register_blueprint(teams_blueprint)
 app.register_blueprint(submissions_blueprint)
+app.register_blueprint(image_blueprint)
 
 @app.route("/", methods=["GET"])
 def health_check():

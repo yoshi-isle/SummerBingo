@@ -11,8 +11,14 @@ class PlayerCog(commands.Cog):
         self.bot=bot
 
     @app_commands.command(name="board", description="View your current tile board.")
-    async def submit(self, interaction: discord.Interaction):
-        await interaction.response.send_message(f"Not implemented")
+    async def view_board(self, interaction: discord.Interaction):
+        api_url = f"{BASE_API_URl}/image/user/{interaction.user.id}"
+        async with aiohttp.ClientSession() as session:
+            async with session.get(api_url) as response:
+                if response.status == 200:
+                    image_data = await response.read()
+                    file = discord.File(io.BytesIO(image_data), filename="team_board.png")
+                    await interaction.channel.send(f"Board for user ID: {interaction.user.id}", file=file)
 
 
     @app_commands.command(name="submit", description="Submits your tile completion.")
