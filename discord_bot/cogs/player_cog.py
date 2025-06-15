@@ -5,7 +5,7 @@ from discord import Embed, app_commands
 import aiohttp
 import os
 import io
-from constants import BASE_API_URl, TANGY_DISCORD_ID
+from constants import BASE_API_URl, TANGY_DISCORD_ID, PENDING_SUBMISSIONS_CHANNEL_ID
 class PlayerCog(commands.Cog):
     def __init__(self, bot):
         self.bot=bot
@@ -35,6 +35,25 @@ class PlayerCog(commands.Cog):
                 else:
                     await interaction.response.send_message(f"Error finding team information. Please contact <@{TANGY_DISCORD_ID}>")
                     return
+                
+        # Create submission for admin channel
+        pending_submissions_channel = self.bot.get_channel(PENDING_SUBMISSIONS_CHANNEL_ID)
+        admin_embed = discord.Embed(
+            title=f"New Tile Submission",
+            description=f"{interaction.user.mention} submitted for {current_tile}.",
+            color=discord.Color.orange()
+        )
+        admin_embed.set_image(url=image.url)
+        admin_embed.set_footer(text="Approve or reject this submission.")
+
+        if pending_submissions_channel:
+            msg = await pending_submissions_channel.send(embed=admin_embed)
+            await msg.add_reaction("✅")
+            await msg.add_reaction("❌")
+
+        else:
+            await interaction.response.send_message("Pending submissions channel not found. Please contact an admin.", ephemeral=True)
+            return
                 
         embed = discord.Embed(
                         title="Tile Submitted!",
