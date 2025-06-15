@@ -35,7 +35,7 @@ class PlayerCog(commands.Cog):
                 else:
                     await interaction.response.send_message(f"Error finding team information. Please contact <@{TANGY_DISCORD_ID}>")
                     return
-                
+            
         # Create submission for admin channel
         pending_submissions_channel = self.bot.get_channel(PENDING_SUBMISSIONS_CHANNEL_ID)
         admin_embed = discord.Embed(
@@ -46,15 +46,6 @@ class PlayerCog(commands.Cog):
         admin_embed.set_image(url=image.url)
         admin_embed.set_footer(text="Approve or reject this submission.")
 
-        if pending_submissions_channel:
-            msg = await pending_submissions_channel.send(embed=admin_embed)
-            await msg.add_reaction("✅")
-            await msg.add_reaction("❌")
-
-        else:
-            await interaction.response.send_message("Pending submissions channel not found. Please contact an admin.", ephemeral=True)
-            return
-                
         embed = discord.Embed(
                         title="Tile Submitted!",
                         description=f"🟡 Status: Pending\n{interaction.user.mention} submitted for {current_tile}. Please wait for an admin to review.",
@@ -63,7 +54,32 @@ class PlayerCog(commands.Cog):
         embed.set_image(url=image.url)
         embed.set_footer(text="Mistake with screenshot? Contact an admin.")
         
-        await interaction.response.send_message(embed=embed)
+        team_msg = await interaction.channel.send(embed=embed)
+
+        if pending_submissions_channel:
+            admin_msg = await pending_submissions_channel.send(embed=admin_embed)
+            await admin_msg.add_reaction("✅")
+            await admin_msg.add_reaction("❌")
+
+            # Create the submission in the API
+            submission_api_url = f"{BASE_API_URl}/submission"
+            submission_data = {
+                "discord_user_id": str(interaction.user.id),
+                "approved": False,
+                "admin_approval_embed_id": str(admin_msg.id),
+                "pending_team_embed_id": str(team_msg.id)
+            }
+            async with aiohttp.ClientSession() as session:
+                async with session.post(submission_api_url, json=submission_data) as sub_resp:
+                    if sub_resp.status != 201:
+                        error = await sub_resp.text()
+                        await interaction.channel.send(f"Failed to create submission in API: {error}")
+            
+            await interaction.response.send_message("Submitted! Please wait for an admin to approve.", ephemeral=True)
+
+        else:
+            await interaction.response.send_message("Pending submissions channel not found. Please contact an admin.", ephemeral=True)
+            return
 
     @app_commands.command(name="current_tile", description="Displays your current tile.")
     async def current_tile(self, interaction: discord.Interaction):
