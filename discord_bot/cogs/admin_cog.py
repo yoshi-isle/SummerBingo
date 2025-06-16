@@ -54,6 +54,15 @@ class AdminCog(commands.Cog):
                         if resp.status == 200:
                             submission = await resp.json()
                             await reaction.message.channel.send(f"Submission: ```json\n{submission}```")
+                            # Approve submission if reaction is ✅
+                            if str(reaction.emoji) == '✅':
+                                approve_url = f"{api_url}/submission/approve/{submission['_id']}"
+                                async with session.put(approve_url) as approve_resp:
+                                    if approve_resp.status == 200:
+                                        await reaction.message.channel.send("Submission approved!")
+                                    else:
+                                        error = await approve_resp.text()
+                                        await reaction.message.channel.send(f"Failed to approve submission: {error}")
                         else:
                             await reaction.message.channel.send(f"Submission not found for message ID {message_id}.")
 

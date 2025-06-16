@@ -46,3 +46,17 @@ def get_submission_by_message_id(message_id):
     submission["_id"] = str(submission["_id"])
     return jsonify(submission)
 
+@submissions_blueprint.route("/submission/approve/<submission_id>", methods=["PUT"])
+def approve_submission(submission_id):
+    """
+    Approve a submission by its ID.
+    """
+    db = get_db()
+    submission = db.submissions.find_one({"_id": submission_id})
+    if not submission:
+        abort(404, description="Submission not found")
+
+    # Update the submission status to approved
+    db.submissions.update_one({"_id": submission_id}, {"$set": {"approved": True}})
+
+    return jsonify({"message": "Submission approved successfully"}), 200
