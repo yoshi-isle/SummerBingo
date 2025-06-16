@@ -1,10 +1,6 @@
 from flask import Blueprint, request, jsonify, abort
-from models.team import Team
-from models.player import Player
-from models.submission import Submission
 from flask import current_app as app
-from constants.tiles import world1_tiles
-from utils.shuffle import shuffle_tiles
+from bson.objectid import ObjectId
 
 submissions_blueprint = Blueprint('submissions', __name__)
 
@@ -52,11 +48,14 @@ def approve_submission(submission_id):
     Approve a submission by its ID.
     """
     db = get_db()
-    submission = db.submissions.find_one({"_id": submission_id})
+    try:
+        submission = db.submissions.find_one({"_id": ObjectId(submission_id)})
+    except Exception:
+        abort(400, description="Invalid submission ID format")
     if not submission:
         abort(404, description="Submission not found")
 
     # Update the submission status to approved
-    db.submissions.update_one({"_id": submission_id}, {"$set": {"approved": True}})
+    db.submissions.update_one({"_id": ObjectId(submission_id)}, {"$set": {"approved": True}})
 
     return jsonify({"message": "Submission approved successfully"}), 200

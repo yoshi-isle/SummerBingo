@@ -80,14 +80,17 @@ def get_team_by_discord_id(discord_user_id):
     if not team:
         abort(404, description="Team not found")
 
+    # Team is already a dictionary from the service
+    team_dict = team
+
     # Ensure players are returned as a list
-    team["players"] = [p for p in team["players"]]
+    team_dict["players"] = [p for p in team_dict["players"]]
 
     # Convert ObjectId to string for JSON serialization
-    if "_id" in team:
-        team["_id"] = str(team["_id"])
+    if "_id" in team_dict:
+        team_dict["_id"] = str(team_dict["_id"])
         
-    return jsonify(team), 200
+    return jsonify(team_dict), 200
 
 @teams_blueprint.route("/teams/<team_name>/advance_tile", methods=["POST"])
 def advance_tile(team_name):

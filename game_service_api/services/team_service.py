@@ -12,7 +12,7 @@ class TeamService:
         team = db.teams.find_one({"players.discord_id": discord_id})
         if team and "_id" in team:
             team.pop("_id")
-        return Team(**team) if team else None
+        return team
     
     def get_team_by_name(self, team_name):
         db = self.get_db()

@@ -23,6 +23,21 @@ class PlayerCog(commands.Cog):
 
     @app_commands.command(name="submit", description="Submits your tile completion.")
     async def submit(self, interaction: discord.Interaction, image: discord.Attachment):
+
+        # Get the team info from the API
+        team_api_url = f"{BASE_API_URl}/teams/discord/{interaction.user.id}"
+        team_data = None
+        async with aiohttp.ClientSession() as session:
+            async with session.get(team_api_url) as resp:
+                if resp.status == 200:
+                    team_data = await resp.json()
+                    if not team_data or 'team_name' not in team_data:
+                        await interaction.response.send_message(f"You are not part of a team. Please contact <@{TANGY_DISCORD_ID}>", ephemeral=True)
+                        return
+                else:
+                    await interaction.response.send_message(f"Error finding team information. Please contact <@{TANGY_DISCORD_ID}>", ephemeral=True)
+                    return
+
         # Get the current tile from the API
         api_url = f"{BASE_API_URl}/teams/discord/{interaction.user.id}/current_tile"
 
@@ -40,7 +55,7 @@ class PlayerCog(commands.Cog):
         pending_submissions_channel = self.bot.get_channel(PENDING_SUBMISSIONS_CHANNEL_ID)
         admin_embed = discord.Embed(
             title=f"New Tile Submission",
-            description=f"{interaction.user.mention} submitted for {current_tile}.",
+            description=f"{interaction.user.mention} submitted for {current_tile}.\nTeam: {team_data['team_name']}",
             color=discord.Color.orange()
         )
         admin_embed.set_image(url=image.url)
@@ -67,6 +82,7 @@ class PlayerCog(commands.Cog):
                 "discord_user_id": str(interaction.user.id),
                 "approved": False,
                 "admin_approval_embed_id": str(admin_msg.id),
+                "team_channel_id": str(interaction.channel.id),
                 "pending_team_embed_id": str(team_msg.id)
             }
             async with aiohttp.ClientSession() as session:
