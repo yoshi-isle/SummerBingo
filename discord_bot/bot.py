@@ -16,12 +16,6 @@ class Bot(commands.Bot):
         intents.message_content=True
         super().__init__(command_prefix="!", intents=intents)
         
-        # Setup database
-        # self.db = Database()
-
-        # Setup services
-        # self.applicant_service=ApplicantService(self.db)
-
     async def setup_hook(self) -> None:
         # Persist views
         self.add_view(InformationView(self))
