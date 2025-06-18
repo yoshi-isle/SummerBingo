@@ -21,7 +21,7 @@ class PlayerCog(commands.Cog):
                 if response.status == 200:
                     image_data = await response.read()
                     file = discord.File(io.BytesIO(image_data), filename="team_board.png")
-                    await interaction.response.send_message(f"Board for user ID: {interaction.user.id}", file=file)
+                    await interaction.response.send_message(file=file)
                 else:
                     await interaction.response.send_message(f"There was an error getting your board image. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
         except Exception as e:

@@ -1,6 +1,7 @@
+import io
 import discord
 from discord.ext import commands
-from discord import app_commands
+from discord import Embed, app_commands
 import aiohttp
 import os
 from constants import ApiUrls, DiscordIDs
@@ -63,19 +64,18 @@ class AdminCog(commands.Cog):
                             approved_channel = reaction.message.guild.get_channel(DiscordIDs.APPROVED_SUBMISSIONS_CHANNEL_ID)
                             team_channel = reaction.message.guild.get_channel(int(submission['team_channel_id']))
 
-                            if team_channel:
-                                # Get pending embed from submission["pending_team_embed_id"]
-                                pending_message = await team_channel.fetch_message(int(submission['pending_team_embed_id']))
-                                if pending_message and pending_message.embeds:
-                                    # Update the embed with approval information
-                                    approved_embed = pending_message.embeds[0].copy()
-                                    approved_embed.color = discord.Color.green()
-                                    approved_embed.title = f"Approved by {user.display_name}"
-                                    approved_embed.set_footer(text="")
-                                    
-                                    # Edit the original message in the team channel
-                                    await pending_message.edit(embed=approved_embed)
-                                    
+                            # Get pending embed from submission["pending_team_embed_id"]
+                            pending_message = await team_channel.fetch_message(int(submission['pending_team_embed_id']))
+                            if pending_message and pending_message.embeds:
+                                # Update the embed with approval information
+                                approved_embed = pending_message.embeds[0].copy()
+                                approved_embed.color = discord.Color.green()
+                                approved_embed.title = f"Approved by {user.display_name}"
+                                approved_embed.set_footer(text="")
+                                
+                                # Edit the original message in the team channel
+                                await pending_message.edit(embed=approved_embed)
+                            
                             if approved_channel:
                                 # Copy all embeds from the original message, updating the title
                                 if reaction.message.embeds:
@@ -92,11 +92,27 @@ class AdminCog(commands.Cog):
                             await reaction.message.delete()
                             async with self.session.post(ApiUrls.TEAM_ADVANCE_TILE.format(id=submission['team_id'])) as advance_resp:
                                 if advance_resp.status == 200:
-                                    await reaction.message.channel.send("Tile advanced successfully!")
+                                    await team_channel.send(embed=Embed(title="Submission approved! Here's your new board:"))
+                                    async with self.session.get(ApiUrls.IMAGE_BOARD_BY_TEAM_ID.format(id=submission['team_id'])) as response:
+                                                    if response.status == 200:
+                                                        image_data = await response.read()
+                                                        file = discord.File(io.BytesIO(image_data), filename="team_board.png")
+                                                        # Unpin all messages in the team channel
+                                                        pinned = await team_channel.pins()
+                                                        for msg in pinned:
+                                                            try:
+                                                                await msg.unpin()
+                                                            except Exception as e:
+                                                                print(f"Failed to unpin message: {e}")
+
+                                                        # Send and pin the new board image
+                                                        board_msg = await team_channel.send(file=file)
+                                                        await board_msg.pin()
+                                                    else:
+                                                        await team_channel.send(f"There was an error getting your board image. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
                                 else:
                                     error = await advance_resp.text()
                                     await reaction.message.channel.send(f"Failed to advance tile: {error}")
-
                         else:
                             error = await approve_resp.text()
                             await reaction.message.channel.send(f"Failed to approve submission: {error}")

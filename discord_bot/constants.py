@@ -14,4 +14,5 @@ class ApiUrls:
     APPROVE_SUBMISSION = f"{BASE_URL}/submission/approve/{{id}}"
     TEAM_ADVANCE_TILE = f"{BASE_URL}/teams/{{id}}/advance_tile"
     IMAGE_BOARD = f"{BASE_URL}/image/user/{{id}}"
+    IMAGE_BOARD_BY_TEAM_ID = f"{BASE_URL}/image/team/{{id}}"
     IMAGE_GET = f"{BASE_URL}/images/{{url}}"
