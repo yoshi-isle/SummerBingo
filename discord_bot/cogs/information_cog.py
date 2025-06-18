@@ -12,7 +12,7 @@ class InformationCog(commands.Cog):
     @app_commands.checks.has_role("Admin")
     async def post_welcome_embed(self, interaction: discord.Interaction):
         await interaction.channel.send(embed=Embed(title="Information", description="Here is some information."), view=InformationView(self.bot))
-        await interaction.response.send_message(f"Join clan embed posted", ephemeral=True)
+        await interaction.response.send_message(f"Embed posted", ephemeral=True)
 
 async def setup(bot: commands):
     await bot.add_cog(InformationCog(bot))

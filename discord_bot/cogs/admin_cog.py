@@ -48,6 +48,7 @@ class AdminCog(commands.Cog):
         message_id = str(reaction.message.id)
         
         submission_url = f"{self.api_url}/submission/{message_id}"
+        
         async with aiohttp.ClientSession() as session:
             async with session.get(submission_url) as resp:
                 if resp.status == 200:
@@ -89,11 +90,26 @@ class AdminCog(commands.Cog):
                                         await approved_channel.send(content=reaction.message.content)
                                 # Delete the original message
                                 await reaction.message.delete()
+                                advance_tile_url = f"{self.api_url}/teams/{submission['team_id']}/advance_tile"
+                                async with session.post(advance_tile_url) as advance_resp:
+                                    if advance_resp.status == 200:
+                                        await reaction.message.channel.send("Tile advanced successfully!")
+                                    else:
+                                        error = await advance_resp.text()
+                                        await reaction.message.channel.send(f"Failed to advance tile: {error}")
+
                             else:
                                 error = await approve_resp.text()
                                 await reaction.message.channel.send(f"Failed to approve submission: {error}")
                 else:
                     await reaction.message.channel.send(f"Submission not found for message ID {message_id}.")
+
+    @app_commands.command(name="clear_channel", description="Deletes all messages in the current channel")
+    @app_commands.checks.has_role("Admin")
+    async def clear_channel(self, interaction: discord.Interaction):
+        await interaction.response.defer(ephemeral=True)
+        await interaction.channel.purge()
+        await interaction.followup.send("Channel cleared!", ephemeral=True)
 
 async def setup(bot: commands):
     await bot.add_cog(AdminCog(bot))

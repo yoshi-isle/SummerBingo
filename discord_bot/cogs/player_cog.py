@@ -75,7 +75,7 @@ class PlayerCog(commands.Cog):
             admin_msg = await pending_submissions_channel.send(embed=admin_embed)
             await admin_msg.add_reaction("✅")
             await admin_msg.add_reaction("❌")
-
+            print(team_data)
             # Create the submission in the API
             submission_api_url = f"{BASE_API_URl}/submission"
             submission_data = {
@@ -83,7 +83,8 @@ class PlayerCog(commands.Cog):
                 "approved": False,
                 "admin_approval_embed_id": str(admin_msg.id),
                 "team_channel_id": str(interaction.channel.id),
-                "pending_team_embed_id": str(team_msg.id)
+                "pending_team_embed_id": str(team_msg.id),
+                "team_id": team_data['_id'],
             }
             async with aiohttp.ClientSession() as session:
                 async with session.post(submission_api_url, json=submission_data) as sub_resp:
@@ -102,37 +103,31 @@ class PlayerCog(commands.Cog):
         api_url = f"{BASE_API_URl}/teams/discord/{interaction.user.id}/current_tile"
         async with aiohttp.ClientSession() as session:
             async with session.get(api_url) as resp:
-                if resp.status == 200:
-                    tile = await resp.json()
-                    embed = discord.Embed(
-                        title=f"Your Current Tile: {tile.get('tile_name', 'Unknown')}",
-                        description=tile.get('description', ''),
-                        color=discord.Color.blue()
-                    )
-                    embed.add_field(name="Completion Counter", value=tile.get('completion_counter', 'N/A'))
-                    image_url = tile.get('image_url')
-                    file = None
-                    if image_url:
-                        image_api_url = f"{BASE_API_URl}/images/{image_url}"
-                        async with session.get(image_api_url) as img_resp:
-                            if img_resp.status == 200:
-                                img_bytes = await img_resp.read()
-                                filename = os.path.basename(image_url)
-                                file = discord.File(fp=discord.File(io.BytesIO(img_bytes), filename=filename).fp, filename=filename)
-                                embed.set_image(url=f"attachment://{filename}")
-                    embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
-                    if file:
-                        await interaction.response.send_message(embed=embed, file=file)
+                try:
+                    if resp.status == 200:
+                        tile = await resp.json()
+                        embed = discord.Embed(
+                            title=f"Your Current Tile: {tile.get('tile_name', 'Unknown')}",
+                            description=tile.get('description', ''),
+                            color=discord.Color.blue()
+                        )
+                        embed.add_field(name="Completion Counter", value=tile.get('completion_counter', 'N/A'))
+                        image_url = tile.get('image_url')
+                        file = None
+                        if image_url:
+                            image_api_url = f"{BASE_API_URl}/images/{image_url}"
+                            async with session.get(image_api_url) as img_resp:
+                                if img_resp.status == 200:
+                                    img_bytes = await img_resp.read()
+                                    filename = os.path.basename(image_url)
+                                    file = discord.File(fp=discord.File(io.BytesIO(img_bytes), filename=filename).fp, filename=filename)
+                                    embed.set_image(url=f"attachment://{filename}")
+                                    embed.set_author(name=interaction.user.display_name, icon_url=interaction.user.display_avatar.url)
+                                    await interaction.response.send_message(embed=embed, file=file)
                     else:
-                        await interaction.response.send_message(embed=embed)
-                else:
-                    error = await resp.text()
-                    embed = discord.Embed(
-                        title="Error",
-                        description=f"Failed to look up team: {error}",
-                        color=discord.Color.red()
-                    )
-                    await interaction.response.send_message(embed=embed)
+                        await interaction.response.send_message(f"It looks like you're not part of a team. Please contact <@{TANGY_DISCORD_ID}> for technical help.")
+                except Exception as e:
+                    await interaction.response.send_message(f"It looks like something is wrong internally. Please contact <@{TANGY_DISCORD_ID}> for technical help.")
 
 async def setup(bot: commands):
     await bot.add_cog(PlayerCog(bot))

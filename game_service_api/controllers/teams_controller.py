@@ -6,6 +6,7 @@ from flask import current_app as app
 from constants.tiles import world1_tiles
 from utils.shuffle import shuffle_tiles
 from services.team_service import TeamService
+from bson import ObjectId
 
 team_service = TeamService()
 teams_blueprint = Blueprint('teams', __name__)
@@ -89,17 +90,19 @@ def get_team_by_discord_id(discord_user_id):
     # Convert ObjectId to string for JSON serialization
     if "_id" in team_dict:
         team_dict["_id"] = str(team_dict["_id"])
+
+    print(team_dict)
         
     return jsonify(team_dict), 200
 
-@teams_blueprint.route("/teams/<team_name>/advance_tile", methods=["POST"])
-def advance_tile(team_name):
+@teams_blueprint.route("/teams/<team_id>/advance_tile", methods=["POST"])
+def advance_tile(team_id):
     """
     Advance the team's current tile to the next one in their shuffled world1 tile list.
     Returns the updated team document, or an error if already at the last tile or tile not found.
     """
     db = get_db()
-    team = db.teams.find_one({"team_name": team_name})
+    team = db.teams.find_one({"_id": ObjectId(team_id)})
     if not team:
         abort(404, description="Team not found")
 
@@ -117,7 +120,7 @@ def advance_tile(team_name):
 
     # Advance to the next tile
     next_tile = shuffled_tiles[idx + 1]
-    db.teams.update_one({"team_name": team_name}, {"$set": {"current_tile": next_tile}})
+    db.teams.update_one({"_id": ObjectId(team_id)}, {"$set": {"current_tile": next_tile}})
     team["current_tile"] = next_tile
 
     # Convert ObjectId to string for JSON serialization
