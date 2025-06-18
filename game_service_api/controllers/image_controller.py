@@ -19,6 +19,8 @@ def generate_board(discord_id):
     Creates a board image for the given Discord user ID.
     """
     team = team_service.get_team_by_discord_id(discord_id)
+    if not team:
+        abort(404, "Team not found")
     
     current_tile = team.get("current_tile")
     tile_info = next((t for t in world1_tiles["world_tiles"] if t["id"] == current_tile), None)

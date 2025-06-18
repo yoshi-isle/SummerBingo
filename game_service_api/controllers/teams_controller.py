@@ -138,16 +138,15 @@ def get_current_tile_by_discord_id(discord_user_id):
     team = db.teams.find_one({"players.discord_id": discord_user_id})
     if not team:
         abort(404, description="Team not found")
-
-    current_tile = team.get("current_tile")
+    print(team)
+    current_tile = team['current_tile']
+    print(current_tile)
     
-    # Handle if current_tile is a dict or just an int (id)
-    if not current_tile:
-        abort(400, description="Current tile not set")
     if isinstance(current_tile, dict):
-        tile_id = current_tile.get("id")
+        tile_id = current_tile['id']
         if tile_id is None:
             abort(400, description="Current tile missing id")
+            
     elif isinstance(current_tile, int):
         tile_id = current_tile
     else:

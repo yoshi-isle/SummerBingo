@@ -1,7 +1,6 @@
-from typing import List
 import discord
 from discord.ext import commands
-from discord import Embed, app_commands
+from discord import app_commands
 import aiohttp
 import os
 import io
@@ -13,13 +12,19 @@ class PlayerCog(commands.Cog):
     @app_commands.command(name="board", description="View your current tile board.")
     async def view_board(self, interaction: discord.Interaction):
         api_url = f"{BASE_API_URl}/image/user/{interaction.user.id}"
-        async with aiohttp.ClientSession() as session:
-            async with session.get(api_url) as response:
-                if response.status == 200:
-                    image_data = await response.read()
-                    file = discord.File(io.BytesIO(image_data), filename="team_board.png")
-                    await interaction.channel.send(f"Board for user ID: {interaction.user.id}", file=file)
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(api_url) as response:
+                    if response.status == 200:
+                        image_data = await response.read()
+                        file = discord.File(io.BytesIO(image_data), filename="team_board.png")
+                        await interaction.response.send_message(f"Board for user ID: {interaction.user.id}", file=file)
+                    else:
+                        await interaction.response.send_message(f"There was an error getting your board image. Please contact <@{TANGY_DISCORD_ID}>")
 
+        except Exception as e:
+            print(f"Error in view_board: {e}")
+            await interaction.response.send_message(f"There was an error. Please contact <@{TANGY_DISCORD_ID}>")
 
     @app_commands.command(name="submit", description="Submits your tile completion.")
     async def submit(self, interaction: discord.Interaction, image: discord.Attachment):
@@ -107,12 +112,12 @@ class PlayerCog(commands.Cog):
                     if resp.status == 200:
                         tile = await resp.json()
                         embed = discord.Embed(
-                            title=f"Your Current Tile: {tile.get('tile_name', 'Unknown')}",
-                            description=tile.get('description', ''),
+                            title=f"Your Current Tile: {tile['tile_name']}",
+                            description=tile['description'],
                             color=discord.Color.blue()
                         )
-                        embed.add_field(name="Completion Counter", value=tile.get('completion_counter', 'N/A'))
-                        image_url = tile.get('image_url')
+                        embed.add_field(name="Completion Counter", value=tile['completion_counter'])
+                        image_url = tile['image_url']
                         file = None
                         if image_url:
                             image_api_url = f"{BASE_API_URl}/images/{image_url}"
