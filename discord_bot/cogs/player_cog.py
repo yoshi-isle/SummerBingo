@@ -16,6 +16,21 @@ class PlayerCog(commands.Cog):
 
     @app_commands.command(name="board", description="View your current tile board.")
     async def view_board(self, interaction: discord.Interaction):
+        # Guard against viewing board outside of team channel
+        try:
+            async with self.session.get(ApiUrls.TEAM_BY_ID.format(id=interaction.user.id)) as resp:
+                if resp.status == 200:
+                    team_data = await resp.json()
+                    if interaction.channel_id != team_data['channel_id']:
+                        await interaction.response.send_message("You can only use this command in your team channel.", ephemeral=True)
+                        return
+                else:
+                    return
+        except Exception as e:
+            print(f"Error retrieving team: {e}")
+            await interaction.response.send_message(f"It looks like you're not part of a team. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}> for support")
+            return
+
         try:
             async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=interaction.user.id)) as response:
                 if response.status == 200:

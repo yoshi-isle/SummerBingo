@@ -1,8 +1,9 @@
-from flask import Flask, request, jsonify, abort, send_from_directory
+from flask import Flask, request, jsonify, abort, send_from_directory, g
 from pymongo import MongoClient
 from dataclasses import asdict, field
 from typing import List, Optional
 import os
+import time
 from models.player import Player
 from models.team import Team
 from controllers.teams_controller import teams_blueprint
@@ -32,6 +33,17 @@ def health_check():
 @app.route("/images/<path:filename>")
 def serve_image(filename):
     return send_from_directory(os.path.join(os.path.dirname(__file__), 'images'), filename)
+
+@app.before_request
+def start_timer():
+    g.start_time = time.time()
+
+@app.after_request
+def log_request_time(response):
+    if hasattr(g, 'start_time'):
+        duration = time.time() - g.start_time
+        app.logger.info(f"{request.method} {request.path} took {duration:.4f} seconds")
+    return response
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
