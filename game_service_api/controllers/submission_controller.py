@@ -59,3 +59,21 @@ def approve_submission(submission_id):
     db.submissions.update_one({"_id": ObjectId(submission_id)}, {"$set": {"approved": True}})
 
     return jsonify({"message": "Submission approved successfully"}), 200
+
+@submissions_blueprint.route("/submission/deny/<submission_id>", methods=["PUT"])
+def deny_submission(submission_id):
+    """
+    Deny a submission by its ID.
+    """
+    db = get_db()
+    try:
+        submission = db.submissions.find_one({"_id": ObjectId(submission_id)})
+    except Exception:
+        abort(400, description="Invalid submission ID format")
+    if not submission:
+        abort(404, description="Submission not found")
+
+    # Update the submission status to approved
+    db.submissions.update_one({"_id": ObjectId(submission_id)}, {"$set": {"approved": False}})
+
+    return jsonify({"message": "Submission approved successfully"}), 200

@@ -116,6 +116,23 @@ class AdminCog(commands.Cog):
                         else:
                             error = await approve_resp.text()
                             await reaction.message.channel.send(f"Failed to approve submission: {error}")
+                # Reject submission if reaction is ❌
+                if str(reaction.emoji) == '❌':
+                    async with self.session.put(ApiUrls.DENY_SUBMISSION.format(id=submission["_id"])) as deny_resp:
+                        if deny_resp.status == 200:
+                            team_channel = reaction.message.guild.get_channel(int(submission['team_channel_id']))
+                            # Get pending embed from submission["pending_team_embed_id"]
+                            pending_message = await team_channel.fetch_message(int(submission['pending_team_embed_id']))
+                            if pending_message and pending_message.embeds:
+                                rejected_embed = pending_message.embeds[0].copy()
+                                rejected_embed.color = discord.Color.red()
+                                rejected_embed.title = f"Rejected by {user.display_name}"
+                                rejected_embed.set_footer(text="")
+                                await pending_message.edit(embed=rejected_embed)
+                            await reaction.message.delete()
+                        else:
+                            error = await deny_resp.text()
+                            await reaction.message.channel.send(f"Failed to reject submission: {error}")
             else:
                 await reaction.message.channel.send(f"Submission not found for message ID {message_id}.")
 
