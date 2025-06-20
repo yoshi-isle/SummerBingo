@@ -14,7 +14,9 @@ def generate_board(discord_id):
     """
     Creates a board image for the given Discord user ID.
     """
+    print("1")
     team = team_service.get_team_by_discord_id(discord_id)
+    print("2")
     if not team:
         abort(404, "Team not found")
     

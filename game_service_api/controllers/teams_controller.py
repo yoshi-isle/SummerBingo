@@ -91,8 +91,6 @@ def get_team_by_discord_id(discord_user_id):
     if "_id" in team_dict:
         team_dict["_id"] = str(team_dict["_id"])
 
-    print(team_dict)
-        
     return jsonify(team_dict), 200
 
 @teams_blueprint.route("/teams/<team_id>/advance_tile", methods=["POST"])
