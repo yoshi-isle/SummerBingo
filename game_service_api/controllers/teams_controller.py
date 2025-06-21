@@ -155,3 +155,23 @@ def get_current_tile_by_discord_id(discord_user_id):
     if not tile_info:
         abort(404, description="Tile info not found")
     return jsonify(tile_info), 200
+
+@teams_blueprint.route("/teams/<discord_user_id>/world_level", methods=["GET"])
+def get_world_level(discord_user_id):
+    """
+    Calculate the world's level based on the team's current tile position in the shuffled tile list.
+    Returns the level as an integer (1-based index).
+    """
+    team = team_service.get_team_by_discord_id(discord_user_id)
+    if not team:
+        abort(404, description="Team not found")
+
+    shuffled_tiles = team.get("world1_shuffled_tiles", [])
+    current_tile = team.get("current_tile")
+    try:
+        idx = shuffled_tiles.index(current_tile)
+    except ValueError:
+        abort(400, description="Current tile not found in shuffled tiles")
+
+    level = idx + 1  # 1-based index
+    return jsonify({"level": level}), 200

@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 import aiohttp
-import os
 import io
 from constants import DiscordIDs, ApiUrls
 
