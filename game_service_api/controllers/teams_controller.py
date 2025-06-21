@@ -1,14 +1,12 @@
 from flask import Blueprint, request, jsonify, abort
+from flask import current_app as app
 from models.team import Team
 from models.player import Player
 from dataclasses import asdict
-from flask import current_app as app
 from constants.tiles import world1_tiles
 from utils.shuffle import shuffle_tiles
-from services.team_service import TeamService
 from bson import ObjectId
 
-team_service = TeamService()
 teams_blueprint = Blueprint('teams', __name__)
 
 def get_db():
@@ -59,7 +57,8 @@ def get_team(team_name):
     Retrieve a team by its name.
     Returns the team document if found, otherwise 404.
     """
-    team = team_service.get_team_by_name(team_name)
+    db = get_db()
+    team = db.teams.find_one({"team_name": team_name})
     if not team:
         abort(404, description="Team not found")
 
@@ -77,7 +76,8 @@ def get_team_by_discord_id(discord_user_id):
     Retrieve a team by a discord user id.
     Returns the team document if found, otherwise 404.
     """
-    team = team_service.get_team_by_discord_id(discord_user_id)
+    db = get_db()
+    team = db.teams.find_one({"players.discord_id": discord_user_id})
     if not team:
         abort(404, description="Team not found")
 
@@ -136,9 +136,7 @@ def get_current_tile_by_discord_id(discord_user_id):
     team = db.teams.find_one({"players.discord_id": discord_user_id})
     if not team:
         abort(404, description="Team not found")
-    print(team)
     current_tile = team['current_tile']
-    print(current_tile)
     
     if isinstance(current_tile, dict):
         tile_id = current_tile['id']
@@ -162,7 +160,9 @@ def get_world_level(discord_user_id):
     Calculate the world's level based on the team's current tile position in the shuffled tile list.
     Returns the level as an integer (1-based index).
     """
-    team = team_service.get_team_by_discord_id(discord_user_id)
+    db = get_db()
+    team = db.teams.find_one({"players.discord_id": discord_user_id})
+
     if not team:
         abort(404, description="Team not found")
 

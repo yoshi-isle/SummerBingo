@@ -87,7 +87,6 @@ class PlayerCog(commands.Cog):
             admin_msg = await pending_submissions_channel.send(embed=admin_embed)
             await admin_msg.add_reaction("✅")
             await admin_msg.add_reaction("❌")
-            print(team_data)
             # Create the submission in the API
             submission_data = {
                 "discord_user_id": str(interaction.user.id),
