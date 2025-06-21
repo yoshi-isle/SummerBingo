@@ -27,6 +27,9 @@ def create_team():
 
     # Shuffle the world1 tiles for this team
     world1_shuffled_tiles = shuffle_tiles(world1_tiles["world_tiles"])
+    
+    # Information for the first tile
+    tile_info = next((t for t in world1_tiles["world_tiles"] if t["id"] == world1_shuffled_tiles[0]), None)
 
     # Create the Team object
     team = Team(
@@ -35,7 +38,8 @@ def create_team():
         discord_channel_id=data["discord_channel_id"],
         current_tile=world1_shuffled_tiles[0],
         current_world=1,
-        world1_shuffled_tiles=world1_shuffled_tiles
+        world1_shuffled_tiles=world1_shuffled_tiles,
+        counter_to_completion=tile_info.get("completion_counter")
     )
 
     # Convert the Team and Player objects to dictionaries for MongoDB

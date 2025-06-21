@@ -37,7 +37,7 @@ class PlayerCog(commands.Cog):
                     await interaction.response.send_message(f"There was an error getting your board image. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
         
         except Exception as e:
-            await interaction.response.send_message(f"{e} There was an error. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
+            await interaction.response.send_message(f"There was an error. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
 
     @app_commands.command(name="submit", description="Submits your tile completion.")
     async def submit(self, interaction: discord.Interaction, image: discord.Attachment):
