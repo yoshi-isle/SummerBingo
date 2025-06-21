@@ -39,7 +39,7 @@ def create_board_image(team, tile_info, level=None):
             draw = ImageDraw.Draw(base_img)
             font_path = os.path.join(os.path.dirname(__file__), '../assets/8bit.ttf')
             font_path = os.path.abspath(font_path)
-            font = ImageFont.truetype(font_path, size=32)
+            font = ImageFont.truetype(font_path, size=24)
 
             team_name = team['team_name']
             text_color = (255, 255, 255)
@@ -49,7 +49,7 @@ def create_board_image(team, tile_info, level=None):
             draw.text(text_position, f"Team\n{team_name}", fill=text_color, font=font, anchor="ra")  # Right alignment
 
             # If level is provided, use it (discord_id version), else use team['current_tile'] (team_id version)
-            tile_label = f"{team['current_world']}-{level}-{tile_info['tile_name']}" if level is not None else f"{team['current_world']}-{team['current_tile']}-{tile_info['tile_name']}"
+            tile_label = f"Level {team['current_world']}-{level}\n{tile_info['tile_name']}" if level is not None else f"{team['current_world']}-{team['current_tile']}-{tile_info['tile_name']}"
             draw.text(text_position_tile, tile_label, fill=text_color, font=font, anchor="la")
 
             img_io = BytesIO()

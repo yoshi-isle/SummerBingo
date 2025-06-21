@@ -39,7 +39,7 @@ class AdminCog(commands.Cog):
                     await interaction.response.send_message(f"Failed to register team: {error}", ephemeral=True)
         except Exception as e:
             print(e)
-            await interaction.response.send_message("Error creating team. Please try again")
+            await interaction.response.send_message(f"Error creating team {e}. Please try again")
             
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
