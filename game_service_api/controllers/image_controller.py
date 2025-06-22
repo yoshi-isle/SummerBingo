@@ -15,17 +15,18 @@ def create_board_image(team, tile_info, level=None):
     """
     Generates the board image for a team and returns a BytesIO object.
     """
+    current_tile = team.get("current_tile")
+
     image_path = os.path.join(os.path.dirname(__file__), '../images/world1/board/board_background.png')
     image_path = os.path.abspath(image_path)
     try:
         with Image.open(image_path) as base_img:
-            path_img_path = os.path.join(os.path.dirname(__file__), '../images/world1/path/w1path0.png')
+            path_img_path = os.path.join(os.path.dirname(__file__), f'../images/world1/path/w1path{level-1}.png')
             path_img_path = os.path.abspath(path_img_path)
             with Image.open(path_img_path) as path_img:
                 base_img.paste(path_img, (0, 0), path_img if path_img.mode == 'RGBA' else None)
 
             # Load and paste tile image on top
-            current_tile = team.get("current_tile")
             current_tile_img_path = os.path.join(os.path.dirname(__file__), f'../images/world1/tiles/{current_tile}.png')
             current_tile_img_path = os.path.abspath(current_tile_img_path)
             with Image.open(current_tile_img_path) as tile_img:
@@ -90,5 +91,8 @@ def generate_board_by_team_id(team_id):
         abort(404, "Team not found")
     current_tile = team.get("current_tile")
     tile_info = next((t for t in world1_tiles["world_tiles"] if t["id"] == current_tile), None)
-    img_io = create_board_image(team, tile_info)
+    shuffled_tiles = team.get("world1_shuffled_tiles", [])
+    idx = shuffled_tiles.index(current_tile)
+    level = idx + 1  # 1-based index
+    img_io = create_board_image(team, tile_info, level)
     return app.response_class(img_io, mimetype='image/png')

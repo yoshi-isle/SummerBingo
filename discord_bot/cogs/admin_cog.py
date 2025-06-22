@@ -94,7 +94,7 @@ class AdminCog(commands.Cog):
 
                             # Get the team object from the API
                             team = []
-                            async with self.session.get(ApiUrls.TEAM_BY_ID.format(id=submission['team_id'])) as team_resp:
+                            async with self.session.get(ApiUrls.TEAM_BY_ID_WITHOUT_DISCORD.format(id=submission['team_id'])) as team_resp:
                                 if team_resp.status == 200:
                                     team = await team_resp.json()
                                 else:

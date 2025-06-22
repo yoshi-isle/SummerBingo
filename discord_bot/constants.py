@@ -10,6 +10,7 @@ class ApiUrls:
     # Teams
     TEAM = f"{BASE_URL}/teams"
     TEAM_BY_ID = f"{BASE_URL}/teams/discord/{{id}}"
+    TEAM_BY_ID_WITHOUT_DISCORD = f"{BASE_URL}/teams/id/{{id}}"
     TEAM_CURRENT_TILE = f"{BASE_URL}/teams/discord/{{id}}/current_tile"
     TEAM_ADVANCE_TILE = f"{BASE_URL}/teams/{{id}}/advance_tile"
 

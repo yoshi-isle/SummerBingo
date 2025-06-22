@@ -62,7 +62,7 @@ def approve_submission(submission_id):
 
     team = db.teams.find_one({"_id": ObjectId(team_id)})
     if not team:
-        abort(404, description="Team not found")
+        abort(404, description=f"Team not found, {team_id}")
 
     # Decrement the team's completion counter by 1
     db.teams.update_one(

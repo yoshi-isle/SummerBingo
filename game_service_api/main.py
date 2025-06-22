@@ -9,6 +9,7 @@ from models.team import Team
 from controllers.teams_controller import teams_blueprint
 from controllers.submission_controller import submissions_blueprint
 from controllers.image_controller import image_blueprint
+import logging
 
 app = Flask(__name__)
 
@@ -20,6 +21,14 @@ app.config['DB'] = db
 app.register_blueprint(teams_blueprint)
 app.register_blueprint(submissions_blueprint)
 app.register_blueprint(image_blueprint)
+
+# Set up logging for errors
+logging.basicConfig(level=logging.ERROR)
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    app.logger.error("Unhandled Exception", exc_info=e)
+    return jsonify(error=str(e)), 500
 
 @app.route("/", methods=["GET"])
 def health_check():

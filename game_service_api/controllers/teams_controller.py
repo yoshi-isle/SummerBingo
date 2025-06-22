@@ -39,7 +39,7 @@ def create_team():
         current_tile=world1_shuffled_tiles[0],
         current_world=1,
         world1_shuffled_tiles=world1_shuffled_tiles,
-        counter_to_completion=tile_info.get("completion_counter")
+        completion_counter=tile_info.get("completion_counter")
     )
 
     # Convert the Team and Player objects to dictionaries for MongoDB
@@ -97,6 +97,31 @@ def get_team_by_discord_id(discord_user_id):
 
     return jsonify(team_dict), 200
 
+@teams_blueprint.route("/teams/id/<team_id>", methods=["GET"])
+def get_team_by_id(team_id):
+    """
+    Retrieve a team by its MongoDB ObjectId.
+    Returns the team document if found, otherwise 404.
+    """
+    db = get_db()
+    try:
+        obj_id = ObjectId(team_id)
+    except Exception:
+        abort(400, description="Invalid team_id format")
+
+    team = db.teams.find_one({"_id": obj_id})
+    if not team:
+        abort(404, description="Team not found")
+
+    # Ensure players are returned as a list
+    team["players"] = [p for p in team["players"]]
+
+    # Convert ObjectId to string for JSON serialization
+    if "_id" in team:
+        team["_id"] = str(team["_id"])
+
+    return jsonify(team), 200
+
 @teams_blueprint.route("/teams/<team_id>/advance_tile", methods=["POST"])
 def advance_tile(team_id):
     """
@@ -122,8 +147,12 @@ def advance_tile(team_id):
 
     # Advance to the next tile
     next_tile = shuffled_tiles[idx + 1]
-    db.teams.update_one({"_id": ObjectId(team_id)}, {"$set": {"current_tile": next_tile}})
+    # Get the completion_counter for the new tile
+    tile_info = next((t for t in world1_tiles["world_tiles"] if t["id"] == next_tile), None)
+    completion_counter = tile_info.get("completion_counter") if tile_info else None
+    db.teams.update_one({"_id": ObjectId(team_id)}, {"$set": {"current_tile": next_tile, "completion_counter": completion_counter}})
     team["current_tile"] = next_tile
+    team["completion_counter"] = completion_counter
 
     # Convert ObjectId to string for JSON serialization
     if "_id" in team:
