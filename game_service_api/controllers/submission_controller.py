@@ -55,6 +55,21 @@ def approve_submission(submission_id):
     if not submission:
         abort(404, description="Submission not found")
 
+    # Find the team associated with the submission
+    team_id = submission.get("team_id")
+    if not team_id:
+        abort(400, description="Submission does not have a team_id")
+
+    team = db.teams.find_one({"_id": ObjectId(team_id)})
+    if not team:
+        abort(404, description="Team not found")
+
+    # Decrement the team's completion counter by 1
+    db.teams.update_one(
+        {"_id": ObjectId(team_id)},
+        {"$inc": {"completion_counter": -1}}
+    )
+
     # Update the submission status to approved
     db.submissions.update_one({"_id": ObjectId(submission_id)}, {"$set": {"approved": True}})
 

@@ -90,29 +90,41 @@ class AdminCog(commands.Cog):
                                     await approved_channel.send(content=reaction.message.content)
                             # Delete the original message
                             await reaction.message.delete()
-                            async with self.session.post(ApiUrls.TEAM_ADVANCE_TILE.format(id=submission['team_id'])) as advance_resp:
-                                if advance_resp.status == 200:
-                                    await team_channel.send(embed=Embed(title="Submission approved! Here's your new board:"))
-                                    async with self.session.get(ApiUrls.IMAGE_BOARD_BY_TEAM_ID.format(id=submission['team_id'])) as response:
-                                                    if response.status == 200:
-                                                        image_data = await response.read()
-                                                        file = discord.File(io.BytesIO(image_data), filename="team_board.png")
-                                                        # Unpin all messages in the team channel
-                                                        pinned = await team_channel.pins()
-                                                        for msg in pinned:
-                                                            try:
-                                                                await msg.unpin()
-                                                            except Exception as e:
-                                                                print(f"Failed to unpin message: {e}")
 
-                                                        # Send and pin the new board image
-                                                        board_msg = await team_channel.send(file=file)
-                                                        await board_msg.pin()
-                                                    else:
-                                                        await team_channel.send(f"There was an error getting your board image. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
+
+                            # Get the team object from the API
+                            team = []
+                            async with self.session.get(ApiUrls.TEAM_BY_ID.format(id=submission['team_id'])) as team_resp:
+                                if team_resp.status == 200:
+                                    team = await team_resp.json()
                                 else:
-                                    error = await advance_resp.text()
-                                    await reaction.message.channel.send(f"Failed to advance tile: {error}")
+                                    await team_channel.send(f"Failed to fetch team information. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
+
+                            # Advance a tile if the number of submissions is complete
+                            if int(team['completion_counter']) <= 0:
+                                async with self.session.post(ApiUrls.TEAM_ADVANCE_TILE.format(id=submission['team_id'])) as advance_resp:
+                                    if advance_resp.status == 200:
+                                        await team_channel.send(embed=Embed(title="Submission approved! Here's your new board:"))
+                                        async with self.session.get(ApiUrls.IMAGE_BOARD_BY_TEAM_ID.format(id=submission['team_id'])) as response:
+                                                        if response.status == 200:
+                                                            image_data = await response.read()
+                                                            file = discord.File(io.BytesIO(image_data), filename="team_board.png")
+                                                            # Unpin all messages in the team channel
+                                                            pinned = await team_channel.pins()
+                                                            for msg in pinned:
+                                                                try:
+                                                                    await msg.unpin()
+                                                                except Exception as e:
+                                                                    print(f"Failed to unpin message: {e}")
+
+                                                            # Send and pin the new board image
+                                                            board_msg = await team_channel.send(file=file)
+                                                            await board_msg.pin()
+                                                        else:
+                                                            await team_channel.send(f"There was an error getting your board image. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
+                                    else:
+                                        error = await advance_resp.text()
+                                        await reaction.message.channel.send(f"Failed to advance tile: {error}")
                         else:
                             error = await approve_resp.text()
                             await reaction.message.channel.send(f"Failed to approve submission: {error}")
