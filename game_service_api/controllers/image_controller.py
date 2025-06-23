@@ -42,19 +42,35 @@ def create_board_image(team, tile_info, level=None):
 
                 map_coordinate = world1_tile_image_coordinates[level]
 
-                # Paste tile image at map_coordinate
                 # Draw black outline behind the tile image
                 outline_width = 1
                 x, y = map_coordinate
-                # Create a mask for the tile image
                 mask = tile_img.split()[-1] if tile_img.mode == 'RGBA' else None
                 for dx in range(-outline_width, outline_width + 1):
                     for dy in range(-outline_width, outline_width + 1):
                         if dx == 0 and dy == 0:
                             continue
                         base_img.paste((0, 0, 0), (x + dx, y + dy), mask)
-                # Paste the tile image at map_coordinate
                 base_img.paste(tile_img, map_coordinate, mask)
+
+                # Draw outlined text underneath the image
+                draw = ImageDraw.Draw(base_img)
+                font_path = os.path.join(os.path.dirname(__file__), '../assets/8bit.ttf')
+                font_path = os.path.abspath(font_path)
+                font = ImageFont.truetype(font_path, size=12)
+                text = f"{tile_info['tile_name']}"
+                text_x = x + tile_img.width // 2
+                text_y = y + tile_img.height + 5
+                
+                # Draw outline
+                outline_range = 2
+                for ox in range(-outline_range, outline_range + 1):
+                    for oy in range(-outline_range, outline_range + 1):
+                        if ox == 0 and oy == 0:
+                            continue
+                        draw.text((text_x + ox, text_y + oy), text, font=font, fill="black", anchor="ma")
+                # Draw main text
+                draw.text((text_x, text_y), text, font=font, fill="white", anchor="ma")
 
             draw = ImageDraw.Draw(base_img)
             font_path = os.path.join(os.path.dirname(__file__), '../assets/8bit.ttf')
