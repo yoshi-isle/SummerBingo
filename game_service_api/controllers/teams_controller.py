@@ -250,3 +250,24 @@ def get_world_level_by_team(team_id):
     idx = shuffled_tiles.index(current_tile)
     level = idx + 1
     return jsonify({"level": level}), 200
+
+@teams_blueprint.route("/teams/discord/<discord_id>/board_information", methods=["GET"])
+def get_board_information(discord_id):
+    db = get_db()
+    team = db.teams.find_one({"players.discord_id": discord_id})
+    if not team:
+        abort(404, description=f"Team with id: {discord_id} not found")
+
+    # Get level number
+    shuffled_tiles = team.get("world1_shuffled_tiles", [])
+    current_tile = team.get("current_tile")
+    world = team.get("current_world")
+    level_string = f"{world}-{shuffled_tiles.index(current_tile) + 1}"
+
+    # Get tile information
+    tile_info = next((t for t in world1_tiles["world_tiles"] if t["id"] == current_tile), None)
+
+    return jsonify({
+        "level_number": level_string,
+        "tile":tile_info,
+        "team":team}), 200

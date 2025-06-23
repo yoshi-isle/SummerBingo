@@ -26,11 +26,10 @@ class PlayerCog(commands.Cog):
                         return
                 else:
                     print(f"Error retrieving team: {e}")
-                    await interaction.response.send_message(f"{e} It looks like you're not part of a team. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}> for support")
+                    await interaction.response.send_message(f"It looks like you're not part of a team. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}> for support")
                     return
             
             # Grab current tile info
-            tile_info = None
             async with self.session.get(ApiUrls.TEAM_CURRENT_TILE.format(id=interaction.user.id)) as resp:
                 if resp.status == 200:
                     tile_info = await resp.json()
