@@ -25,6 +25,15 @@ def create_board_image(team, tile_info, level=None):
             path_img_path = os.path.join(os.path.dirname(__file__), f'../images/world1/path/w1path{level-1}.png')
             path_img_path = os.path.abspath(path_img_path)
             with Image.open(path_img_path) as path_img:
+                # Create a blacked-out version for drop shadow
+                shadow = Image.new("RGBA", path_img.size, (0, 0, 0, 128))
+                # Use the alpha channel of the original as mask for the shadow
+                if path_img.mode == 'RGBA':
+                    shadow.putalpha(path_img.split()[-1])
+                # Offset for shadow (e.g., 3px down and right)
+                shadow_offset = (5, 9)
+                base_img.paste(shadow, shadow_offset, shadow)
+                # Paste the original path image
                 base_img.paste(path_img, (0, 0), path_img if path_img.mode == 'RGBA' else None)
 
             # Load and paste tile image on top
@@ -43,7 +52,7 @@ def create_board_image(team, tile_info, level=None):
                 map_coordinate = world1_tile_image_coordinates[level]
 
                 # Draw black outline behind the tile image
-                outline_width = 1
+                outline_width = 2
                 x, y = map_coordinate
                 mask = tile_img.split()[-1] if tile_img.mode == 'RGBA' else None
                 for dx in range(-outline_width, outline_width + 1):
