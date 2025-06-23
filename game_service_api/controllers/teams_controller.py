@@ -267,7 +267,12 @@ def get_board_information(discord_id):
     # Get tile information
     tile_info = next((t for t in world1_tiles["world_tiles"] if t["id"] == current_tile), None)
 
+    # Convert ObjectId to string for JSON serialization
+    if "_id" in team:
+        team["_id"] = str(team["_id"])
+
     return jsonify({
         "level_number": level_string,
-        "tile":tile_info,
-        "team":team}), 200
+        "tile": tile_info,
+        "team": team
+    }), 200
