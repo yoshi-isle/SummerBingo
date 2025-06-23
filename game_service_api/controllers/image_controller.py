@@ -1,6 +1,7 @@
 from bson import ObjectId
 from flask import Blueprint, abort
 from flask import current_app as app
+from constants.coordinates import world1_tile_image_coordinates
 from constants.tiles import world1_tiles
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
@@ -32,10 +33,28 @@ def create_board_image(team, tile_info, level=None):
             with Image.open(current_tile_img_path) as tile_img:
                 # Resize tile image to max 90x90 (as in discord_id version)
                 tile_img.thumbnail((90, 90), Image.LANCZOS)
-                # Get map_coordinate from tile_info, default to (0,0) if missing
-                map_coordinate = tile_info.get('map_coordinate', (0, 0))
+                # Get map image coordinate
+
+                shuffled_tiles = team.get("world1_shuffled_tiles", [])
+                current_tile = team.get("current_tile")
+                idx = shuffled_tiles.index(current_tile)
+                level = idx + 1
+
+                map_coordinate = world1_tile_image_coordinates[level]
+
                 # Paste tile image at map_coordinate
-                base_img.paste(tile_img, map_coordinate, tile_img if tile_img.mode == 'RGBA' else None)
+                # Draw black outline behind the tile image
+                outline_width = 1
+                x, y = map_coordinate
+                # Create a mask for the tile image
+                mask = tile_img.split()[-1] if tile_img.mode == 'RGBA' else None
+                for dx in range(-outline_width, outline_width + 1):
+                    for dy in range(-outline_width, outline_width + 1):
+                        if dx == 0 and dy == 0:
+                            continue
+                        base_img.paste((0, 0, 0), (x + dx, y + dy), mask)
+                # Paste the tile image at map_coordinate
+                base_img.paste(tile_img, map_coordinate, mask)
 
             draw = ImageDraw.Draw(base_img)
             font_path = os.path.join(os.path.dirname(__file__), '../assets/8bit.ttf')

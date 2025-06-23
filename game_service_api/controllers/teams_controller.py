@@ -201,10 +201,6 @@ def get_world_level(discord_user_id):
 
     shuffled_tiles = team.get("world1_shuffled_tiles", [])
     current_tile = team.get("current_tile")
-    try:
-        idx = shuffled_tiles.index(current_tile)
-    except ValueError:
-        abort(400, description="Current tile not found in shuffled tiles")
-
-    level = idx + 1  # 1-based index
+    idx = shuffled_tiles.index(current_tile)
+    level = idx + 1
     return jsonify({"level": level}), 200

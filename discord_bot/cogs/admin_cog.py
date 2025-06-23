@@ -42,27 +42,47 @@ class AdminCog(commands.Cog):
             await interaction.response.send_message(f"Error creating team {e}. Please try again")
             
     @commands.Cog.listener()
-    async def on_reaction_add(self, reaction, user):
+    async def on_raw_reaction_add(self, payload):
+        print("Raw reaction added:", payload.emoji, "by", payload.user_id)
         # Ignore reactions from the bot itself
-        if user.bot:
+        if payload.user_id == self.bot.user.id:
             return
-        
-        if reaction.message.channel.id != DiscordIDs.PENDING_SUBMISSIONS_CHANNEL_ID:
+
+        # Only handle reactions in the pending submissions channel
+        if payload.channel_id != DiscordIDs.PENDING_SUBMISSIONS_CHANNEL_ID:
             return
-        
-        message_id = str(reaction.message.id)
-        
+
+        guild = self.bot.get_guild(payload.guild_id)
+        if not guild:
+            return
+        channel = guild.get_channel(payload.channel_id)
+        if not channel:
+            return
+        try:
+            message = await channel.fetch_message(payload.message_id)
+        except Exception as e:
+            print(f"Failed to fetch message: {e}")
+            return
+        user = guild.get_member(payload.user_id)
+        if not user:
+            try:
+                user = await guild.fetch_member(payload.user_id)
+            except Exception as e:
+                print(f"Failed to fetch user: {e}")
+                return
+
+        message_id = str(message.id)
         async with self.session.get(ApiUrls.SUBMISSION.format(id=message_id)) as resp:
             if resp.status == 200:
                 submission = await resp.json()
                 # Approve submission if reaction is ✅
-                if str(reaction.emoji) == '✅':
+                if str(payload.emoji) == '✅':
                     async with self.session.put(ApiUrls.APPROVE_SUBMISSION.format(id=submission["_id"])) as approve_resp:
                         if approve_resp.status == 200:
 
                             # Send a copy to the approved submissions channel
-                            approved_channel = reaction.message.guild.get_channel(DiscordIDs.APPROVED_SUBMISSIONS_CHANNEL_ID)
-                            team_channel = reaction.message.guild.get_channel(int(submission['team_channel_id']))
+                            approved_channel = message.guild.get_channel(DiscordIDs.APPROVED_SUBMISSIONS_CHANNEL_ID)
+                            team_channel = message.guild.get_channel(int(submission['team_channel_id']))
 
                             # Get pending embed from submission["pending_team_embed_id"]
                             pending_message = await team_channel.fetch_message(int(submission['pending_team_embed_id']))
@@ -72,14 +92,16 @@ class AdminCog(commands.Cog):
                                 approved_embed.color = discord.Color.green()
                                 approved_embed.title = f"Approved by {user.display_name}"
                                 approved_embed.set_footer(text="")
+                                approved_embed.description = f"🟢 Status: Approved by {user.mention}."
+
                                 
                                 # Edit the original message in the team channel
                                 await pending_message.edit(embed=approved_embed)
                             
                             if approved_channel:
                                 # Copy all embeds from the original message, updating the title
-                                if reaction.message.embeds:
-                                    for embed in reaction.message.embeds:
+                                if message.embeds:
+                                    for embed in message.embeds:
                                         new_embed = embed.copy()
                                         new_embed.color = discord.Color.green()
                                         new_embed.title = f"Approved by {user.display_name}"
@@ -87,9 +109,9 @@ class AdminCog(commands.Cog):
 
                                         await approved_channel.send(embed=new_embed)
                                 else:
-                                    await approved_channel.send(content=reaction.message.content)
+                                    await approved_channel.send(content=message.content)
                             # Delete the original message
-                            await reaction.message.delete()
+                            await message.delete()
 
 
                             # Get the team object from the API
@@ -124,15 +146,15 @@ class AdminCog(commands.Cog):
                                                             await team_channel.send(f"There was an error getting your board image. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
                                     else:
                                         error = await advance_resp.text()
-                                        await reaction.message.channel.send(f"Failed to advance tile: {error}")
+                                        await message.channel.send(f"Failed to advance tile: {error}")
                         else:
                             error = await approve_resp.text()
-                            await reaction.message.channel.send(f"Failed to approve submission: {error}")
+                            await channel.send(f"Failed to approve submission: {error}")
                 # Reject submission if reaction is ❌
-                if str(reaction.emoji) == '❌':
+                if str(payload.emoji) == '❌':
                     async with self.session.put(ApiUrls.DENY_SUBMISSION.format(id=submission["_id"])) as deny_resp:
                         if deny_resp.status == 200:
-                            team_channel = reaction.message.guild.get_channel(int(submission['team_channel_id']))
+                            team_channel = message.guild.get_channel(int(submission['team_channel_id']))
                             # Get pending embed from submission["pending_team_embed_id"]
                             pending_message = await team_channel.fetch_message(int(submission['pending_team_embed_id']))
                             if pending_message and pending_message.embeds:
@@ -141,12 +163,12 @@ class AdminCog(commands.Cog):
                                 rejected_embed.title = f"Rejected by {user.display_name}"
                                 rejected_embed.set_footer(text="")
                                 await pending_message.edit(embed=rejected_embed)
-                            await reaction.message.delete()
+                            await message.delete()
                         else:
                             error = await deny_resp.text()
-                            await reaction.message.channel.send(f"Failed to reject submission: {error}")
+                            await channel.send(f"Failed to reject submission: {error}")
             else:
-                await reaction.message.channel.send(f"Submission not found for message ID {message_id}.")
+                await channel.send(f"Submission not found for message ID {message_id}.")
 
     @app_commands.command(name="clear_channel", description="Deletes all messages in the current channel")
     @app_commands.checks.has_role("Admin")

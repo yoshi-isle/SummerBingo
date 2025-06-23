@@ -13,6 +13,7 @@ class ApiUrls:
     TEAM_BY_ID_WITHOUT_DISCORD = f"{BASE_URL}/teams/id/{{id}}"
     TEAM_CURRENT_TILE = f"{BASE_URL}/teams/discord/{{id}}/current_tile"
     TEAM_ADVANCE_TILE = f"{BASE_URL}/teams/{{id}}/advance_tile"
+    TEAM_LEVEL_NUMBER = f"{BASE_URL}/teams/{{id}}/world_level"
 
     # Submissions
     SUBMISSION = f"{BASE_URL}/submission/{{id}}"
@@ -24,3 +25,10 @@ class ApiUrls:
     IMAGE_BOARD = f"{BASE_URL}/image/user/{{id}}"
     IMAGE_BOARD_BY_TEAM_ID = f"{BASE_URL}/image/team/{{id}}"
     IMAGE_GET = f"{BASE_URL}/images/{{url}}"
+
+WORLD_NAMES = {
+    1: "Twisted Plains",
+    2: "Cozy Caverns",
+    3: "Tumeken's Oasis",
+    4: "Castle Drakan",
+}
