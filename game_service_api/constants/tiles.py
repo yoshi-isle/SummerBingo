@@ -1,9 +1,9 @@
 world1_tiles = {
     "world_tiles": [
-        {"id": 0, "tile_name": "Hydra Leather", "description": "A new pair of gloves", "completion_counter": 1, "image_url": "world1/tiles/0.png", "wiki_url": "", "pastebin_url": ""},
-        {"id": 1, "tile_name": "Smoke Battlestaff", "description": "A splasher's best friend!", "completion_counter": 1, "image_url": "world1/tiles/1.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 0, "tile_name": "Hydra Leather", "description": "A new pair of gloves", "completion_counter": 1, "image_url": "world1/tiles/0.png", "wiki_url": "https://oldschool.runescape.wiki/w/Hydra_leather", "pastebin_url": ""},
+        {"id": 1, "tile_name": "Smoke Battlestaff", "description": "A splasher's best friend!", "completion_counter": 1, "image_url": "world1/tiles/1.png", "wiki_url": "https://oldschool.runescape.wiki/w/Smoke_battlestaff", "pastebin_url": ""},
         {"id": 2, "tile_name": "Zulrah Unique", "description": "", "completion_counter": 1, "image_url": "world1/tiles/2.png", "wiki_url": "https://oldschool.runescape.wiki/w/Zulrah", "pastebin_url": "https://pastebin.com/raw/xgtgKZzr"},
-        {"id": 3, "tile_name": "2x Zenyte Shards", "description": "", "completion_counter": 2, "image_url": "world1/tiles/3.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 3, "tile_name": "2x Zenyte Shards", "description": "", "completion_counter": 2, "image_url": "world1/tiles/3.png", "wiki_url": "https://oldschool.runescape.wiki/w/Zenyte_shard", "pastebin_url": ""},
         {"id": 4, "tile_name": "Herbi Pet", "description": "", "completion_counter": 1, "image_url": "world1/tiles/4.png", "wiki_url": "", "pastebin_url": ""},
         {"id": 5, "tile_name": "10x Scurrius Spines", "description": "If you know, you know...", "completion_counter": 10, "image_url": "world1/tiles/5.png", "wiki_url": "", "pastebin_url": ""},
         {"id": 6, "tile_name": "4x Guild Hunter Pieces", "description": "", "completion_counter": 4, "image_url": "world1/tiles/6.png", "wiki_url": "", "pastebin_url": ""},

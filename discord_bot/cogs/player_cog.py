@@ -4,6 +4,7 @@ from discord import app_commands
 import aiohttp
 import io
 from constants import DiscordIDs, ApiUrls, WORLD_NAMES
+from embeds import build_team_board_embed
 
 class PlayerCog(commands.Cog):
     def __init__(self, bot):
@@ -38,38 +39,14 @@ class PlayerCog(commands.Cog):
                 if resp.status == 200:
                     image_data = await resp.read()
                     file = discord.File(io.BytesIO(image_data), filename="team_board.png")
-                    embed = discord.Embed(title=f"Team Board: {team_data['team_name']}", color=discord.Color.blue())
-                    embed.set_image(url="attachment://team_board.png")
-
-                    # TODO
-                    embed.set_thumbnail(url="https://static.wikia.nocookie.net/abobo/images/4/4e/Goomba.png/revision/latest?cb=20200706184805")
-                    embed.set_footer(text="Use `/submit` in your team channel to submit your tile completion.")
-
                     async with self.session.get(ApiUrls.TEAM_LEVEL_NUMBER.format(id=interaction.user.id)) as team_level_resp:
                         if team_level_resp.status == 200:
                             team_level_data = await team_level_resp.json()
-                            embed.add_field(
-                                name="🗺️ Current Level",
-                                value=f"{WORLD_NAMES[team_data['current_world']]} {team_data['current_world']}-{team_level_data['level']}\n**{tile_info['tile_name']}**",
-                                inline=False
-                            )
-                            embed.add_field(
-                                name="🔗 Links",
-                                value=f"[Eligible Drops]({tile_info['pastebin_url']})\n[OSRS Wiki]({tile_info['wiki_url']})",
-                                inline=True
-                            )
-                            embed.add_field(
-                                name="Submissions",
-                                value=f"This tile requires {tile_info['completion_counter']} submissions. Your team needs {team_data['completion_counter']} more",
-                                inline=True
-                            )
-                            embed.add_field(
-                                name="⏭️ Skip",
-                                value=f"You cannot skip this level until: WIP",
-                                inline=True
-                            )
-                                            
-                    await interaction.response.send_message(embed=embed, file=file)
+                            embed = build_team_board_embed(team_data, tile_info, team_level_data)
+                            embed.set_image(url="attachment://team_board.png")
+                            await interaction.response.send_message(embed=embed, file=file)
+                        else:
+                            await interaction.response.send_message(f"There was an error getting your team level. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
                 else:
                     await interaction.response.send_message(f"There was an error getting your board image. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
         

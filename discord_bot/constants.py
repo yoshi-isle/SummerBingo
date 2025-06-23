@@ -12,8 +12,10 @@ class ApiUrls:
     TEAM_BY_ID = f"{BASE_URL}/teams/discord/{{id}}"
     TEAM_BY_ID_WITHOUT_DISCORD = f"{BASE_URL}/teams/id/{{id}}"
     TEAM_CURRENT_TILE = f"{BASE_URL}/teams/discord/{{id}}/current_tile"
+    TEAM_CURRENT_TILE_WITHOUT_DISCORD = f"{BASE_URL}/teams/{{id}}/current_tile"
     TEAM_ADVANCE_TILE = f"{BASE_URL}/teams/{{id}}/advance_tile"
     TEAM_LEVEL_NUMBER = f"{BASE_URL}/teams/{{id}}/world_level"
+    TEAM_LEVEL_NUMBER_WITHOUT_DISCORD = f"{BASE_URL}/teams/id/{{id}}/world_level"
 
     # Submissions
     SUBMISSION = f"{BASE_URL}/submission/{{id}}"
