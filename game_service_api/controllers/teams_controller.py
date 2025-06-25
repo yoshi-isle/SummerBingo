@@ -283,8 +283,9 @@ def get_board_information(discord_id):
         abort(404, description=f"Team with id: {discord_id} not found")
 
     # Get level number
-    shuffled_tiles = team.get("world1_shuffled_tiles", [])
     current_tile = team.get("current_tile")
+    current_world = team.get("current_world", 1)
+    shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
     world = team.get("current_world")
     level_string = f"{world}-{shuffled_tiles.index(current_tile) + 1}"
 
