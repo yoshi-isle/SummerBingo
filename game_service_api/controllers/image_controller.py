@@ -32,7 +32,7 @@ def create_board_image(team, tile_info, level=None):
                 if path_img.mode == 'RGBA':
                     shadow.putalpha(path_img.split()[-1])
                 # Offset for shadow (e.g., 3px down and right)
-                shadow_offset = (5, 9)
+                shadow_offset = (3, 3)
                 base_img.paste(shadow, shadow_offset, shadow)
                 # Paste the original path image
                 base_img.paste(path_img, (0, 0), path_img if path_img.mode == 'RGBA' else None)

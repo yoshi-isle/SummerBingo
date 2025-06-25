@@ -142,6 +142,7 @@ def advance_tile(team_id):
     # Get the shuffled tiles and current tile
     current_tile = team.get("current_tile")
     current_world = team.get("current_world", 1)
+
     shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
     try:
         idx = shuffled_tiles.index(current_tile)
@@ -154,16 +155,14 @@ def advance_tile(team_id):
 
     # Advance to the next tile
     next_tile = shuffled_tiles[idx + 1]
-    # Get the completion_counter for the new tile
-    world_tiles_map = {
-        1: world1_tiles["world_tiles"],
-        2: world2_tiles["world_tiles"],
-        3: world3_tiles["world_tiles"],
-        4: world4_tiles["world_tiles"],
-    }
-    tile_info = next((t for t in world_tiles_map.get(current_world, []) if t["id"] == current_tile), None)
+    tile_info = get_tile_info(current_world, next_tile)
     completion_counter = tile_info.get("completion_counter") if tile_info else None
-    db.teams.update_one({"_id": ObjectId(team_id)}, {"$set": {"current_tile": next_tile, "completion_counter": completion_counter}})
+    db.teams.update_one(
+        {"_id": ObjectId(team_id)}, 
+        {"$set": 
+         {"current_tile": next_tile,
+          "completion_counter": completion_counter}
+        })
     team["current_tile"] = next_tile
     team["completion_counter"] = completion_counter
 
@@ -195,16 +194,7 @@ def get_current_tile_by_discord_id(discord_user_id):
     else:
         abort(400, description="Current tile has unexpected type")
 
-    # Find the tile in world1_tiles["world_tiles"] with matching id
-    world_tiles_map = {
-        1: world1_tiles["world_tiles"],
-        2: world2_tiles["world_tiles"],
-        3: world3_tiles["world_tiles"],
-        4: world4_tiles["world_tiles"],
-    }
-    tile_info = next((t for t in world_tiles_map.get(current_world, []) if t["id"] == current_tile), None)
-    if not tile_info:
-        abort(404, description="Tile info not found")
+    tile_info = get_tile_info(current_world, current_tile)
     return jsonify(tile_info), 200
 
 @teams_blueprint.route("/teams/<id>/current_tile", methods=["GET"])
@@ -289,15 +279,7 @@ def get_board_information(discord_id):
     world = team.get("current_world")
     level_string = f"{world}-{shuffled_tiles.index(current_tile) + 1}"
 
-    # Get tile information
-
-    world_tiles_map = {
-        1: world1_tiles["world_tiles"],
-        2: world2_tiles["world_tiles"],
-        3: world3_tiles["world_tiles"],
-        4: world4_tiles["world_tiles"],
-    }
-    tile_info = next((t for t in world_tiles_map.get(current_world, []) if t["id"] == current_tile), None)
+    tile_info = get_tile_info(current_world, current_tile)
 
     # Convert ObjectId to string for JSON serialization
     if "_id" in team:
@@ -308,3 +290,13 @@ def get_board_information(discord_id):
         "tile": tile_info,
         "team": team
     }), 200
+
+def get_tile_info(current_world: int, current_tile:int):
+    world_tiles_map = {
+        1: world1_tiles["world_tiles"],
+        2: world2_tiles["world_tiles"],
+        3: world3_tiles["world_tiles"],
+        4: world4_tiles["world_tiles"],
+    }
+
+    return next((t for t in world_tiles_map.get(current_world, []) if t["id"] == current_tile), None)

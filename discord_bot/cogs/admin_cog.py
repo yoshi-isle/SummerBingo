@@ -64,10 +64,9 @@ class AdminCog(commands.Cog):
 
         if str(payload.emoji) == '✅':
             try:
-                self.handle_approval(submission, message, user)
+                await self.handle_approval(submission, message, user)
             except Exception as e:
                 await channel.send(f"An error occured approving the submission")
-  
 
         if str(payload.emoji) == '❌':
             pass
