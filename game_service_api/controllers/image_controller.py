@@ -17,12 +17,13 @@ def create_board_image(team, tile_info, level=None):
     Generates the board image for a team and returns a BytesIO object.
     """
     current_tile = team.get("current_tile")
+    current_world_number = team.get("current_world")
 
-    image_path = os.path.join(os.path.dirname(__file__), '../images/world1/board/board_background.png')
+    image_path = os.path.join(os.path.dirname(__file__), f'../images/world{current_world_number}/board/board_background.png')
     image_path = os.path.abspath(image_path)
     try:
         with Image.open(image_path) as base_img:
-            path_img_path = os.path.join(os.path.dirname(__file__), f'../images/world1/path/w1path{level-1}.png')
+            path_img_path = os.path.join(os.path.dirname(__file__), f'../images/world{current_world_number}/path/w1path{level-1}.png')
             path_img_path = os.path.abspath(path_img_path)
             with Image.open(path_img_path) as path_img:
                 # Create a blacked-out version for drop shadow
@@ -37,13 +38,12 @@ def create_board_image(team, tile_info, level=None):
                 base_img.paste(path_img, (0, 0), path_img if path_img.mode == 'RGBA' else None)
 
             # Load and paste tile image on top
-            current_tile_img_path = os.path.join(os.path.dirname(__file__), f'../images/world1/tiles/{current_tile}.png')
+            current_tile_img_path = os.path.join(os.path.dirname(__file__), f'../images/world{current_world_number}/tiles/{current_tile}.png')
             current_tile_img_path = os.path.abspath(current_tile_img_path)
             with Image.open(current_tile_img_path) as tile_img:
-                # Resize tile image to max 90x90 (as in discord_id version)
-                tile_img.thumbnail((90, 90), Image.LANCZOS)
+                # Resize tile image to exactly 90x90
+                tile_img = tile_img.resize((90, 90), Image.NEAREST)
                 # Get map image coordinate
-
                 shuffled_tiles = team.get("world1_shuffled_tiles", [])
                 current_tile = team.get("current_tile")
                 idx = shuffled_tiles.index(current_tile)

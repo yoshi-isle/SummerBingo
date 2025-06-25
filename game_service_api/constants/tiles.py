@@ -94,3 +94,37 @@ world3_tiles = {
     "boss_tile":
         {"id": 0, "tile_name": "Tonalztics of ralos", "description": "Fancy Footwork", "completion_counter": 1, "image_url": "world3/boss/0.png", "wiki_url": "", "pastebin_url": ""},
 }
+
+world4_tiles = {
+    "world_tiles": [
+        {"id": 0, "tile_name": "Araxyte fang", "description": "", "completion_counter": 1, "image_url": "world3/tiles/0.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 1, "tile_name": "Full barrows set from 1 brother", "description": "", "completion_counter": 4, "image_url": "world3/tiles/1.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 2, "tile_name": "Tyrannical ring", "description": "", "completion_counter": 2, "image_url": "world3/tiles/2.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 3, "tile_name": "Leviathan's Lure OR Virtus piece from Leviathan", "description": "", "completion_counter": 1, "image_url": "world3/tiles/3.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 4, "tile_name": "Voidwaker gem", "description": "", "completion_counter": 4, "image_url": "world3/tiles/4.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 5, "tile_name": "Skull of vetion", "description": "", "completion_counter": 5, "image_url": "world3/tiles/5.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 6, "tile_name": "Any corp sigil", "description": "", "completion_counter": 1, "image_url": "world3/tiles/6.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 7, "tile_name": "Any 4 Blood Moon pieces", "description": "", "completion_counter": 3, "image_url": "world3/tiles/7.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 8, "tile_name": "10x KBD heads", "description": "", "completion_counter": 1, "image_url": "world3/tiles/8.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 9, "tile_name": "8x Blood Shards", "description": "", "completion_counter": 5, "image_url": "world3/tiles/9.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 10, "tile_name": "3x Dossiers", "description": "", "completion_counter": 3, "image_url": "world3/tiles/10.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 11, "tile_name": "5x Blood Quartz", "description": "", "completion_counter": 1, "image_url": "world3/tiles/11.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 12, "tile_name": "20x LMS Wins ", "description": "", "completion_counter": 1, "image_url": "world3/tiles/12.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 13, "tile_name": "3x Ancient Crystal", "description": "", "completion_counter": 4, "image_url": "world3/tiles/13.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 14, "tile_name": "Any inq piece OR orb", "description": "", "completion_counter": 1, "image_url": "world3/tiles/14.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 15, "tile_name": "Lesser Demon Scroll", "description": "", "completion_counter": 1, "image_url": "world3/tiles/15.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 16, "tile_name": "3x Elder Chaos Pieces", "description": "", "completion_counter": 2, "image_url": "world3/tiles/16.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 17, "tile_name": "5x ToB Purples", "description": "", "completion_counter": 2, "image_url": "world3/tiles/16.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 18, "tile_name": "Soulflame Horn", "description": "", "completion_counter": 2, "image_url": "world3/tiles/16.png", "wiki_url": "", "pastebin_url": ""},
+
+    ],
+    "key_tiles": [
+        {"id": 0, "tile_name": "Holy Elixir", "description": "", "completion_counter": 1, "image_url": "world3/keys/0.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 1, "tile_name": "Eternal Glory", "description": "Premium tools", "completion_counter": 10, "image_url": "world3/keys/1.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 2, "tile_name": "3x Raid Purples", "description": "", "completion_counter": 5, "image_url": "world3/keys/2.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 3, "tile_name": "Nm Staff", "description": "", "completion_counter": 1, "image_url": "world3/keys/3.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 4, "tile_name": "5x Armor/Wep Seeds OR 1x Enh", "description": "", "completion_counter": 1, "image_url": "world3/keys/4.png", "wiki_url": "", "pastebin_url": ""}
+    ],
+    "boss_tile":
+        {"id": 0, "tile_name": "5x HMT kits", "description": "", "completion_counter": 1, "image_url": "world3/boss/0.png", "wiki_url": "", "pastebin_url": ""},
+}
