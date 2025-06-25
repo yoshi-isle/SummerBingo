@@ -3,7 +3,7 @@ from flask import current_app as app
 from models.team import Team
 from models.player import Player
 from dataclasses import asdict
-from constants.tiles import world1_tiles
+from constants.tiles import world1_tiles, world2_tiles, world3_tiles, world4_tiles
 from utils.shuffle import shuffle_tiles
 from bson import ObjectId
 
@@ -16,7 +16,7 @@ def get_db():
 def create_team():
     """
     Create a new team with the provided data.
-    Shuffles world1 tiles and assigns the first tile as the current tile.
+    Shuffles world tiles and assigns the first tile as the current tile.
     Returns the created team document.
     """
     db = get_db()
@@ -25,9 +25,12 @@ def create_team():
     # Create Player objects from the provided player data
     players = [Player(**p) for p in data["players"]]
 
-    # Shuffle the world1 tiles for this team
+    # Shuffle the world tiles for this team
     world1_shuffled_tiles = shuffle_tiles(world1_tiles["world_tiles"])
-    
+    world2_shuffled_tiles = shuffle_tiles(world2_tiles["world_tiles"])
+    world3_shuffled_tiles = shuffle_tiles(world3_tiles["world_tiles"])
+    world4_shuffled_tiles = shuffle_tiles(world4_tiles["world_tiles"])
+
     # Information for the first tile
     tile_info = next((t for t in world1_tiles["world_tiles"] if t["id"] == world1_shuffled_tiles[0]), None)
 
@@ -39,6 +42,9 @@ def create_team():
         current_tile=world1_shuffled_tiles[0],
         current_world=1,
         world1_shuffled_tiles=world1_shuffled_tiles,
+        world2_shuffled_tiles=world2_shuffled_tiles,
+        world3_shuffled_tiles=world3_shuffled_tiles,
+        world4_shuffled_tiles=world4_shuffled_tiles,
         completion_counter=tile_info.get("completion_counter")
     )
 
@@ -134,8 +140,9 @@ def advance_tile(team_id):
         abort(404, description="Team not found")
 
     # Get the shuffled tiles and current tile
-    shuffled_tiles = team.get("world1_shuffled_tiles", [])
     current_tile = team.get("current_tile")
+    current_world = team.get("current_world", 1)
+    shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
     try:
         idx = shuffled_tiles.index(current_tile)
     except ValueError:
@@ -148,7 +155,13 @@ def advance_tile(team_id):
     # Advance to the next tile
     next_tile = shuffled_tiles[idx + 1]
     # Get the completion_counter for the new tile
-    tile_info = next((t for t in world1_tiles["world_tiles"] if t["id"] == next_tile), None)
+    world_tiles_map = {
+        1: world1_tiles["world_tiles"],
+        2: world2_tiles["world_tiles"],
+        3: world3_tiles["world_tiles"],
+        4: world4_tiles["world_tiles"],
+    }
+    tile_info = next((t for t in world_tiles_map.get(current_world, []) if t["id"] == current_tile), None)
     completion_counter = tile_info.get("completion_counter") if tile_info else None
     db.teams.update_one({"_id": ObjectId(team_id)}, {"$set": {"current_tile": next_tile, "completion_counter": completion_counter}})
     team["current_tile"] = next_tile
@@ -170,7 +183,8 @@ def get_current_tile_by_discord_id(discord_user_id):
     if not team:
         abort(404, description="Team not found")
     current_tile = team['current_tile']
-    
+    current_world = team.get("current_world", 1)
+
     if isinstance(current_tile, dict):
         tile_id = current_tile['id']
         if tile_id is None:
@@ -182,7 +196,13 @@ def get_current_tile_by_discord_id(discord_user_id):
         abort(400, description="Current tile has unexpected type")
 
     # Find the tile in world1_tiles["world_tiles"] with matching id
-    tile_info = next((t for t in world1_tiles["world_tiles"] if t["id"] == tile_id), None)
+    world_tiles_map = {
+        1: world1_tiles["world_tiles"],
+        2: world2_tiles["world_tiles"],
+        3: world3_tiles["world_tiles"],
+        4: world4_tiles["world_tiles"],
+    }
+    tile_info = next((t for t in world_tiles_map.get(current_world, []) if t["id"] == current_tile), None)
     if not tile_info:
         abort(404, description="Tile info not found")
     return jsonify(tile_info), 200
@@ -227,7 +247,9 @@ def get_world_level(discord_user_id):
     if not team:
         abort(404, description="Team not found")
 
-    shuffled_tiles = team.get("world1_shuffled_tiles", [])
+    current_world = team.get("current_world", 1)
+
+    shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
     current_tile = team.get("current_tile")
     idx = shuffled_tiles.index(current_tile)
     level = idx + 1
@@ -244,8 +266,10 @@ def get_world_level_by_team(team_id):
 
     if not team:
         abort(404, description="Team not found")
+    
+    current_world = team.get("current_world", 1)
 
-    shuffled_tiles = team.get("world1_shuffled_tiles", [])
+    shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
     current_tile = team.get("current_tile")
     idx = shuffled_tiles.index(current_tile)
     level = idx + 1

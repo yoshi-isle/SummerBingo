@@ -10,4 +10,8 @@ class Team:
     current_tile: int = 0
     current_world: int = 0
     world1_shuffled_tiles: Optional[List[int]] = None
+    world2_shuffled_tiles: Optional[List[int]] = None
+    world3_shuffled_tiles: Optional[List[int]] = None
+    world4_shuffled_tiles: Optional[List[int]] = None
+
     completion_counter: int = 1

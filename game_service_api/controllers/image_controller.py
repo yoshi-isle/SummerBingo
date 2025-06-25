@@ -1,8 +1,8 @@
 from bson import ObjectId
 from flask import Blueprint, abort
 from flask import current_app as app
-from constants.coordinates import world1_tile_image_coordinates
-from constants.tiles import world1_tiles
+from constants.coordinates import world1_tile_image_coordinates, world2_tile_image_coordinates, world3_tile_image_coordinates, world4_tile_image_coordinates
+from constants.tiles import world1_tiles, world2_tiles, world3_tiles, world4_tiles
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 import os
@@ -17,13 +17,13 @@ def create_board_image(team, tile_info, level=None):
     Generates the board image for a team and returns a BytesIO object.
     """
     current_tile = team.get("current_tile")
-    current_world_number = team.get("current_world")
+    current_world = team.get("current_world")
 
-    image_path = os.path.join(os.path.dirname(__file__), f'../images/world{current_world_number}/board/board_background.png')
+    image_path = os.path.join(os.path.dirname(__file__), f'../images/world{current_world}/board/board_background.png')
     image_path = os.path.abspath(image_path)
     try:
         with Image.open(image_path) as base_img:
-            path_img_path = os.path.join(os.path.dirname(__file__), f'../images/world{current_world_number}/path/w1path{level-1}.png')
+            path_img_path = os.path.join(os.path.dirname(__file__), f'../images/world{current_world}/path/w1path{level-1}.png')
             path_img_path = os.path.abspath(path_img_path)
             with Image.open(path_img_path) as path_img:
                 # Create a blacked-out version for drop shadow
@@ -38,21 +38,30 @@ def create_board_image(team, tile_info, level=None):
                 base_img.paste(path_img, (0, 0), path_img if path_img.mode == 'RGBA' else None)
 
             # Load and paste tile image on top
-            current_tile_img_path = os.path.join(os.path.dirname(__file__), f'../images/world{current_world_number}/tiles/{current_tile}.png')
+            current_tile_img_path = os.path.join(os.path.dirname(__file__), f'../images/world{current_world}/tiles/{current_tile}.png')
             current_tile_img_path = os.path.abspath(current_tile_img_path)
             with Image.open(current_tile_img_path) as tile_img:
                 # Resize tile image to exactly 90x90
                 tile_img = tile_img.resize((90, 90), Image.NEAREST)
                 # Get map image coordinate
-                shuffled_tiles = team.get("world1_shuffled_tiles", [])
+                shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
                 current_tile = team.get("current_tile")
+                current_world = team.get("current_world")
+
                 idx = shuffled_tiles.index(current_tile)
                 level = idx + 1
 
-                map_coordinate = world1_tile_image_coordinates[level]
+                tile_image_coordinates = {
+                    1: world1_tile_image_coordinates,
+                    2: world2_tile_image_coordinates,
+                    3: world3_tile_image_coordinates,
+                    4: world4_tile_image_coordinates,
+                }
+
+                map_coordinate = tile_image_coordinates.get(current_world, {}).get(level)
 
                 # Draw black outline behind the tile image
-                outline_width = 2
+                outline_width = 1
                 x, y = map_coordinate
                 mask = tile_img.split()[-1] if tile_img.mode == 'RGBA' else None
                 for dx in range(-outline_width, outline_width + 1):
@@ -66,7 +75,7 @@ def create_board_image(team, tile_info, level=None):
                 draw = ImageDraw.Draw(base_img)
                 font_path = os.path.join(os.path.dirname(__file__), '../assets/8bit.ttf')
                 font_path = os.path.abspath(font_path)
-                font = ImageFont.truetype(font_path, size=12)
+                font = ImageFont.truetype(font_path, size=16)
                 text = f"{tile_info['tile_name']}"
                 text_x = x + tile_img.width // 2
                 text_y = y + tile_img.height + 5
@@ -94,7 +103,7 @@ def create_board_image(team, tile_info, level=None):
             draw.text(text_position, f"Team\n{team_name}", fill=text_color, font=font, anchor="ra")  # Right alignment
 
             # If level is provided, use it (discord_id version), else use team['current_tile'] (team_id version)
-            tile_label = f"Level {team['current_world']}-{level}\n{tile_info['tile_name']}" if level is not None else f"{team['current_world']}-{team['current_tile']}-{tile_info['tile_name']}"
+            tile_label = f"Level {team['current_world']}-{level}\n{tile_info['tile_name']}" if level is not None else f"{current_world}-{current_tile}-{tile_info['tile_name']}"
             draw.text(text_position_tile, tile_label, fill=text_color, font=font, anchor="la")
 
             img_io = BytesIO()
@@ -117,8 +126,17 @@ def generate_board(discord_id):
     if not team:
         abort(404, "Team not found")
     current_tile = team.get("current_tile")
-    tile_info = next((t for t in world1_tiles["world_tiles"] if t["id"] == current_tile), None)
-    shuffled_tiles = team.get("world1_shuffled_tiles", [])
+    current_world = team.get("current_world", 1)
+
+    world_tiles_map = {
+        1: world1_tiles["world_tiles"],
+        2: world2_tiles["world_tiles"],
+        3: world3_tiles["world_tiles"],
+        4: world4_tiles["world_tiles"],
+    }
+
+    tile_info = next((t for t in world_tiles_map.get(current_world, []) if t["id"] == current_tile), None)
+    shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
     idx = shuffled_tiles.index(current_tile)
     level = idx + 1  # 1-based index
     img_io = create_board_image(team, tile_info, level)
@@ -133,9 +151,19 @@ def generate_board_by_team_id(team_id):
     team = db.teams.find_one({"_id": ObjectId(team_id)})
     if not team:
         abort(404, "Team not found")
+
     current_tile = team.get("current_tile")
-    tile_info = next((t for t in world1_tiles["world_tiles"] if t["id"] == current_tile), None)
-    shuffled_tiles = team.get("world1_shuffled_tiles", [])
+    current_world = team.get("current_world", 1)
+
+    world_tiles_map = {
+        1: world1_tiles["world_tiles"],
+        2: world2_tiles["world_tiles"],
+        3: world3_tiles["world_tiles"],
+        4: world4_tiles["world_tiles"],
+    }
+    tile_info = next((t for t in world_tiles_map.get(current_world, []) if t["id"] == current_tile), None)
+    current_world = team.get("current_world", 1)
+    shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
     idx = shuffled_tiles.index(current_tile)
     level = idx + 1  # 1-based index
     img_io = create_board_image(team, tile_info, level)
