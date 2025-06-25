@@ -1,4 +1,4 @@
-def build_team_board_embed(team_data, tile_info, team_level_data):
+def build_team_board_embed(team_data, tile_info, team_level_string):
     import discord
     from constants import WORLD_NAMES
     embed = discord.Embed(
@@ -10,7 +10,7 @@ def build_team_board_embed(team_data, tile_info, team_level_data):
     embed.set_footer(text="Use `/submit` in your team channel to submit your tile completion.")
     embed.add_field(
         name="🗺️ Current Level",
-        value=f"{WORLD_NAMES[team_data['current_world']]} {team_data['current_world']}-{team_level_data['level']}\n**{tile_info['tile_name']}**",
+        value=f"{WORLD_NAMES[team_data['current_world']]} {team_level_string}\n**{tile_info['tile_name']}**",
         inline=False
     )
     embed.add_field(

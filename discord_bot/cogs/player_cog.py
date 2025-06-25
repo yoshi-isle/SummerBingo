@@ -29,23 +29,21 @@ class PlayerCog(commands.Cog):
                     await interaction.response.send_message(f"It looks like you're not part of a team. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}> for support")
                     return
             
-            # Grab current tile info
-            async with self.session.get(ApiUrls.TEAM_CURRENT_TILE.format(id=interaction.user.id)) as resp:
+            # Grab board information
+            async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION.format(id=interaction.user.id)) as resp:
                 if resp.status == 200:
-                    tile_info = await resp.json()
+                    board_information = await resp.json()
+                else:
+                    await interaction.response.send_message(f"There was an error getting your board information. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
+                    return
                 
             async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=interaction.user.id)) as resp:
                 if resp.status == 200:
                     image_data = await resp.read()
                     file = discord.File(io.BytesIO(image_data), filename="team_board.png")
-                    async with self.session.get(ApiUrls.TEAM_LEVEL_NUMBER.format(id=interaction.user.id)) as team_level_resp:
-                        if team_level_resp.status == 200:
-                            team_level_data = await team_level_resp.json()
-                            embed = build_team_board_embed(team_data, tile_info, team_level_data)
-                            embed.set_image(url="attachment://team_board.png")
-                            await interaction.response.send_message(embed=embed, file=file)
-                        else:
-                            await interaction.response.send_message(f"There was an error getting your team level. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
+                    embed = build_team_board_embed(team_data, board_information["tile"], board_information["level_number"])
+                    embed.set_image(url="attachment://team_board.png")
+                    await interaction.response.send_message(embed=embed, file=file)
                 else:
                     await interaction.response.send_message(f"There was an error getting your board image. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
         

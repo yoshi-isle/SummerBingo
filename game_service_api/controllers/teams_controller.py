@@ -290,7 +290,14 @@ def get_board_information(discord_id):
     level_string = f"{world}-{shuffled_tiles.index(current_tile) + 1}"
 
     # Get tile information
-    tile_info = next((t for t in world1_tiles["world_tiles"] if t["id"] == current_tile), None)
+
+    world_tiles_map = {
+        1: world1_tiles["world_tiles"],
+        2: world2_tiles["world_tiles"],
+        3: world3_tiles["world_tiles"],
+        4: world4_tiles["world_tiles"],
+    }
+    tile_info = next((t for t in world_tiles_map.get(current_world, []) if t["id"] == current_tile), None)
 
     # Convert ObjectId to string for JSON serialization
     if "_id" in team:
