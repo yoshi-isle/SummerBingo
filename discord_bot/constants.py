@@ -17,7 +17,8 @@ class ApiUrls:
     TEAM_LEVEL_NUMBER = f"{BASE_URL}/teams/{{id}}/world_level"
     TEAM_LEVEL_NUMBER_WITHOUT_DISCORD = f"{BASE_URL}/teams/id/{{id}}/world_level"
     TEAM_BOARD_INFORMATION = f"{BASE_URL}/teams/discord/{{id}}/board_information"
-    
+    TEAM_BOARD_INFORMATION_WITHOUT_DISCORD = f"{BASE_URL}/teams/id/{{id}}/board_information"
+
     # Submissions
     SUBMISSION = f"{BASE_URL}/submission/{{id}}"
     CREATE_SUBMISSION = f"{BASE_URL}/submission"

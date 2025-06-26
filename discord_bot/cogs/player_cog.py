@@ -3,7 +3,7 @@ from discord.ext import commands
 from discord import app_commands
 import aiohttp
 import io
-from constants import DiscordIDs, ApiUrls, WORLD_NAMES
+from constants import DiscordIDs, ApiUrls
 from embeds import build_team_board_embed
 
 class PlayerCog(commands.Cog):
@@ -49,7 +49,7 @@ class PlayerCog(commands.Cog):
         
         except Exception as e:
             print(f"Error in view_board: {e}")
-            await interaction.response.send_message(f"There was an error. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
+            await interaction.response.send_message(f"There was an unknown error. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
 
     @app_commands.command(name="submit", description="Submits your tile completion.")
     async def submit(self, interaction: discord.Interaction, image: discord.Attachment):

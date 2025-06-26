@@ -1,9 +1,8 @@
-import io
 import discord
-from discord.ext import commands
-from discord import Embed, app_commands
+import io
 import aiohttp
-import os
+from discord import Color, Embed, app_commands
+from discord.ext import commands
 from constants import ApiUrls, DiscordIDs
 from embeds import build_team_board_embed
 
@@ -66,7 +65,7 @@ class AdminCog(commands.Cog):
             try:
                 await self.handle_approval(submission, message, user)
             except Exception as e:
-                await channel.send(f"An error occured approving the submission")
+                await channel.send(f"{e} An error occured approving the submission")
 
         if str(payload.emoji) == '❌':
             pass
@@ -154,6 +153,14 @@ class AdminCog(commands.Cog):
                         else:
                             error = await advance_resp.text()
                             await message.channel.send(f"Failed to advance tile: {error}")
+                else:
+                    async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION_WITHOUT_DISCORD.format(id=submission['team_id'])) as team_resp:
+                        board_information = await team_resp.json()
+                    receipt = Embed(title="Tile Progress Updated!", description=f"Currently at: {team['completion_counter']}/{board_information['tile']['completion_counter']}")
+                    receipt.color = Color.green()
+                    await team_channel.send(embed=receipt)
+
+
 
 async def setup(bot: commands):
     await bot.add_cog(AdminCog(bot))

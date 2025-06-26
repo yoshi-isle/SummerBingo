@@ -1,29 +1,26 @@
 import discord
 import os
-
 from discord.ext import commands
 from dotenv import load_dotenv
-
 from views.information_view import InformationView
 
 class Bot(commands.Bot):
     def __init__(self):
-        # Load environmental variables
         load_dotenv()
-        
-        # Initialize bot
         intents=discord.Intents.all()
         intents.message_content=True
         super().__init__(command_prefix="!", intents=intents)
         
     async def setup_hook(self) -> None:
-        # Persist views
         self.add_view(InformationView(self))
 
-        # Load cogs
-        for cog in ["cogs.information_cog", "cogs.admin_cog", "cogs.player_cog"]:
-            await self.load_extension(cog)
-            print(f"{cog} loaded")
+        cogs = ["cogs.information_cog", "cogs.admin_cog", "cogs.player_cog"]
+        for cog in cogs:
+            try:
+                await self.load_extension(cog)
+                print(f"{cog} loaded successfully.")
+            except Exception as e:
+                print(f"Failed to load {cog}: {e}")
 
     async def on_ready(self):
         await self.tree.sync()

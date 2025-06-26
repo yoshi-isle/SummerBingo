@@ -300,3 +300,40 @@ def get_tile_info(current_world: int, current_tile:int):
     }
 
     return next((t for t in world_tiles_map.get(current_world, []) if t["id"] == current_tile), None)
+
+
+@teams_blueprint.route("/teams/id/<team_id>/board_information", methods=["GET"])
+def get_board_information_by_team_id(team_id):
+    db = get_db()
+    team = db.teams.find_one({"_id": ObjectId(team_id)})
+    if not team:
+        abort(404, description=f"Team with id: {team_id} not found")
+
+    # Get level number
+    current_tile = team.get("current_tile")
+    current_world = team.get("current_world", 1)
+    shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
+    world = team.get("current_world")
+    level_string = f"{world}-{shuffled_tiles.index(current_tile) + 1}"
+
+    tile_info = get_tile_info(current_world, current_tile)
+
+    # Convert ObjectId to string for JSON serialization
+    if "_id" in team:
+        team["_id"] = str(team["_id"])
+
+    return jsonify({
+        "level_number": level_string,
+        "tile": tile_info,
+        "team": team
+    }), 200
+
+def get_tile_info(current_world: int, current_tile:int):
+    world_tiles_map = {
+        1: world1_tiles["world_tiles"],
+        2: world2_tiles["world_tiles"],
+        3: world3_tiles["world_tiles"],
+        4: world4_tiles["world_tiles"],
+    }
+
+    return next((t for t in world_tiles_map.get(current_world, []) if t["id"] == current_tile), None)
