@@ -63,15 +63,20 @@ def approve_submission(submission_id):
     team = db.teams.find_one({"_id": ObjectId(team_id)})
     if not team:
         abort(404, description=f"Team not found, {team_id}")
+    
+    # Update the submission status to approved
+    db.submissions.update_one({"_id": ObjectId(submission_id)}, {"$set": {"approved": True}})
+
+    if team["current_world"] != submission["current_world"] or team["current_tile"] != submission["current_tile"]:
+        return jsonify({
+            "message": "Submission ignored: team's position has changed since submission.",
+        }), 208  # 208 Already Reported
 
     # Decrement the team's completion counter by 1
     db.teams.update_one(
         {"_id": ObjectId(team_id)},
         {"$inc": {"completion_counter": -1}}
     )
-
-    # Update the submission status to approved
-    db.submissions.update_one({"_id": ObjectId(submission_id)}, {"$set": {"approved": True}})
 
     return jsonify({"message": "Submission approved successfully"}), 200
 

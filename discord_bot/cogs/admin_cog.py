@@ -159,6 +159,9 @@ class AdminCog(commands.Cog):
                     receipt = Embed(title="Tile Progress Updated!", description=f"Currently at: {team['completion_counter']}/{board_information['tile']['completion_counter']}")
                     receipt.color = Color.green()
                     await team_channel.send(embed=receipt)
+            if approve_resp.status == 208:
+                approved_channel = message.guild.get_channel(DiscordIDs.APPROVED_SUBMISSIONS_CHANNEL_ID)
+                await approved_channel.send("This submission is outdated so nothing happened. (No harm done)")
 
 
 

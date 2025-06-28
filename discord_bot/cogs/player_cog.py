@@ -107,6 +107,8 @@ class PlayerCog(commands.Cog):
                 "team_channel_id": str(interaction.channel.id),
                 "pending_team_embed_id": str(team_msg.id),
                 "team_id": team_data['_id'],
+                "current_tile": team_data['current_tile'],
+                "current_world": team_data['current_world']
             }
             async with self.session.post(ApiUrls.CREATE_SUBMISSION, json=submission_data) as sub_resp:
                 if sub_resp.status != 201:
