@@ -122,34 +122,29 @@ class AdminCog(commands.Cog):
                     async with self.session.post(ApiUrls.TEAM_ADVANCE_TILE.format(id=submission['team_id'])) as advance_resp:
                         if advance_resp.status == 200:
                             await team_channel.send(embed=Embed(title="Submission approved! Here's your new board:"))
-                            # Send the new board embed with image using build_team_board_embed
-                            # Fetch team data, tile info, and team level data
-                            try:
-                                async with self.session.get(ApiUrls.TEAM_BY_ID_WITHOUT_DISCORD.format(id=submission['team_id'])) as team_resp:
-                                    if team_resp.status == 200:
-                                        team_data = await team_resp.json()
-                                    else:
-                                        team_data = None
-                                async with self.session.get(ApiUrls.TEAM_CURRENT_TILE_WITHOUT_DISCORD.format(id=submission['team_id'])) as tile_resp:
-                                    if tile_resp.status == 200:
-                                        tile_info = await tile_resp.json()
-                                    else:
-                                        tile_info = None
-                                async with self.session.get(ApiUrls.TEAM_LEVEL_NUMBER_WITHOUT_DISCORD.format(id=submission['team_id'])) as level_resp:
-                                    if level_resp.status == 200:
-                                        team_level_data = await level_resp.json()
-                                    else:
-                                        team_level_data = None
+
+                            async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION_WITHOUT_DISCORD.format(id=submission['team_id'])) as resp:
+                                info = await resp.json()
+                                team_data = info["team"]
+                                tile_info = info["tile"]
+                                level_number = info["level_number"]
+                            
+                            # 0 - Normal Board
+                            if info["team"]["game_state"] == 0:
                                 async with self.session.get(ApiUrls.IMAGE_BOARD_BY_TEAM_ID.format(id=submission['team_id'])) as image_resp:
-                                    if image_resp.status == 200:
-                                        image_data = await image_resp.read()
-                                        file = discord.File(io.BytesIO(image_data), filename="team_board.png")
-                                        if team_data and tile_info and team_level_data:
-                                            embed = build_team_board_embed(team_data, tile_info, team_level_data)
-                                            embed.set_image(url="attachment://team_board.png")
-                                            await team_channel.send(embed=embed, file=file)
-                            except Exception as e:
-                                print(f"Error sending new board embed: {e}")
+                                    image_data = await image_resp.read()
+                                    file = discord.File(io.BytesIO(image_data), filename="team_board.png")
+                                    embed = build_team_board_embed(team_data, tile_info, level_number)
+                                    embed.set_image(url="attachment://team_board.png")
+                                    await team_channel.send(embed=embed, file=file)
+                                
+                            # 1 - Key Board
+                            elif info["team"]["game_state"] == 1:
+                                await team_channel.send("Key tile...")
+                            
+                            # 2 - Boss Tile
+                            elif info["team"]["game_state"] == 2:
+                                await team_channel.send("Boss tile...")
                         else:
                             error = await advance_resp.text()
                             await message.channel.send(f"Failed to advance tile: {error}")

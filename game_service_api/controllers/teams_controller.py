@@ -4,6 +4,7 @@ from models.team import Team
 from models.player import Player
 from dataclasses import asdict
 from constants.tiles import world1_tiles, world2_tiles, world3_tiles, world4_tiles
+from constants.key_tiles import key_tiles
 from utils.shuffle import shuffle_tiles
 from bson import ObjectId
 
@@ -45,7 +46,8 @@ def create_team():
         world2_shuffled_tiles=world2_shuffled_tiles,
         world3_shuffled_tiles=world3_shuffled_tiles,
         world4_shuffled_tiles=world4_shuffled_tiles,
-        completion_counter=tile_info.get("completion_counter")
+        completion_counter=tile_info.get("completion_counter"),
+        game_state=0
     )
 
     # Convert the Team and Player objects to dictionaries for MongoDB
@@ -148,6 +150,19 @@ def advance_tile(team_id):
         idx = shuffled_tiles.index(current_tile)
     except ValueError:
         abort(400, description="Current tile not found in shuffled tiles")
+
+    # Check if on a key tile to update gamestate
+    key_tile_level_index = key_tiles[current_world]
+    if idx + 1 == key_tile_level_index:
+        db.teams.update_one(
+        {"_id": ObjectId(team_id)}, 
+        {"$set": 
+         {"game_state": 1}
+        })
+        # Convert ObjectId to string for JSON serialization
+        if "_id" in team:
+            team["_id"] = str(team["_id"])
+        return jsonify(team), 200
 
     # Check if already at the last tile
     if idx + 1 >= len(shuffled_tiles):

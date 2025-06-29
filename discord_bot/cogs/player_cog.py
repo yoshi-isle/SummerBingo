@@ -121,5 +121,36 @@ class PlayerCog(commands.Cog):
             await interaction.response.send_message("Pending submissions channel not found. Please contact an admin.", ephemeral=True)
             return
 
+    @app_commands.command(name="key", description="Submit a key tile!")
+    @app_commands.describe(
+        option="Choose a key option: 1, 2, 3, 4, or 5",
+        image="Attach an image as proof"
+    )
+    @app_commands.choices(option=[
+        app_commands.Choice(name="1", value=1),
+        app_commands.Choice(name="2", value=2),
+        app_commands.Choice(name="3", value=3),
+        app_commands.Choice(name="4", value=4),
+        app_commands.Choice(name="5", value=5),
+    ])
+    async def submit_key(
+        self,
+        interaction: discord.Interaction,
+        option: app_commands.Choice[int],
+        image: discord.Attachment
+    ):
+        async with self.session.get(ApiUrls.TEAM_BY_ID.format(id=interaction.user.id)) as resp:
+            if resp.status == 200:
+                team_data = await resp.json()
+            else:
+                await interaction.response.send_message(f"Error finding team information. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
+                return
+        
+        if team_data["game_state"] == 0:
+            await interaction.response.send_message("You are not on a key tile please use `submit` instead.", ephemeral=True)
+            return
+        
+        await interaction.response.send_message(f"You selected key option {option.value} and attached an image: {image.url}")
+
 async def setup(bot: commands):
     await bot.add_cog(PlayerCog(bot))

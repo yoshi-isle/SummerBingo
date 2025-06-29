@@ -19,8 +19,8 @@ def build_team_board_embed(team_data, tile_info, team_level_string):
         inline=True
     )
     embed.add_field(
-        name="Submissions",
-        value=f"This tile requires {tile_info['completion_counter']} submissions. Your team needs {team_data['completion_counter']} more",
+        name="Submissions Needed",
+        value=f"{team_data['completion_counter']}",
         inline=True
     )
     embed.add_field(
