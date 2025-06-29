@@ -15,4 +15,11 @@ class Team:
     world4_shuffled_tiles: Optional[List[int]] = None
     completion_counter: int = 1
     # 0 = Normal map, 1 = Key, 2 = Boss
-    game_state: int = 0
+    game_state: int = 0,
+
+    # Completion counters for W1 key tiles
+    w1key1_completion_counter: int = 1
+    w1key2_completion_counter: int = 1
+    w1key3_completion_counter: int = 4
+    w1key4_completion_counter: int = 1
+    w1key5_completion_counter: int = 10

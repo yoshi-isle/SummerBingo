@@ -23,8 +23,8 @@ world1_tiles = {
         {"id": 0, "tile_name": "Any CoX Purple", "description": "It's a purple!", "completion_counter": 1, "image_url": "world1/keys/0.png", "wiki_url": "", "pastebin_url": ""},
         {"id": 1, "tile_name": "Crystal Tool Seed", "description": "Premium tools", "completion_counter": 1, "image_url": "world1/keys/1.png", "wiki_url": "", "pastebin_url": ""},
         {"id": 2, "tile_name": "4x Burning Claws", "description": "Sharpening the claws", "completion_counter": 4, "image_url": "world1/keys/2.png", "wiki_url": "", "pastebin_url": ""},
-        {"id": 3, "tile_name": "Bryophyta's Essence OR Hill Giant Club", "description": "A giant's treasure", "completion_counter": 1, "image_url": "world1/keys/3.png", "wiki_url": "", "pastebin_url": ""},
-        {"id": 4, "tile_name": "10x Elite Clues from BA High Gambles", "description": "Actually, let's call them lucky dips...", "completion_counter": 10, "image_url": "world1/keys/4.png", "wiki_url": "", "pastebin_url": ""}
+        {"id": 3, "tile_name": "Bryophyta's Essence\n OR Hill Giant Club", "description": "A giant's treasure", "completion_counter": 1, "image_url": "world1/keys/3.png", "wiki_url": "", "pastebin_url": ""},
+        {"id": 4, "tile_name": "10x Elite Clues\n from BA High Gambles", "description": "Actually, let's call them lucky dips...", "completion_counter": 10, "image_url": "world1/keys/4.png", "wiki_url": "", "pastebin_url": ""}
     ],
     "boss_tile":
         {"id": 0, "tile_name": "Any Megarare from CoX. Elder/Kodai/TBow", "description": "Showdown on Mount Quidamortem", "completion_counter": 1, "image_url": "world1/boss/0.png", "wiki_url": "", "pastebin_url": ""},

@@ -11,23 +11,21 @@ class ApiUrls:
     TEAM = f"{BASE_URL}/teams"
     TEAM_BY_ID = f"{BASE_URL}/teams/discord/{{id}}"
     TEAM_BY_ID_WITHOUT_DISCORD = f"{BASE_URL}/teams/id/{{id}}"
-    TEAM_CURRENT_TILE = f"{BASE_URL}/teams/discord/{{id}}/current_tile"
-    TEAM_CURRENT_TILE_WITHOUT_DISCORD = f"{BASE_URL}/teams/{{id}}/current_tile"
+    TEAM_CURRENT_TILE = f"{BASE_URL}/teams/{{id}}/current_tile"
     TEAM_ADVANCE_TILE = f"{BASE_URL}/teams/{{id}}/advance_tile"
     TEAM_LEVEL_NUMBER = f"{BASE_URL}/teams/{{id}}/world_level"
     TEAM_LEVEL_NUMBER_WITHOUT_DISCORD = f"{BASE_URL}/teams/id/{{id}}/world_level"
-    TEAM_BOARD_INFORMATION = f"{BASE_URL}/teams/discord/{{id}}/board_information"
-    TEAM_BOARD_INFORMATION_WITHOUT_DISCORD = f"{BASE_URL}/teams/id/{{id}}/board_information"
+    TEAM_BOARD_INFORMATION = f"{BASE_URL}/teams/id/{{id}}/board_information"
 
     # Submissions
     SUBMISSION = f"{BASE_URL}/submission/{{id}}"
     CREATE_SUBMISSION = f"{BASE_URL}/submission"
+    CREATE_KEY_SUBMISSION = f"{BASE_URL}/key_submission"
     APPROVE_SUBMISSION = f"{BASE_URL}/submission/approve/{{id}}"
     DENY_SUBMISSION = f"{BASE_URL}/submission/deny/{{id}}"
 
     # Images
-    IMAGE_BOARD = f"{BASE_URL}/image/user/{{id}}"
-    IMAGE_BOARD_BY_TEAM_ID = f"{BASE_URL}/image/team/{{id}}"
+    IMAGE_BOARD = f"{BASE_URL}/image/team/{{id}}"
     IMAGE_GET = f"{BASE_URL}/images/{{url}}"
 
 WORLD_NAMES = {

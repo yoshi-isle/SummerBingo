@@ -123,7 +123,7 @@ class AdminCog(commands.Cog):
                         if advance_resp.status == 200:
                             await team_channel.send(embed=Embed(title="Submission approved! Here's your new board:"))
 
-                            async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION_WITHOUT_DISCORD.format(id=submission['team_id'])) as resp:
+                            async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION.format(id=submission['team_id'])) as resp:
                                 info = await resp.json()
                                 team_data = info["team"]
                                 tile_info = info["tile"]
@@ -131,7 +131,7 @@ class AdminCog(commands.Cog):
                             
                             # 0 - Normal Board
                             if info["team"]["game_state"] == 0:
-                                async with self.session.get(ApiUrls.IMAGE_BOARD_BY_TEAM_ID.format(id=submission['team_id'])) as image_resp:
+                                async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=submission['team_id'])) as image_resp:
                                     image_data = await image_resp.read()
                                     file = discord.File(io.BytesIO(image_data), filename="team_board.png")
                                     embed = build_team_board_embed(team_data, tile_info, level_number)
@@ -149,7 +149,7 @@ class AdminCog(commands.Cog):
                             error = await advance_resp.text()
                             await message.channel.send(f"Failed to advance tile: {error}")
                 else:
-                    async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION_WITHOUT_DISCORD.format(id=submission['team_id'])) as team_resp:
+                    async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION.format(id=submission['team_id'])) as team_resp:
                         board_information = await team_resp.json()
                     receipt = Embed(title="Tile Progress Updated!", description=f"Currently at: {team['completion_counter']}/{board_information['tile']['completion_counter']}")
                     receipt.color = Color.green()

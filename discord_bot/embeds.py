@@ -24,8 +24,8 @@ def build_team_board_embed(team_data, tile_info, team_level_string):
         inline=True
     )
     embed.add_field(
-        name="⏭️ Skip",
-        value=f"You cannot skip this level until: WIP",
-        inline=True
+        name="Skip Tokens",
+        value=f"You have **0** skip tokens. Next one at: <t:1751316173:R>",
+        inline=False
     )
     return embed

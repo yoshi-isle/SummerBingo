@@ -30,14 +30,14 @@ class PlayerCog(commands.Cog):
                     return
             
             # Grab board information
-            async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION.format(id=interaction.user.id)) as resp:
+            async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION.format(id=team_data["_id"])) as resp:
                 if resp.status == 200:
                     board_information = await resp.json()
                 else:
                     await interaction.response.send_message(f"There was an error getting your board information. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
                     return
                 
-            async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=interaction.user.id)) as resp:
+            async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=team_data["_id"])) as resp:
                 if resp.status == 200:
                     image_data = await resp.read()
                     file = discord.File(io.BytesIO(image_data), filename="team_board.png")
@@ -66,8 +66,7 @@ class PlayerCog(commands.Cog):
                 return
 
         # Get the current tile from the API
-        current_tile = []
-        async with self.session.get(ApiUrls.TEAM_CURRENT_TILE.format(id=interaction.user.id)) as resp:
+        async with self.session.get(ApiUrls.TEAM_CURRENT_TILE.format(id=team_data["_id"])) as resp:
             if resp.status == 200:
                 tile = await resp.json()
                 current_tile = tile.get('tile_name', 'Unknown Tile')
@@ -150,6 +149,34 @@ class PlayerCog(commands.Cog):
             await interaction.response.send_message("You are not on a key tile please use `submit` instead.", ephemeral=True)
             return
         
+        async with self.session.get(ApiUrls.TEAM_CURRENT_TILE.format(id=team_data["_id"])) as resp:
+            if resp.status == 200:
+                tile = await resp.json()
+                current_tile = tile.get('tile_name', 'Unknown Tile')
+            else:
+                await interaction.response.send_message(f"Error finding team information. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
+                return
+        
+        embed = discord.Embed(
+            title="Key Tile Submitted!",
+            description=f"🟡 Status: Pending\n{interaction.user.mention} submitted for {current_tile}. Please wait for an admin to review.",
+            color=discord.Color.yellow()
+        )
+        embed.set_image(url=image.url)
+        embed.set_footer(text="Mistake with screenshot? Contact an admin.")
+
+        team_msg = await interaction.channel.send(embed=embed)
+        
+        submission_data = {
+            "discord_user_id": str(interaction.user.id),
+            "approved": False,
+            "admin_approval_embed_id": str(admin_msg.id),
+            "team_channel_id": str(interaction.channel.id),
+            "pending_team_embed_id": str(team_msg.id),
+            "team_id": team_data['_id'],
+            "current_tile": team_data['current_tile'],
+            "current_world": team_data['current_world']
+        }
         await interaction.response.send_message(f"You selected key option {option.value} and attached an image: {image.url}")
 
 async def setup(bot: commands):

@@ -23,6 +23,22 @@ def create_submission():
 
     return jsonify(data), 201
 
+@submissions_blueprint.route("/key_submission", methods=["POST"])
+def create_key_tile_submission():
+    """
+    Create a new submission for a key tile.
+    """
+    db = get_db()
+    data = request.get_json()
+
+    # Insert the submission into the database directly
+    result = db.key_submissions.insert_one(data)
+
+    # Return the inserted object as a dict (with its new id)
+    data['_id'] = str(result.inserted_id)
+
+    return jsonify(data), 201
+
 @submissions_blueprint.route("/submission/<message_id>", methods=["GET"])
 def get_submission_by_message_id(message_id):
     """
