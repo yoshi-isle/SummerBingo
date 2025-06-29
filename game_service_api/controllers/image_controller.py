@@ -12,6 +12,78 @@ image_blueprint = Blueprint('image', __name__)
 def get_db():
     return app.config['DB']
 
+@image_blueprint.route("/image/user/<discord_id>", methods=["GET"])
+def generate_board(discord_id):
+    """
+    Creates a board image for the given Discord user ID.
+    """
+    db = get_db()
+    team = db.teams.find_one({"players.discord_id": discord_id})
+    if not team:
+        abort(404, "Team not found")
+    current_tile = team.get("current_tile")
+    current_world = team.get("current_world", 1)
+    game_state = team.get("game_state", 0)
+
+    
+    world_tiles_map = {
+        1: world1_tiles["world_tiles"],
+        2: world2_tiles["world_tiles"],
+        3: world3_tiles["world_tiles"],
+        4: world4_tiles["world_tiles"],
+    }
+
+    tile_info = next((t for t in world_tiles_map.get(current_world, []) if t["id"] == current_tile), None)
+    shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
+    idx = shuffled_tiles.index(current_tile)
+    level = idx + 1  # 1-based index
+    
+    if game_state == 0:
+        img_io = create_board_image(team, tile_info, level)
+        return app.response_class(img_io, mimetype='image/png')
+
+    elif game_state == 1:
+        img_io = create_key_image(team, tile_info, level)
+        return app.response_class(img_io, mimetype='image/png')
+
+@image_blueprint.route("/image/team/<team_id>", methods=["GET"])
+def generate_board_by_team_id(team_id):
+    """
+    Creates a board image for the given team ID.
+    """
+    db = get_db()
+    team = db.teams.find_one({"_id": ObjectId(team_id)})
+    if not team:
+        abort(404, "Team not found")
+
+    current_tile = team.get("current_tile")
+    current_world = team.get("current_world", 1)
+
+    world_tiles_map = {
+        1: world1_tiles["world_tiles"],
+        2: world2_tiles["world_tiles"],
+        3: world3_tiles["world_tiles"],
+        4: world4_tiles["world_tiles"],
+    }
+    tile_info = next((t for t in world_tiles_map.get(current_world, []) if t["id"] == current_tile), None)
+    current_world = team.get("current_world", 1)
+    shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
+    idx = shuffled_tiles.index(current_tile)
+    level = idx + 1  # 1-based index
+    img_io = create_board_image(team, tile_info, level)
+    return app.response_class(img_io, mimetype='image/png')
+
+def create_key_image(team, tile_info, level=None):
+    current_tile = team.get("current_tile")
+    current_world = team.get("current_world")
+    image_path = os.path.join(os.path.dirname(__file__), f'../images/world{current_world}/board/key_background.png')
+    image_path = os.path.abspath(image_path)
+    with Image.open(image_path) as base_img:
+        img_io = BytesIO()
+        base_img.save(img_io, 'PNG')
+        img_io.seek(0)
+        return img_io
+
 def create_board_image(team, tile_info, level=None):
     """
     Generates the board image for a team and returns a BytesIO object.
@@ -115,56 +187,3 @@ def create_board_image(team, tile_info, level=None):
     except Exception as e:
         print(f"Error generating board: {e}")
         abort(500, description=f"Failed to generate board: {e}")
-
-@image_blueprint.route("/image/user/<discord_id>", methods=["GET"])
-def generate_board(discord_id):
-    """
-    Creates a board image for the given Discord user ID.
-    """
-    db = get_db()
-    team = db.teams.find_one({"players.discord_id": discord_id})
-    if not team:
-        abort(404, "Team not found")
-    current_tile = team.get("current_tile")
-    current_world = team.get("current_world", 1)
-
-    world_tiles_map = {
-        1: world1_tiles["world_tiles"],
-        2: world2_tiles["world_tiles"],
-        3: world3_tiles["world_tiles"],
-        4: world4_tiles["world_tiles"],
-    }
-
-    tile_info = next((t for t in world_tiles_map.get(current_world, []) if t["id"] == current_tile), None)
-    shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
-    idx = shuffled_tiles.index(current_tile)
-    level = idx + 1  # 1-based index
-    img_io = create_board_image(team, tile_info, level)
-    return app.response_class(img_io, mimetype='image/png')
-
-@image_blueprint.route("/image/team/<team_id>", methods=["GET"])
-def generate_board_by_team_id(team_id):
-    """
-    Creates a board image for the given team ID.
-    """
-    db = get_db()
-    team = db.teams.find_one({"_id": ObjectId(team_id)})
-    if not team:
-        abort(404, "Team not found")
-
-    current_tile = team.get("current_tile")
-    current_world = team.get("current_world", 1)
-
-    world_tiles_map = {
-        1: world1_tiles["world_tiles"],
-        2: world2_tiles["world_tiles"],
-        3: world3_tiles["world_tiles"],
-        4: world4_tiles["world_tiles"],
-    }
-    tile_info = next((t for t in world_tiles_map.get(current_world, []) if t["id"] == current_tile), None)
-    current_world = team.get("current_world", 1)
-    shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
-    idx = shuffled_tiles.index(current_tile)
-    level = idx + 1  # 1-based index
-    img_io = create_board_image(team, tile_info, level)
-    return app.response_class(img_io, mimetype='image/png')
