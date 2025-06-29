@@ -1,1 +1,1 @@
-GET http://localhost:5000/teams/discord/726237123857874975/board_information
+GET http://localhost:5000/teams/id/6861a3b412cb2621e54309a5/board_information
