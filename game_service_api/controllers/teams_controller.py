@@ -287,8 +287,7 @@ def get_board_information_by_team_id(team_id):
     current_tile = team.get("current_tile")
     current_world = team.get("current_world", 1)
     shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
-    world = team.get("current_world")
-    level_string = f"{world}-{shuffled_tiles.index(current_tile) + 1}"
+    level_string = f"{current_world}-{shuffled_tiles.index(current_tile) + 1}"
 
     tile_info = get_tile_info(current_world, current_tile)
 

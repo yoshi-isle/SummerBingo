@@ -4,7 +4,7 @@ from discord import app_commands
 import aiohttp
 import io
 from constants import DiscordIDs, ApiUrls
-from embeds import build_team_board_embed
+from embeds import build_team_board_embed, build_key_board_embed
 
 class PlayerCog(commands.Cog):
     def __init__(self, bot):
@@ -41,7 +41,10 @@ class PlayerCog(commands.Cog):
                 if resp.status == 200:
                     image_data = await resp.read()
                     file = discord.File(io.BytesIO(image_data), filename="team_board.png")
-                    embed = build_team_board_embed(team_data, board_information["tile"], board_information["level_number"])
+                    if int(team_data["game_state"]) == 0:
+                        embed = build_team_board_embed(team_data, board_information["tile"], board_information["level_number"])
+                    elif int(team_data["game_state"]) == 1:
+                        embed = build_key_board_embed(team_data)
                     embed.set_image(url="attachment://team_board.png")
                     await interaction.response.send_message(embed=embed, file=file)
                 else:
