@@ -146,7 +146,15 @@ def approve_key_submission(key_id, submission_id):
         {"$inc": {f"w1key{int(key_id)}_completion_counter": -1}}
     )
 
-    return jsonify({"message": "Key submission approved successfully"}), 200
+    # Fetch the updated team object
+    updated_team = db.teams.find_one({"_id": ObjectId(team_id)})
+    if updated_team:
+        updated_team["_id"] = str(updated_team["_id"])
+
+    return jsonify({
+        "message": "Key submission approved successfully",
+        "team": updated_team
+    }), 200
 
 @submissions_blueprint.route("/submission/deny/<submission_id>", methods=["PUT"])
 def deny_submission(submission_id):

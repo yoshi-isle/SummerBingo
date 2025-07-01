@@ -4,7 +4,7 @@ from discord import app_commands
 import aiohttp
 import io
 from constants import DiscordIDs, ApiUrls, Emojis
-from embeds import build_team_board_embed, build_key_board_embed
+from embeds import build_team_board_embed, build_key_board_embed, build_boss_board_embed
 
 class PlayerCog(commands.Cog):
     def __init__(self, bot):
@@ -45,6 +45,8 @@ class PlayerCog(commands.Cog):
                         embed = build_team_board_embed(team_data, board_information["tile"], board_information["level_number"])
                     elif int(team_data["game_state"]) == 1:
                         embed = build_key_board_embed(team_data)
+                    elif int(team_data["game_state"]) == 2:
+                        embed = build_boss_board_embed(team_data)
                     embed.set_image(url="attachment://team_board.png")
                     await interaction.response.send_message(embed=embed, file=file)
                 else:
@@ -67,6 +69,13 @@ class PlayerCog(commands.Cog):
             else:
                 await interaction.response.send_message(f"Error finding team information. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>", ephemeral=True)
                 return
+
+        if team_data["game_state"] == 1:
+            await interaction.response.send_message(f"You are on a key tile. Use `/key` instead.", ephemeral=True)
+            return
+        if team_data["game_state"] == 2:
+            await interaction.response.send_message(f"You are on the boss tile. Use `/boss` instead.", ephemeral=True)
+            return
 
         # Get the current tile from the API
         async with self.session.get(ApiUrls.TEAM_CURRENT_TILE.format(id=team_data["_id"])) as resp:
@@ -129,11 +138,11 @@ class PlayerCog(commands.Cog):
         image="Attach an image as proof"
     )
     @app_commands.choices(option=[
-        app_commands.Choice(name="1", value=1),
-        app_commands.Choice(name="2", value=2),
-        app_commands.Choice(name="3", value=3),
-        app_commands.Choice(name="4", value=4),
-        app_commands.Choice(name="5", value=5),
+        app_commands.Choice(name="Key #1", value=1),
+        app_commands.Choice(name="Key #2", value=2),
+        app_commands.Choice(name="Key #3", value=3),
+        app_commands.Choice(name="Key #4", value=4),
+        app_commands.Choice(name="Key #5", value=5),
     ])
     async def submit_key(
         self,
@@ -147,9 +156,17 @@ class PlayerCog(commands.Cog):
             else:
                 await interaction.response.send_message(f"Error finding team information. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
                 return
-        
+          
         if team_data["game_state"] == 0:
-            await interaction.response.send_message("You are not on a key tile please use `submit` instead.", ephemeral=True)
+            await interaction.response.send_message("You are on an overworld tile. Please use `submit` instead.", ephemeral=True)
+            return
+        
+        if team_data["game_state"] == 2:
+            await interaction.response.send_message("You are on the boss tile. Please use `/boss` instead.", ephemeral=True)
+            return
+        
+        if team_data[f"w1key{option.value}_completion_counter"] <= 0:
+            await interaction.response.send_message(f"{Emojis.KEY} You already have this key!", ephemeral=True)
             return
         
         async with self.session.get(ApiUrls.TEAM_CURRENT_TILE.format(id=team_data["_id"])) as resp:
@@ -163,12 +180,14 @@ class PlayerCog(commands.Cog):
         embed = discord.Embed(
             title="Key Tile Submitted!",
             description=f"🟡 Status: Pending\n{interaction.user.mention} submitted for key tile {option.value}. Please wait for an admin to review.",
-            color=discord.Color.yellow()
+            color=discord.Color.orange()
         )
         embed.set_image(url=image.url)
         embed.set_footer(text="Mistake with screenshot? Contact an admin.")
 
-        team_msg = await interaction.channel.send(embed=embed)
+        team_msg = await interaction.response.send_message(embed=embed)
+        team_msg = await interaction.original_response()
+
         admin_embed = discord.Embed(
             title=f"{Emojis.KEY} Key Tile Submission",
             description=f"{interaction.user.mention} submitted for world {team_data['current_world']} key {option.value}.\nTeam: {team_data['team_name']}",
@@ -199,7 +218,25 @@ class PlayerCog(commands.Cog):
                 error = await sub_resp.text()
                 await interaction.channel.send(f"Failed to create submission in API: {error}")
 
-        await interaction.response.send_message("Submitted! Please wait for an admin to approve.", ephemeral=True)
+        # await interaction.response.send_message("Submitted! Please wait for an admin to approve.", ephemeral=True)
 
+    @app_commands.command(name="boss", description="Submits your boss tile completion.")
+    async def boss(self, interaction: discord.Interaction, image: discord.Attachment):
+        async with self.session.get(ApiUrls.TEAM_BY_ID.format(id=interaction.user.id)) as resp:
+            if resp.status == 200:
+                team_data = await resp.json()
+            else:
+                await interaction.response.send_message(f"Error finding team information. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
+                return
+        if team_data["game_state"] == 0:
+            await interaction.response.send_message(f"You are on an overworld tile. Use `/submit` instead.", ephemeral=True)
+            return
+        if team_data["game_state"] == 1:
+            await interaction.response.send_message(f"You are on a key tile. Use `/key` instead.", ephemeral=True)
+            return
+        
+        await interaction.response.send_message("not yet implemented hi")
+
+        
 async def setup(bot: commands):
     await bot.add_cog(PlayerCog(bot))

@@ -38,6 +38,21 @@ def generate_board(team_id):
     elif game_state == 1:
         img_io = create_key_image(team, tile_info, level)
         return app.response_class(img_io, mimetype='image/png')
+    
+    elif game_state == 2:
+        img_io = create_boss_image(team)
+        return app.response_class(img_io, mimetype='image/png')
+
+def create_boss_image(team):
+    current_world = team.get("current_world")
+    image_path = os.path.join(os.path.dirname(__file__), f'../images/world{current_world}/board/boss_background.png')
+    image_path = os.path.abspath(image_path)
+    with Image.open(image_path) as base_img:
+        base_img = base_img.convert("RGBA")  # Ensure base image is RGBA for proper alpha compositing
+        img_io = BytesIO()
+        base_img.save(img_io, 'PNG')
+        img_io.seek(0)
+        return img_io
 
 def create_key_image(team, tile_info, level=None):
     current_world = team.get("current_world")

@@ -1,8 +1,8 @@
 from constants import Emojis
+import discord
+from constants import WORLD_NAMES
 
 def build_team_board_embed(team_data, tile_info, team_level_string):
-    import discord
-    from constants import WORLD_NAMES
     embed = discord.Embed(
         title=f"Team Board: {team_data['team_name']}",
         color=discord.Color.blue()
@@ -33,8 +33,6 @@ def build_team_board_embed(team_data, tile_info, team_level_string):
     return embed
 
 def build_key_board_embed(team_data):
-    import discord
-    from constants import WORLD_NAMES
     embed = discord.Embed(
         title=f"Team Board: {team_data['team_name']}",
         color=discord.Color.blue()
@@ -97,6 +95,25 @@ def build_key_board_embed(team_data):
         value=f"You cannot skip this challenge.",
         inline=False
     )
+    return embed
+
+def build_boss_board_embed(team_data):
+    embed = discord.Embed(
+        title=f"Team Board: {team_data['team_name']}",
+        color=discord.Color.dark_purple()
+    )
+    embed.add_field(
+        name=f"1-B: Showdown on Mount Quidamortem",
+        value="Complete the challenge to clear the world.",
+        inline=False
+    )
+    embed.add_field(
+        name="Skips",
+        value=f"You cannot skip this challenge.",
+        inline=False
+    )
+    embed.set_thumbnail(url="https://static.wikia.nocookie.net/abobo/images/4/4e/Goomba.png/revision/latest?cb=20200706184805")
+    embed.set_footer(text="Use `/submit` in your team channel to submit your tile completion.")
     return embed
 
 key_tile_names = {

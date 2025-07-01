@@ -191,6 +191,27 @@ def advance_tile(team_id):
         team["_id"] = str(team["_id"])
     return jsonify(team), 200
 
+@teams_blueprint.route("/teams/<team_id>/boss_tile", methods=["PUT"])
+def advance_to_boss_tile(team_id):
+    """
+    Puts the team at the boss tile of the world.
+    """
+    db = get_db()
+    team = db.teams.find_one({"_id": ObjectId(team_id)})
+    if not team:
+        abort(404, description="Team not found")
+
+    db.teams.update_one(
+        {"_id": ObjectId(team_id)}, 
+        {"$set": 
+         {"game_state": 2}
+        })
+        # Convert ObjectId to string for JSON serialization
+    if "_id" in team:
+        team["_id"] = str(team["_id"])
+    return jsonify(team), 200
+    
+
 @teams_blueprint.route("/teams/<id>/current_tile", methods=["GET"])
 def get_current_tile_by_team_id(id):
     """
