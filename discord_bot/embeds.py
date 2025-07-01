@@ -1,3 +1,5 @@
+from constants import Emojis
+
 def build_team_board_embed(team_data, tile_info, team_level_string):
     import discord
     from constants import WORLD_NAMES
@@ -41,8 +43,8 @@ def build_key_board_embed(team_data):
     embed.set_thumbnail(url="https://static.wikia.nocookie.net/abobo/images/4/4e/Goomba.png/revision/latest?cb=20200706184805")
     embed.set_footer(text="Use `/key` in your team channel to submit your key tile completion.")
     embed.add_field(
-        name="🔑 Unlock The Boss Key",
-        value=f"{key_tile_names[team_data['current_world']]}",
+        name=f"{key_tile_names[team_data['current_world']]}",
+        value="Collect 3 out of 5 keys to unlock the boss room.",
         inline=False
     )
 
@@ -54,26 +56,45 @@ def build_key_board_embed(team_data):
                     team_data["w1key5_completion_counter"]]:
         key_count += counter == 0
 
-    submissions_needed_text = f'''
-        Key 1: You need {team_data["w1key1_completion_counter"] if team_data["w1key1_completion_counter"] != 0 else ""} submissions
-        Key 2: You need {team_data["w1key2_completion_counter"] if team_data["w1key2_completion_counter"] != 0 else ""} submissions
-        Key 3: You need {team_data["w1key3_completion_counter"] if team_data["w1key3_completion_counter"] != 0 else ""} submissions
-        Key 4: You need {team_data["w1key4_completion_counter"] if team_data["w1key4_completion_counter"] != 0 else ""} submissions
-        Key 5: You need {team_data["w1key5_completion_counter"] if team_data["w1key5_completion_counter"] != 0 else ""} submissions'''
+    def format_submission(counter):
+        if counter == 0:
+            return f"{Emojis.KEY} **Complete!**"
+        else:
+            return f"{counter} submissions needed"
 
-    embed.add_field(
-        name="Keys Aquired",
-        value=key_count,
-        inline=True
+    submissions_needed_text = (
+        f"Key 1: {format_submission(team_data['w1key1_completion_counter'])}\n"
+        f"Key 2: {format_submission(team_data['w1key2_completion_counter'])}\n"
+        f"Key 3: {format_submission(team_data['w1key3_completion_counter'])}\n"
+        f"Key 4: {format_submission(team_data['w1key4_completion_counter'])}\n"
+        f"Key 5: {format_submission(team_data['w1key5_completion_counter'])}"
     )
     embed.add_field(
         name="Submissions Needed",
         value=submissions_needed_text,
         inline=True
     )
+    # Show 5 emojis: KEY if obtained (counter == 0), KEY_NOT_OBTAINED otherwise
+    key_emojis = []
+    for counter in [
+        team_data["w1key1_completion_counter"],
+        team_data["w1key2_completion_counter"],
+        team_data["w1key3_completion_counter"],
+        team_data["w1key4_completion_counter"],
+        team_data["w1key5_completion_counter"]
+    ]:
+        if counter <= 0:
+            key_emojis.append(Emojis.KEY)
+        else:
+            key_emojis.append(Emojis.KEY_NOT_OBTAINED)
     embed.add_field(
-        name="Skip Tokens",
-        value=f"You cannot skip a challenge tile.",
+        name="Keys Acquired",
+        value=" ".join(key_emojis),
+        inline=True
+    )
+    embed.add_field(
+        name="Skips",
+        value=f"You cannot skip this challenge.",
         inline=False
     )
     return embed

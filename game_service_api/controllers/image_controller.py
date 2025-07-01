@@ -52,7 +52,7 @@ def create_key_image(team, tile_info, level=None):
                 max_size = (90, 90)
                 tile_img.thumbnail(max_size, Image.NEAREST)
                 tile_img = tile_img.convert("RGBA")  # Ensure tile image is RGBA
-                base_img.paste(tile_img, (120 + idx*320, 0), tile_img)
+                base_img.paste(tile_img, (120 + idx*320, 500), tile_img)
                 # Draw text below the image
                 draw = ImageDraw.Draw(base_img)
                 font_path = os.path.join(os.path.dirname(__file__), '../assets/8bit.ttf')
@@ -60,7 +60,7 @@ def create_key_image(team, tile_info, level=None):
                 font = ImageFont.truetype(font_path, size=16)
                 text = tile["tile_name"]
                 text_x = 120+idx * 350 + tile_img.width // 2
-                text_y = tile_img.height + 10
+                text_y = 500 + tile_img.height + 10
                 # Draw outline for tile name
                 outline_range = 2
                 for ox in range(-outline_range, outline_range + 1):

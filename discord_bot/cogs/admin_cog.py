@@ -3,8 +3,14 @@ import io
 import aiohttp
 from discord import Color, Embed, app_commands
 from discord.ext import commands
-from constants import ApiUrls, DiscordIDs
-from embeds import build_team_board_embed
+from constants import ApiUrls, DiscordIDs, Emojis
+from embeds import build_team_board_embed, build_key_board_embed
+from enum import Enum
+
+class GameState(Enum):
+    OVERWORLD = 0
+    KEY = 1
+    BOSS = 2
 
 class AdminCog(commands.Cog):
     def __init__(self, bot):
@@ -53,22 +59,36 @@ class AdminCog(commands.Cog):
         channel = guild.get_channel(payload.channel_id)
         message = await channel.fetch_message(payload.message_id)
         user = guild.get_member(payload.user_id)
-
         submission = None
         async with self.session.get(ApiUrls.SUBMISSION.format(id=str(message.id))) as resp:
             if resp.status == 200:
                 submission = await resp.json()
-            else:
-                await channel.send(f"Submission not found in database for Message ID {str(message.id)}")
+                if str(payload.emoji) == '✅':
+                    try:
+                        await self.handle_approval(submission, message, user)
+                    except Exception as e:
+                        await channel.send(f"{e} An error occured approving the submission")
 
-        if str(payload.emoji) == '✅':
-            try:
-                await self.handle_approval(submission, message, user)
-            except Exception as e:
-                await channel.send(f"{e} An error occured approving the submission")
+                if str(payload.emoji) == '❌':
+                    pass
+        if submission == None:
+            async with self.session.get(ApiUrls.KEY_SUBMISSION.format(id=str(message.id))) as key_resp:
+                if key_resp.status == 200:
+                    key_submission = await key_resp.json()
+                    if str(payload.emoji) == '✅':
+                        try:
+                            print(f"user reacted with ✅ to key submission {key_submission['_id']}")
+                            await self.handle_approval(key_submission, message, user, GameState.KEY)
+                        except Exception as e:
+                            await channel.send(f"{e} An error occured approving the submission")
 
-        if str(payload.emoji) == '❌':
-            pass
+                    if str(payload.emoji) == '❌':
+                        pass
+                else:
+                    await channel.send(f"Submission not found in database for Message ID {str(message.id)}")
+                    return
+
+
 
     @app_commands.command(name="clear_channel", description="Deletes all messages in the current channel")
     @app_commands.checks.has_role("Admin")
@@ -76,89 +96,90 @@ class AdminCog(commands.Cog):
         await interaction.response.defer(ephemeral=True)
         await interaction.channel.purge()
         await interaction.followup.send("Channel cleared!", ephemeral=True)
-    
-    async def handle_approval(self, submission, message, user):
-        async with self.session.put(ApiUrls.APPROVE_SUBMISSION.format(id=submission["_id"])) as approve_resp:
-            if approve_resp.status == 200:
-                # Send a copy to the approved submissions channel
-                approved_channel = message.guild.get_channel(DiscordIDs.APPROVED_SUBMISSIONS_CHANNEL_ID)
-                team_channel = message.guild.get_channel(int(submission['team_channel_id']))
 
-                # Get pending embed from submission["pending_team_embed_id"]
-                pending_message = await team_channel.fetch_message(int(submission['pending_team_embed_id']))
-                if pending_message and pending_message.embeds:
-                    # Update the embed with approval information
-                    approved_embed = pending_message.embeds[0].copy()
-                    approved_embed.color = discord.Color.green()
-                    approved_embed.title = f"Approved by {user.display_name}"
-                    approved_embed.set_footer(text="")
-                    approved_embed.description = f"🟢 Status: Approved by {user.mention}."
-                    # Edit the original message in the team channel
-                    await pending_message.edit(embed=approved_embed)
-                
-                    # Copy all embeds from the original message, updating the title
-                    if message.embeds:
-                        for embed in message.embeds:
-                            new_embed = embed.copy()
-                            new_embed.color = discord.Color.green()
-                            new_embed.title = f"Approved by {user.display_name}"
-                            new_embed.set_footer(text="")
+    async def handle_approval(self, submission, message, user, GameState=GameState.OVERWORLD):
+        async with self.session.get(ApiUrls.TEAM_BY_ID_WITHOUT_DISCORD.format(id=submission['team_id'])) as team_resp:
+            team = await team_resp.json()
 
-                            await approved_channel.send(embed=new_embed)
-                
-                # Delete the original message
-                await message.delete()
+        approved_channel = message.guild.get_channel(DiscordIDs.APPROVED_SUBMISSIONS_CHANNEL_ID)
+        team_channel = message.guild.get_channel(int(submission['team_channel_id']))
+        
+        pending_message = await team_channel.fetch_message(int(submission['pending_team_embed_id']))
+        if pending_message and pending_message.embeds:
+            approved_embed = pending_message.embeds[0].copy()
+            approved_embed.color = discord.Color.green()
+            approved_embed.title = f"Approved by {user.display_name}"
+            approved_embed.set_footer(text="")
+            approved_embed.description = f"🟢 Status: Approved by {user.mention}."
+            await pending_message.edit(embed=approved_embed)
+            await message.delete()
 
-                # Get the team object from the API
-                team = []
-                async with self.session.get(ApiUrls.TEAM_BY_ID_WITHOUT_DISCORD.format(id=submission['team_id'])) as team_resp:
-                    if team_resp.status == 200:
-                        team = await team_resp.json()
-                    else:
-                        await team_channel.send(f"Failed to fetch team information. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
-
-                # Advance a tile if the number of submissions is complete
-                if int(team['completion_counter']) <= 0:
-                    async with self.session.post(ApiUrls.TEAM_ADVANCE_TILE.format(id=submission['team_id'])) as advance_resp:
-                        if advance_resp.status == 200:
-                            await team_channel.send(embed=Embed(title="Submission approved! Here's your new board:"))
-
-                            async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION.format(id=submission['team_id'])) as resp:
-                                info = await resp.json()
-                                team_data = info["team"]
-                                tile_info = info["tile"]
-                                level_number = info["level_number"]
-                            
-                            # 0 - Normal Board
-                            if info["team"]["game_state"] == 0:
-                                async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=submission['team_id'])) as image_resp:
-                                    image_data = await image_resp.read()
-                                    file = discord.File(io.BytesIO(image_data), filename="team_board.png")
-                                    embed = build_team_board_embed(team_data, tile_info, level_number)
-                                    embed.set_image(url="attachment://team_board.png")
-                                    await team_channel.send(embed=embed, file=file)
+        if GameState == GameState.OVERWORLD:
+            async with self.session.put(ApiUrls.APPROVE_SUBMISSION.format(id=submission["_id"])) as approve_resp:
+                if approve_resp.status == 200:
+                    # Advance a tile if the number of submissions is complete
+                    if int(team['completion_counter']) <= 0:
+                        async with self.session.post(ApiUrls.TEAM_ADVANCE_TILE.format(id=submission['team_id'])) as advance_resp:
+                            if advance_resp.status == 200:
+                                async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION.format(id=submission['team_id'])) as resp:
+                                    info = await resp.json()
+                                    team_data = info["team"]
+                                    tile_info = info["tile"]
+                                    level_number = info["level_number"]
                                 
-                            # 1 - Key Board
-                            elif info["team"]["game_state"] == 1:
-                                await team_channel.send("Key tile...")
-                            
-                            # 2 - Boss Tile
-                            elif info["team"]["game_state"] == 2:
-                                await team_channel.send("Boss tile...")
-                        else:
-                            error = await advance_resp.text()
-                            await message.channel.send(f"Failed to advance tile: {error}")
+                                # 0 - Normal Board
+                                if info["team"]["game_state"] == 0:
+                                    await team_channel.send(embed=Embed(title="Submission approved! Here's your new board:"))
+                                    async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=submission['team_id'])) as image_resp:
+                                        image_data = await image_resp.read()
+                                        file = discord.File(io.BytesIO(image_data), filename="team_board.png")
+                                        embed = build_team_board_embed(team_data, tile_info, level_number)
+                                        embed.set_image(url="attachment://team_board.png")
+                                        await team_channel.send(embed=embed, file=file)
+                                    
+                                # 1 - Key Board
+                                elif info["team"]["game_state"] == 1:
+                                    await team_channel.send(embed=Embed(title=f"{Emojis.DUNGEON} Your team enters into a dungeon..."))
+                                    async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=submission['team_id'])) as image_resp:
+                                        image_data = await image_resp.read()
+                                        file = discord.File(io.BytesIO(image_data), filename="team_board.png")
+                                        embed = build_key_board_embed(team_data)
+                                        embed.set_image(url="attachment://team_board.png")
+                                        await team_channel.send(embed=embed, file=file)
+                                
+                                # 2 - Boss Tile
+                                elif info["team"]["game_state"] == 2:
+                                    await team_channel.send("Boss tile...")
+                            else:
+                                error = await advance_resp.text()
+                                await message.channel.send(f"Failed to advance tile: {error}")
+                    else:
+                        async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION.format(id=submission['team_id'])) as team_resp:
+                            board_information = await team_resp.json()
+                        receipt = Embed(title="Tile Progress Updated!", description=f"Currently at: {team['completion_counter']}/{board_information['tile']['completion_counter']}")
+                        receipt.color = Color.green()
+                        await team_channel.send(embed=receipt)
+                if approve_resp.status == 208:
+                    approved_channel = message.guild.get_channel(DiscordIDs.APPROVED_SUBMISSIONS_CHANNEL_ID)
+                    await approved_channel.send("This submission is outdated so nothing happened. (No harm done)")
+        elif GameState == GameState.KEY:
+            async with self.session.put(ApiUrls.APPROVE_KEY_SUBMISSION.format(id=submission["_id"], key_id=submission["key_option"])) as approve_resp:
+                if approve_resp.status == 200:
+                    if count_keys(team)
+                    if team[f"w1key{submission['key_option']}_completion_counter"] == 0:
+                        await team_channel.send(embed=Embed(title=f"{Emojis.KEY} Key acquired!"))
+                    else:
+                        key_option = submission['key_option']
+                        remaining = team[f'w1key{key_option}_completion_counter']
+                        await team_channel.send(embed=Embed(title=f"{Emojis.KEY_NOT_OBTAINED} Progress updated on key tile {key_option}. You still need to complete {remaining} more submissions to obtain this key."))
+                elif approve_resp.status == 404:
+                    await team_channel.send("Key submission not found.")
                 else:
-                    async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION.format(id=submission['team_id'])) as team_resp:
-                        board_information = await team_resp.json()
-                    receipt = Embed(title="Tile Progress Updated!", description=f"Currently at: {team['completion_counter']}/{board_information['tile']['completion_counter']}")
-                    receipt.color = Color.green()
-                    await team_channel.send(embed=receipt)
-            if approve_resp.status == 208:
-                approved_channel = message.guild.get_channel(DiscordIDs.APPROVED_SUBMISSIONS_CHANNEL_ID)
-                await approved_channel.send("This submission is outdated so nothing happened. (No harm done)")
+                    error = await approve_resp.text()
+                    await team_channel.send(f"Failed to approve key submission: {error}")
 
-
+async def count_keys(team):
+    return 5
 
 async def setup(bot: commands):
     await bot.add_cog(AdminCog(bot))

@@ -3,7 +3,7 @@ from discord.ext import commands
 from discord import app_commands
 import aiohttp
 import io
-from constants import DiscordIDs, ApiUrls
+from constants import DiscordIDs, ApiUrls, Emojis
 from embeds import build_team_board_embed, build_key_board_embed
 
 class PlayerCog(commands.Cog):
@@ -170,7 +170,7 @@ class PlayerCog(commands.Cog):
 
         team_msg = await interaction.channel.send(embed=embed)
         admin_embed = discord.Embed(
-            title="🔑 Key Tile Submission",
+            title=f"{Emojis.KEY} Key Tile Submission",
             description=f"{interaction.user.mention} submitted for world {team_data['current_world']} key {option.value}.\nTeam: {team_data['team_name']}",
             color=discord.Color.orange()
         )
@@ -190,7 +190,8 @@ class PlayerCog(commands.Cog):
             "pending_team_embed_id": str(team_msg.id),
             "team_id": team_data['_id'],
             "current_tile": team_data['current_tile'],
-            "current_world": team_data['current_world']
+            "current_world": team_data['current_world'],
+            "key_option": option.value
         }
 
         async with self.session.post(ApiUrls.CREATE_KEY_SUBMISSION, json=submission_data) as sub_resp:
