@@ -298,7 +298,12 @@ def get_board_information_by_team_id(team_id):
     return jsonify({
         "level_number": level_string,
         "tile": tile_info,
-        "team": team
+        "team": team,
+        "w1key1_completion_counter": team["w1key1_completion_counter"],
+        "w1key2_completion_counter": team["w1key2_completion_counter"],
+        "w1key3_completion_counter": team["w1key3_completion_counter"],
+        "w1key4_completion_counter": team["w1key4_completion_counter"],
+        "w1key5_completion_counter": team["w1key5_completion_counter"],
     }), 200
 
 def get_tile_info(current_world: int, current_tile:int):

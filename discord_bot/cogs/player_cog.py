@@ -80,9 +80,9 @@ class PlayerCog(commands.Cog):
         # Create submission for admin channel
         pending_submissions_channel = self.bot.get_channel(DiscordIDs.PENDING_SUBMISSIONS_CHANNEL_ID)
         admin_embed = discord.Embed(
-            title=f"New Tile Submission",
+            title="🗺️ Board Tile Submission",
             description=f"{interaction.user.mention} submitted for {current_tile}.\nTeam: {team_data['team_name']}",
-            color=discord.Color.orange()
+            color=discord.Color.yellow()
         )
         admin_embed.set_image(url=image.url)
         admin_embed.set_footer(text="Approve or reject this submission.")
@@ -162,13 +162,25 @@ class PlayerCog(commands.Cog):
         
         embed = discord.Embed(
             title="Key Tile Submitted!",
-            description=f"🟡 Status: Pending\n{interaction.user.mention} submitted for {current_tile}. Please wait for an admin to review.",
+            description=f"🟡 Status: Pending\n{interaction.user.mention} submitted for key tile {option.value}. Please wait for an admin to review.",
             color=discord.Color.yellow()
         )
         embed.set_image(url=image.url)
         embed.set_footer(text="Mistake with screenshot? Contact an admin.")
 
         team_msg = await interaction.channel.send(embed=embed)
+        admin_embed = discord.Embed(
+            title="🔑 Key Tile Submission",
+            description=f"{interaction.user.mention} submitted for world {team_data['current_world']} key {option.value}.\nTeam: {team_data['team_name']}",
+            color=discord.Color.orange()
+        )
+        admin_embed.set_image(url=image.url)
+        admin_embed.set_footer(text="Approve or reject this submission.")
+
+        pending_submissions_channel = self.bot.get_channel(DiscordIDs.PENDING_SUBMISSIONS_CHANNEL_ID)
+        admin_msg = await pending_submissions_channel.send(embed=admin_embed)
+        await admin_msg.add_reaction("✅")
+        await admin_msg.add_reaction("❌")
         
         submission_data = {
             "discord_user_id": str(interaction.user.id),
@@ -180,7 +192,13 @@ class PlayerCog(commands.Cog):
             "current_tile": team_data['current_tile'],
             "current_world": team_data['current_world']
         }
-        await interaction.response.send_message(f"You selected key option {option.value} and attached an image: {image.url}")
+
+        async with self.session.post(ApiUrls.CREATE_KEY_SUBMISSION, json=submission_data) as sub_resp:
+            if sub_resp.status != 201:
+                error = await sub_resp.text()
+                await interaction.channel.send(f"Failed to create submission in API: {error}")
+
+        await interaction.response.send_message("Submitted! Please wait for an admin to approve.", ephemeral=True)
 
 async def setup(bot: commands):
     await bot.add_cog(PlayerCog(bot))

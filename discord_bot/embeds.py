@@ -45,9 +45,30 @@ def build_key_board_embed(team_data):
         value=f"{key_tile_names[team_data['current_world']]}",
         inline=False
     )
+
+    key_count = 0
+    for counter in [team_data["w1key1_completion_counter"], 
+                    team_data["w1key2_completion_counter"],
+                    team_data["w1key3_completion_counter"],
+                    team_data["w1key4_completion_counter"],
+                    team_data["w1key5_completion_counter"]]:
+        key_count += counter == 0
+
+    submissions_needed_text = f'''
+        Key 1: You need {team_data["w1key1_completion_counter"] if team_data["w1key1_completion_counter"] != 0 else ""} submissions
+        Key 2: You need {team_data["w1key2_completion_counter"] if team_data["w1key2_completion_counter"] != 0 else ""} submissions
+        Key 3: You need {team_data["w1key3_completion_counter"] if team_data["w1key3_completion_counter"] != 0 else ""} submissions
+        Key 4: You need {team_data["w1key4_completion_counter"] if team_data["w1key4_completion_counter"] != 0 else ""} submissions
+        Key 5: You need {team_data["w1key5_completion_counter"] if team_data["w1key5_completion_counter"] != 0 else ""} submissions'''
+
+    embed.add_field(
+        name="Keys Aquired",
+        value=key_count,
+        inline=True
+    )
     embed.add_field(
         name="Submissions Needed",
-        value=f"Work in progress",
+        value=submissions_needed_text,
         inline=True
     )
     embed.add_field(

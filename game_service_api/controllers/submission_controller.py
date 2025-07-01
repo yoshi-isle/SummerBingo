@@ -96,6 +96,39 @@ def approve_submission(submission_id):
 
     return jsonify({"message": "Submission approved successfully"}), 200
 
+@submissions_blueprint.route("/submission/approve_key/<key_id>/<submission_id>", methods=["PUT"])
+def approve_key_submission(key_id, submission_id):
+    """
+    Approve a submission by its ID.
+    """
+    db = get_db()
+    try:
+        submission = db.key_submissions.find_one({"_id": ObjectId(submission_id)})
+    except Exception:
+        abort(400, description="Invalid submission ID format")
+    if not submission:
+        abort(404, description="Submission not found")
+
+    # Find the team associated with the submission
+    team_id = submission.get("team_id")
+    if not team_id:
+        abort(400, description="Submission does not have a team_id")
+
+    team = db.teams.find_one({"_id": ObjectId(team_id)})
+    if not team:
+        abort(404, description=f"Team not found, {team_id}")
+    
+    # Update the submission status to approved
+    db.key_submissions.update_one({"_id": ObjectId(submission_id)}, {"$set": {"approved": True}})
+
+    # Decrement the team's completion counter by 1
+    db.teams.update_one(
+        {"_id": ObjectId(team_id)},
+        {"$inc": {f"w1key{int(key_id)}_completion_counter": -1}}
+    )
+
+    return jsonify({"message": "Key submission approved successfully"}), 200
+
 @submissions_blueprint.route("/submission/deny/<submission_id>", methods=["PUT"])
 def deny_submission(submission_id):
     """
