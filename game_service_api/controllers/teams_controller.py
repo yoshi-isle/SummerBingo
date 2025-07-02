@@ -52,7 +52,11 @@ def create_team():
         w1key2_completion_counter = 1,
         w1key3_completion_counter = 4,
         w1key4_completion_counter = 1,
-        w1key5_completion_counter = 10
+        w1key5_completion_counter = 10,
+        w1boss_completion_counter = 1,
+        w2boss_completion_counter = 2,
+        w3boss_completion_counter = 1,
+        w4boss_completion_counter = 5,
     )
 
     # Convert the Team and Player objects to dictionaries for MongoDB

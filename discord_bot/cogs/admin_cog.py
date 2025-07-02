@@ -188,6 +188,9 @@ class AdminCog(commands.Cog):
                 else:
                     error = await approve_resp.text()
                     await team_channel.send(f"Failed to approve key submission: {error}")
+        elif GameState == GameState.BOSS:
+            # TODO
+            pass
 
 def count_w1_keys(team):
     return sum(int(key) == 0 for key in [

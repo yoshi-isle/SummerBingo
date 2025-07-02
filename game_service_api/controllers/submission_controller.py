@@ -172,6 +172,48 @@ def approve_key_submission(key_id, submission_id):
         "team": updated_team
     }), 200
 
+
+@submissions_blueprint.route("/submission/approve_boss/<submission_id>", methods=["PUT"])
+def approve_boss_submission(submission_id):
+    """
+    Approve a boss tile submission by its ID.
+    """
+    db = get_db()
+    try:
+        submission = db.boss_submissions.find_one({"_id": ObjectId(submission_id)})
+    except Exception:
+        abort(400, description="Invalid submission ID format")
+    if not submission:
+        abort(404, description="Submission not found")
+
+    # Find the team associated with the submission
+    team_id = submission.get("team_id")
+    if not team_id:
+        abort(400, description="Submission does not have a team_id")
+
+    team = db.teams.find_one({"_id": ObjectId(team_id)})
+    if not team:
+        abort(404, description=f"Team not found, {team_id}")
+    
+    # Update the submission status to approved
+    db.boss_submissions.update_one({"_id": ObjectId(submission_id)}, {"$set": {"approved": True}})
+
+    # Decrement the team's completion counter by 1
+    db.teams.update_one(
+        {"_id": ObjectId(team_id)},
+        {"$inc": {f"w{team['current_world']}boss_completion_counter": -1}}
+    )
+
+    # Fetch the updated team object
+    updated_team = db.teams.find_one({"_id": ObjectId(team_id)})
+    if updated_team:
+        updated_team["_id"] = str(updated_team["_id"])
+
+    return jsonify({
+        "message": "Boss submission approved successfully",
+        "team": updated_team
+    }), 200
+
 @submissions_blueprint.route("/submission/deny/<submission_id>", methods=["PUT"])
 def deny_submission(submission_id):
     """
