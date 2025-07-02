@@ -103,7 +103,7 @@ def build_boss_board_embed(team_data):
         color=discord.Color.dark_purple()
     )
     embed.add_field(
-        name=f"1-B: Showdown on Mount Quidamortem",
+        name=f"1-B: Showdown on Mount Quidamortem {Emojis.OLMLET}",
         value="Complete the challenge to clear the world.",
         inline=False
     )

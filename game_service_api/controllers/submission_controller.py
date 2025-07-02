@@ -39,6 +39,22 @@ def create_key_tile_submission():
 
     return jsonify(data), 201
 
+@submissions_blueprint.route("/boss_submission", methods=["POST"])
+def create_boss_tile_submission():
+    """
+    Create a new submission for a boss tile.
+    """
+    db = get_db()
+    data = request.get_json()
+
+    # Insert the submission into the database directly
+    result = db.boss_submissions.insert_one(data)
+
+    # Return the inserted object as a dict (with its new id)
+    data['_id'] = str(result.inserted_id)
+
+    return jsonify(data), 201
+
 @submissions_blueprint.route("/submission/<message_id>", methods=["GET"])
 def get_submission_by_message_id(message_id):
     """

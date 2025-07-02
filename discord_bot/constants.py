@@ -2,6 +2,7 @@ class Emojis:
     KEY="<:key:1389645693941190666>"
     KEY_NOT_OBTAINED="<:not_obtained:1389646593074139166>"
     DUNGEON="<:dungeon:1389648812355748051>"
+    OLMLET="<:Olmlet:1389757224963801229>"
 
 class DiscordIDs:
     PENDING_SUBMISSIONS_CHANNEL_ID = 1379165881518522408
@@ -28,6 +29,7 @@ class ApiUrls:
     KEY_SUBMISSION = f"{BASE_URL}/key_submission/{{id}}"
     CREATE_SUBMISSION = f"{BASE_URL}/submission"
     CREATE_KEY_SUBMISSION = f"{BASE_URL}/key_submission"
+    CREATE_BOSS_SUBMISSION = f"{BASE_URL}/boss_submission"
     APPROVE_SUBMISSION = f"{BASE_URL}/submission/approve/{{id}}"
     APPROVE_KEY_SUBMISSION = f"{BASE_URL}/submission/approve_key/{{key_id}}/{{id}}"
     DENY_SUBMISSION = f"{BASE_URL}/submission/deny/{{id}}"
