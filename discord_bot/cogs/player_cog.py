@@ -9,8 +9,8 @@ from embeds import build_team_board_embed, build_key_board_embed, build_boss_boa
 class PlayerCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.session = aiohttp.ClientSession()
-
+        self.session = aiohttp.`ClientSession()
+`
     async def cog_unload(self):
         await self.session.close()
 

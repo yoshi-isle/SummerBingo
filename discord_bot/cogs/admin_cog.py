@@ -84,10 +84,21 @@ class AdminCog(commands.Cog):
                     if str(payload.emoji) == '❌':
                         pass
                 else:
-                    await channel.send(f"Submission not found in database for Message ID {str(message.id)}")
-                    return
 
+                    async with self.session.get(ApiUrls.BOSS_SUBMISSION.format(id=str(message.id))) as boss_resp:
+                        if boss_resp.status == 200:
+                            boss_submission = await boss_resp.json()
+                            if str(payload.emoji) == '✅':
+                                try:
+                                    await self.handle_approval(boss_submission, message, user, GameState.BOSS)
+                                except Exception as e:
+                                    await channel.send(f"{e} An error occured approving the submission")
 
+                            if str(payload.emoji) == '❌':
+                                pass
+                        else:
+                            await channel.send(f"Submission not found in database for Message ID {str(message.id)}")
+                            return
 
     @app_commands.command(name="clear_channel", description="Deletes all messages in the current channel")
     @app_commands.checks.has_role("Admin")
@@ -119,7 +130,7 @@ class AdminCog(commands.Cog):
             async with self.session.put(ApiUrls.APPROVE_SUBMISSION.format(id=submission["_id"])) as approve_resp:
                 if approve_resp.status == 200:
                     # Advance a tile if the number of submissions is complete
-                    if int(team['completion_counter']) == 1:
+                    if int(team['completion_counter']) <= 1:
                         async with self.session.post(ApiUrls.TEAM_ADVANCE_TILE.format(id=submission['team_id'])) as advance_resp:
                             if advance_resp.status == 200:
                                 async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION.format(id=submission['team_id'])) as resp:
@@ -167,7 +178,7 @@ class AdminCog(commands.Cog):
                         receipt.color = Color.green()
                         await team_channel.send(embed=receipt)
                 if approve_resp.status == 208:
-                    await approved_channel.send("This submission is outdated so nothing happened. (No harm done)")
+                    await approved_channel.send(embed=Embed(title="Submission was outdated so nothing happened. (No harm done)"))
         elif GameState == GameState.KEY:
             async with self.session.put(ApiUrls.APPROVE_KEY_SUBMISSION.format(id=submission["_id"], key_id=submission["key_option"])) as approve_resp:
                 if approve_resp.status == 200:
@@ -189,8 +200,15 @@ class AdminCog(commands.Cog):
                     error = await approve_resp.text()
                     await team_channel.send(f"Failed to approve key submission: {error}")
         elif GameState == GameState.BOSS:
-            # TODO
-            pass
+            async with self.session.put(ApiUrls.APPROVE_BOSS_SUBMISSION.format(id=submission["_id"])) as approve_resp:
+                if approve_resp.status == 200:
+                    updated_team = await approve_resp.json()
+                    team = updated_team["team"]
+                    world = team["current_world"]
+                    if int(team[f"w{world}boss_completion_counter"]) <= 0:
+                        async with self.session.put(ApiUrls.ADVANCE_TO_NEXT_WORLD.format(id=team["_id"])) as approve_resp:
+                            await team_channel.send(embed=Embed(title=f"Your team completed world {world}!"))
+
 
 def count_w1_keys(team):
     return sum(int(key) == 0 for key in [

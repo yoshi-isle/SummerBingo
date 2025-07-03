@@ -23,15 +23,18 @@ class ApiUrls:
     TEAM_LEVEL_NUMBER_WITHOUT_DISCORD = f"{BASE_URL}/teams/id/{{id}}/world_level"
     TEAM_BOARD_INFORMATION = f"{BASE_URL}/teams/id/{{id}}/board_information"
     ADVANCE_TO_BOSS_TILE = f"{BASE_URL}/teams/{{id}}/boss_tile"
+    ADVANCE_TO_NEXT_WORLD = f"{BASE_URL}/teams/{{id}}/next_world"
 
     # Submissions
     SUBMISSION = f"{BASE_URL}/submission/{{id}}"
     KEY_SUBMISSION = f"{BASE_URL}/key_submission/{{id}}"
+    BOSS_SUBMISSION = f"{BASE_URL}/boss_submission/{{id}}"
     CREATE_SUBMISSION = f"{BASE_URL}/submission"
     CREATE_KEY_SUBMISSION = f"{BASE_URL}/key_submission"
     CREATE_BOSS_SUBMISSION = f"{BASE_URL}/boss_submission"
     APPROVE_SUBMISSION = f"{BASE_URL}/submission/approve/{{id}}"
     APPROVE_KEY_SUBMISSION = f"{BASE_URL}/submission/approve_key/{{key_id}}/{{id}}"
+    APPROVE_BOSS_SUBMISSION = f"{BASE_URL}/submission/approve_boss/{{id}}"
     DENY_SUBMISSION = f"{BASE_URL}/submission/deny/{{id}}"
 
     # Images

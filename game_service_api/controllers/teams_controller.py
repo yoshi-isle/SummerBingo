@@ -238,8 +238,7 @@ def get_current_tile_by_team_id(id):
     else:
         abort(400, description="Current tile has unexpected type")
 
-    # Find the tile in world1_tiles["world_tiles"] with matching id
-    tile_info = next((t for t in world1_tiles["world_tiles"] if t["id"] == tile_id), None)
+    tile_info = get_tile_info(int(team['current_world']), int(team['current_tile']))
     if not tile_info:
         abort(404, description="Tile info not found")
     return jsonify(tile_info), 200
@@ -330,6 +329,33 @@ def get_board_information_by_team_id(team_id):
         "w1key4_completion_counter": team["w1key4_completion_counter"],
         "w1key5_completion_counter": team["w1key5_completion_counter"],
     }), 200
+
+
+@teams_blueprint.route("/teams/<team_id>/next_world", methods=["PUT"])
+def advance_to_next_world(team_id):
+    """
+    Puts the team at the next world.
+    """
+    db = get_db()
+    team = db.teams.find_one({"_id": ObjectId(team_id)})
+    if not team:
+        abort(404, description="Team not found")
+
+    # Get the shuffled tiles and current tile
+    next_world = team.get("current_world", 1) + 1
+    next_world_shuffled_tiles = team.get(f"world{next_world}_shuffled_tiles", [])
+
+    db.teams.update_one(
+    {"_id": ObjectId(team_id)}, 
+    {"$set": 
+        {"game_state": 0,
+         "current_world": next_world,
+         "current_tile": next_world_shuffled_tiles[0]}
+    })
+    # Convert ObjectId to string for JSON serialization
+    if "_id" in team:
+        team["_id"] = str(team["_id"])
+    return jsonify(team), 200
 
 def get_tile_info(current_world: int, current_tile:int):
     world_tiles_map = {

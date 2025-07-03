@@ -77,10 +77,29 @@ def get_submission_by_message_id(message_id):
 @submissions_blueprint.route("/key_submission/<message_id>", methods=["GET"])
 def get_key_submission_by_message_id(message_id):
     """
-    Retrieve a submission by its admin_approval_embed_id or pending_team_embed_id.
+    Retrieve a key submission by its admin_approval_embed_id or pending_team_embed_id.
     """
     db = get_db()
     submission = db.key_submissions.find_one({
+        "$or": [
+            {"admin_approval_embed_id": message_id},
+            {"pending_team_embed_id": message_id}
+        ]
+    })
+    if not submission:
+        abort(404, description="Submission not found")
+        
+    # Convert ObjectId to string for JSON serialization
+    submission["_id"] = str(submission["_id"])
+    return jsonify(submission)
+
+@submissions_blueprint.route("/boss_submission/<message_id>", methods=["GET"])
+def get_boss_submission_by_message_id(message_id):
+    """
+    Retrieve a boss submission by its admin_approval_embed_id or pending_team_embed_id.
+    """
+    db = get_db()
+    submission = db.boss_submissions.find_one({
         "$or": [
             {"admin_approval_embed_id": message_id},
             {"pending_team_embed_id": message_id}
