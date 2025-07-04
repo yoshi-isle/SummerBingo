@@ -7,6 +7,8 @@ from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 import os
 
+from constants.world_tiles_map import world_tiles_map
+
 image_blueprint = Blueprint('image', __name__)
 
 def get_db():
@@ -201,12 +203,7 @@ def create_board_image(team, tile_info, level=None):
         print(f"Error generating board: {e}")
         abort(500, description=f"Failed to generate board: {e}")
 
-world_tiles_map = {
-    1: world1_tiles["world_tiles"],
-    2: world2_tiles["world_tiles"],
-    3: world3_tiles["world_tiles"],
-    4: world4_tiles["world_tiles"],
-}
+
 
 tile_image_coordinates = {
     1: world1_tile_image_coordinates,

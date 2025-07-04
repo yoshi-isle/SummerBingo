@@ -7,6 +7,7 @@ from constants.tiles import world1_tiles, world2_tiles, world3_tiles, world4_til
 from constants.key_tiles import key_tiles
 from utils.shuffle import shuffle_tiles
 from bson import ObjectId
+from datetime import datetime, timezone
 
 teams_blueprint = Blueprint('teams', __name__)
 
@@ -48,15 +49,16 @@ def create_team():
         world4_shuffled_tiles=world4_shuffled_tiles,
         completion_counter=tile_info.get("completion_counter"),
         game_state=0,
-        w1key1_completion_counter = 1,
-        w1key2_completion_counter = 1,
-        w1key3_completion_counter = 4,
-        w1key4_completion_counter = 1,
-        w1key5_completion_counter = 10,
-        w1boss_completion_counter = 1,
-        w2boss_completion_counter = 2,
-        w3boss_completion_counter = 1,
-        w4boss_completion_counter = 5,
+        w1key1_completion_counter=1,
+        w1key2_completion_counter=1,
+        w1key3_completion_counter=4,
+        w1key4_completion_counter=1,
+        w1key5_completion_counter=10,
+        w1boss_completion_counter=1,
+        w2boss_completion_counter=2,
+        w3boss_completion_counter=1,
+        w4boss_completion_counter=5,
+        last_rolled_at=datetime.now(timezone.utc)
     )
 
     # Convert the Team and Player objects to dictionaries for MongoDB
@@ -356,6 +358,34 @@ def advance_to_next_world(team_id):
     if "_id" in team:
         team["_id"] = str(team["_id"])
     return jsonify(team), 200
+
+@teams_blueprint.route("/teams/<team_id>/last_rolled", methods=["GET"])
+def get_last_rolled(team_id):
+
+    db = get_db()
+    team = db.teams.find_one({"_id": ObjectId(team_id)})
+    if not team:
+        abort(404, description="Team not found")
+
+    last_rolled_at = team.get('last_rolled_at')
+    if not last_rolled_at:
+        abort(404, description="last_rolled_at not found")
+
+    if not isinstance(last_rolled_at, datetime):
+        last_rolled_at = datetime.fromisoformat(str(last_rolled_at))
+
+    if last_rolled_at.tzinfo is None or last_rolled_at.tzinfo.utcoffset(last_rolled_at) is None:
+        last_rolled_at = last_rolled_at.replace(tzinfo=timezone.utc)
+
+    now = datetime.now(timezone.utc)
+    minutes_ago = int((now - last_rolled_at).total_seconds() // 60)
+    discord_relative = f"<t:{int(last_rolled_at.timestamp())}:R>"
+
+    return jsonify({
+        "last_rolled": last_rolled_at.isoformat(),
+        "minutes_ago": minutes_ago,
+        "discord_relative": discord_relative
+    }), 200
 
 def get_tile_info(current_world: int, current_tile:int):
     world_tiles_map = {

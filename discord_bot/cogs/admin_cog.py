@@ -4,13 +4,9 @@ import aiohttp
 from discord import Color, Embed, app_commands
 from discord.ext import commands
 from constants import ApiUrls, DiscordIDs, Emojis
+from enums.gamestate import GameState
+from utils.count_keys import count_w1_keys
 from embeds import build_team_board_embed, build_key_board_embed
-from enum import Enum
-
-class GameState(Enum):
-    OVERWORLD = 0
-    KEY = 1
-    BOSS = 2
 
 class AdminCog(commands.Cog):
     def __init__(self, bot):
@@ -208,16 +204,6 @@ class AdminCog(commands.Cog):
                     if int(team[f"w{world}boss_completion_counter"]) <= 0:
                         async with self.session.put(ApiUrls.ADVANCE_TO_NEXT_WORLD.format(id=team["_id"])) as approve_resp:
                             await team_channel.send(embed=Embed(title=f"Your team completed world {world}!"))
-
-
-def count_w1_keys(team):
-    return sum(int(key) == 0 for key in [
-        team["w1key1_completion_counter"],
-        team["w1key2_completion_counter"],
-        team["w1key3_completion_counter"],
-        team["w1key4_completion_counter"],
-        team["w1key5_completion_counter"]
-    ])
 
 async def setup(bot: commands):
     await bot.add_cog(AdminCog(bot))
