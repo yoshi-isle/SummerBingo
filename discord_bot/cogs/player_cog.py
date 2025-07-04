@@ -9,8 +9,8 @@ from embeds import build_team_board_embed, build_key_board_embed, build_boss_boa
 class PlayerCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.session = aiohttp.`ClientSession()
-`
+        self.session = aiohttp.ClientSession()
+
     async def cog_unload(self):
         await self.session.close()
 
@@ -25,7 +25,6 @@ class PlayerCog(commands.Cog):
                         await interaction.response.send_message("You can only use this command in your team channel.", ephemeral=True)
                         return
                 else:
-                    print(f"Error retrieving team: {e}")
                     await interaction.response.send_message(f"It looks like you're not part of a team. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}> for support")
                     return
             

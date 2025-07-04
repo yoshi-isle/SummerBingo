@@ -4,40 +4,32 @@ from constants import WORLD_NAMES
 
 def build_team_board_embed(team_data, tile_info, team_level_string):
     embed = discord.Embed(
-        title=f"Team Board: {team_data['team_name']}",
-        color=discord.Color.blue()
+        title=team_data['team_name']
     )
     # The image should be set by the caller using set_image(url="attachment://team_board.png")
     embed.set_thumbnail(url="https://static.wikia.nocookie.net/abobo/images/4/4e/Goomba.png/revision/latest?cb=20200706184805")
     embed.set_footer(text="Use `/submit` in your team channel to submit your tile completion.")
     embed.add_field(
-        name="🗺️ Current Level",
-        value=f"{WORLD_NAMES[team_data['current_world']]} {team_level_string}\n**{tile_info['tile_name']}**",
+        name=f"🗺️ {WORLD_NAMES[team_data['current_world']]} {team_level_string}",
+        value=f"{tile_info['tile_name']} ([Wiki]({tile_info['wiki_url']}))",
         inline=False
     )
     embed.add_field(
-        name="🔗 Links",
-        value=f"[Eligible Drops]({tile_info['pastebin_url']})\n[OSRS Wiki]({tile_info['wiki_url']})",
-        inline=True
-    )
-    embed.add_field(
-        name="Submissions Needed",
+        name="📝 Submissions Remaining",
         value=f"{team_data['completion_counter']}",
-        inline=True
+        inline=False
     )
     embed.add_field(
-        name="Skip Tokens",
-        value=f"You have **0** skip tokens. Next one at: <t:1751316173:R>",
+        name="⏭️ Skip",
+        value=f"You can't skip this tile until <t:1751316173:R>",
         inline=False
     )
     return embed
 
 def build_key_board_embed(team_data):
     embed = discord.Embed(
-        title=f"Team Board: {team_data['team_name']}",
-        color=discord.Color.blue()
+        title=team_data['team_name']
     )
-    # The image should be set by the caller using set_image(url="attachment://team_board.png")
     embed.set_thumbnail(url="https://static.wikia.nocookie.net/abobo/images/4/4e/Goomba.png/revision/latest?cb=20200706184805")
     embed.set_footer(text="Use `/key` in your team channel to submit your key tile completion.")
     embed.add_field(
@@ -70,7 +62,7 @@ def build_key_board_embed(team_data):
     embed.add_field(
         name="Submissions Needed",
         value=submissions_needed_text,
-        inline=True
+        inline=False
     )
     # Show 5 emojis: KEY if obtained (counter == 0), KEY_NOT_OBTAINED otherwise
     key_emojis = []
@@ -88,7 +80,7 @@ def build_key_board_embed(team_data):
     embed.add_field(
         name="Keys Acquired",
         value=" ".join(key_emojis),
-        inline=True
+        inline=False
     )
     embed.add_field(
         name="Skips",
@@ -99,7 +91,7 @@ def build_key_board_embed(team_data):
 
 def build_boss_board_embed(team_data):
     embed = discord.Embed(
-        title=f"Team Board: {team_data['team_name']}",
+        title=team_data['team_name'],
         color=discord.Color.dark_purple()
     )
     embed.add_field(
