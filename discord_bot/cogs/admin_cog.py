@@ -137,14 +137,24 @@ class AdminCog(commands.Cog):
                                 
                                 # 0 - Normal Board
                                 if info["team"]["game_state"] == 0:
-                                    await team_channel.send(embed=Embed(title="Submission approved! Here's your new board:"))
+                                    await team_channel.send(embed=Embed(title="Tile complete! Posting your new board:"))
                                     async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=submission['team_id'])) as image_resp:
                                         image_data = await image_resp.read()
                                         file = discord.File(io.BytesIO(image_data), filename="team_board.png")
                                         embed = build_team_board_embed(team_data, tile_info, level_number)
                                         embed.set_image(url="attachment://team_board.png")
-                                        await team_channel.send(embed=embed, file=file)
-                                    
+                                        pinned = await team_channel.pins()
+                                        for msg in pinned:
+                                            try:
+                                                await msg.unpin()
+                                            except Exception as e:
+                                                await team_channel.send(f"Failed to unpin a message: {e}")
+
+                                        sent_msg = await team_channel.send(embed=embed, file=file)
+                                        try:
+                                            await sent_msg.pin()
+                                        except Exception as e:
+                                            await team_channel.send(f"Failed to pin the new board: {e}")
                                 # 1 - Key Board
                                 elif info["team"]["game_state"] == 1:
                                     await team_channel.send(embed=Embed(title=f"{Emojis.DUNGEON} Your team enters into a dungeon..."))
