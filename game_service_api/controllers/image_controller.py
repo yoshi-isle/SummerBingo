@@ -8,6 +8,8 @@ from io import BytesIO
 import os
 
 from constants.world_tiles_map import world_tiles_map
+from constants.world_names import WORLD_NAMES
+from constants.image_settings import ImageSettings
 
 image_blueprint = Blueprint('image', __name__)
 
@@ -72,9 +74,9 @@ def create_key_image(team, tile_info, level=None):
                 base_img.paste(tile_img, (120 + idx*320, 500), tile_img)
                 # Draw text below the image
                 draw = ImageDraw.Draw(base_img)
-                font_path = os.path.join(os.path.dirname(__file__), '../assets/8bit.ttf')
+                font_path = os.path.join(os.path.dirname(__file__), ImageSettings.FONT)
                 font_path = os.path.abspath(font_path)
-                font = ImageFont.truetype(font_path, size=16)
+                font = ImageFont.truetype(font_path, size=32)
                 text = tile["tile_name"]
                 text_x = 120+idx * 350 + tile_img.width // 2
                 text_y = 500 + tile_img.height + 10
@@ -133,7 +135,7 @@ def create_board_image(team, tile_info, level=None):
             with Image.open(current_tile_img_path) as tile_img:
                 # Resize tile image to exactly 90x90
                 # Resize tile image to fit within 90x90 while keeping aspect ratio
-                max_size = (90, 90)
+                max_size = (140, 140)
                 tile_img.thumbnail(max_size, Image.NEAREST)
                 # Get map image coordinate
                 shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
@@ -143,7 +145,7 @@ def create_board_image(team, tile_info, level=None):
                 idx = shuffled_tiles.index(current_tile)
                 level = idx + 1
 
-                map_coordinate = tile_image_coordinates.get(current_world, {}).get(level)
+                map_coordinate = 920, 22
 
                 # Draw black outline behind the tile image
                 outline_width = 1
@@ -158,12 +160,12 @@ def create_board_image(team, tile_info, level=None):
 
                 # Draw outlined text underneath the image
                 draw = ImageDraw.Draw(base_img)
-                font_path = os.path.join(os.path.dirname(__file__), '../assets/8bit.ttf')
+                font_path = os.path.join(os.path.dirname(__file__), ImageSettings.FONT)
                 font_path = os.path.abspath(font_path)
-                font = ImageFont.truetype(font_path, size=16)
+                font = ImageFont.truetype(font_path, size=40)
                 text = f"{tile_info['tile_name']}"
-                text_x = x + tile_img.width // 2
-                text_y = y + tile_img.height + 5
+                text_x = 240
+                text_y = 930
                 
                 # Draw outline
                 outline_range = 2
@@ -172,23 +174,24 @@ def create_board_image(team, tile_info, level=None):
                         if ox == 0 and oy == 0:
                             continue
                         draw.text((text_x + ox, text_y + oy), text, font=font, fill="black", anchor="ma")
-                # Draw main text
-                draw.text((text_x, text_y), text, font=font, fill="white", anchor="ma")
+                # Draw main text, left aligned
+                draw.text((text_x, text_y), text, font=font, fill="yellow", anchor="la")
+                draw.text((text_x, text_y + 50), tile_info['description'], font=font, fill="white", anchor="la")
 
             draw = ImageDraw.Draw(base_img)
-            font_path = os.path.join(os.path.dirname(__file__), '../assets/8bit.ttf')
+            font_path = os.path.join(os.path.dirname(__file__), ImageSettings.FONT)
             font_path = os.path.abspath(font_path)
-            font = ImageFont.truetype(font_path, size=24)
+            font = ImageFont.truetype(font_path, size=50)
 
             team_name = team['team_name']
             text_color = (255, 255, 255)
-            text_position = (base_img.width - 20, 20)
-            text_position_tile = (0 + 20, 20)
+            text_position = (base_img.width - 20, 50)
+            text_position_tile = (0 + 20, 50)
 
-            draw.text(text_position, f"Team\n{team_name}", fill=text_color, font=font, anchor="ra")  # Right alignment
+            draw.text(text_position, team_name, fill=text_color, font=font, anchor="ra")  # Right alignment
 
             # If level is provided, use it (discord_id version), else use team['current_tile'] (team_id version)
-            tile_label = f"Level {team['current_world']}-{level}\n{tile_info['tile_name']}" if level is not None else f"{current_world}-{current_tile}-{tile_info['tile_name']}"
+            tile_label = f"{WORLD_NAMES[current_world]} {team['current_world']}-{level}" if level is not None else f"{current_world}-{current_tile}-{tile_info['tile_name']}"
             draw.text(text_position_tile, tile_label, fill=text_color, font=font, anchor="la")
 
             img_io = BytesIO()

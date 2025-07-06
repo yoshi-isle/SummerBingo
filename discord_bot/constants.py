@@ -42,7 +42,7 @@ class ApiUrls:
     IMAGE_GET = f"{BASE_URL}/images/{{url}}"
 
 WORLD_NAMES = {
-    1: "Twisted Plains",
+    1: "Twisted Cove",
     2: "Cozy Caverns",
     3: "Tumeken's Oasis",
     4: "Castle Drakan",
