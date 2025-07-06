@@ -6,7 +6,7 @@ from discord.ext import commands
 from constants import ApiUrls, DiscordIDs, Emojis
 from enums.gamestate import GameState
 from utils.count_keys import count_w1_keys
-from embeds import build_team_board_embed, build_key_board_embed
+from embeds import build_boss_board_embed, build_team_board_embed, build_key_board_embed
 
 class AdminCog(commands.Cog):
     def __init__(self, bot):
@@ -16,7 +16,7 @@ class AdminCog(commands.Cog):
     async def cog_unload(self):
         await self.session.close()
 
-    @app_commands.command(name="register_team", description="Registers a new team")
+    @app_commands.command(name="register_team", description="(Admin) Registers a new team")
     @app_commands.checks.has_role("Admin")
     async def register_team(self, interaction: discord.Interaction, users: str, team_name: str):
         try:
@@ -214,6 +214,45 @@ class AdminCog(commands.Cog):
                     if int(team[f"w{world}boss_completion_counter"]) <= 0:
                         async with self.session.put(ApiUrls.ADVANCE_TO_NEXT_WORLD.format(id=team["_id"])) as approve_resp:
                             await team_channel.send(embed=Embed(title=f"Your team completed world {world}!"))
+
+    @app_commands.command(name="view_a_players_board", description="(Admin) View a player's board.")
+    @app_commands.checks.has_role("Admin")
+    async def view_board(self, interaction: discord.Interaction, user: discord.User):
+        try:
+            # Guard against viewing board outside of team channel
+            async with self.session.get(ApiUrls.TEAM_BY_ID.format(id=user.id)) as resp:
+                if resp.status == 200:
+                    team_data = await resp.json()
+                else:
+                    await interaction.response.send_message(f"It looks this user is not part of a team", ephemeral=True)
+                    return
+
+            # Grab board information
+            async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION.format(id=team_data["_id"])) as resp:
+                if resp.status == 200:
+                    board_information = await resp.json()
+                else:
+                    await interaction.response.send_message(f"There was an error getting the user's board information.", ephemeral=True)
+                    return
+
+            async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=team_data["_id"])) as resp:
+                if resp.status == 200:
+                    image_data = await resp.read()
+                    file = discord.File(io.BytesIO(image_data), filename="team_board.png")
+                    if int(team_data["game_state"]) == 0:
+                        embed = build_team_board_embed(team_data, board_information["tile"], board_information["level_number"])
+                    elif int(team_data["game_state"]) == 1:
+                        embed = build_key_board_embed(team_data)
+                    elif int(team_data["game_state"]) == 2:
+                        embed = build_boss_board_embed(team_data)
+                    embed.set_image(url="attachment://team_board.png")
+                    await interaction.response.send_message(embed=embed, file=file)
+                else:
+                    await interaction.response.send_message(f"There was an error getting the user's board image.")
+
+        except Exception as e:
+            print(f"Error in view_board: {e}")
+            await interaction.response.send_message(f"There was an unknown error. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
 
 async def setup(bot: commands):
     await bot.add_cog(AdminCog(bot))

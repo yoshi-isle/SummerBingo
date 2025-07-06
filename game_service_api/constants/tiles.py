@@ -4,30 +4,30 @@ world1_tiles = {
         {"id": 1, "tile_name": "Smoke Battlestaff", "description": "Obtain 1x Smoke Battlestaff", "completion_counter": 1, "image_url": "world1/tiles/1.png", "wiki_url": "https://oldschool.runescape.wiki/w/Smoke_battlestaff"},
         {"id": 2, "tile_name": "Zulrah Unique", "description": "Obtain 1x of any of the following: Tanzanite Fang, Magic Fang, Serpentine Visage, Pet Snakeling, Uncut Onyx, Jar of Swamp, Magma Mutagen, or Tanzanite Mutagen", "completion_counter": 1, "image_url": "world1/tiles/2.png", "wiki_url": "https://oldschool.runescape.wiki/w/Zulrah"},
         {"id": 3, "tile_name": "2x Zenyte Shards", "description": "Obtain 2x Zenyte Shards", "completion_counter": 2, "image_url": "world1/tiles/3.png", "wiki_url": "https://oldschool.runescape.wiki/w/Zenyte_shard"},
-        {"id": 4, "tile_name": "Herbi Pet", "description": "Obtain 1x Herbi pet", "completion_counter": 1, "image_url": "world1/tiles/4.png", "wiki_url": ""},
-        {"id": 5, "tile_name": "10x Scurrius Spines", "description": "Obtain 10x Scurrius Spines", "completion_counter": 10, "image_url": "world1/tiles/5.png", "wiki_url": ""},
-        {"id": 6, "tile_name": "4x Guild Hunter Pieces", "description": "Obtain 4x of ANY Guild Hunter Piece. They don't have to be unique.", "completion_counter": 4, "image_url": "world1/tiles/6.png", "wiki_url": ""},
-        {"id": 7, "tile_name": "Bones from Soul Wars crate", "description": "Obtain 1x Bones from a Soul Wars reward crate.", "completion_counter": 1, "image_url": "world1/tiles/7.png", "wiki_url": ""},
-        {"id": 8, "tile_name": "Mystic Robe Top, Bottom, and Mystic Water Staff from Kraken", "description": "Obtain 3x of the following items from Kraken: Mystic Robe Top, Mystic Robe Bottom, and Mystic Water Staff", "completion_counter": 3, "image_url": "world1/tiles/8.png", "wiki_url": ""},
-        {"id": 9, "tile_name": "3x Prayer Scrolls from CoX", "description": "Obtain 3x Dex and/or Arcane prayer scrolls from CoX.", "completion_counter": 3, "image_url": "world1/tiles/9.png", "wiki_url": ""},
-        {"id": 10, "tile_name": "Frog Slippers", "description": "Obtain 1x Frog Slippers from a beginner clue", "completion_counter": 1, "image_url": "world1/tiles/10.png", "wiki_url": ""},
-        {"id": 11, "tile_name": "Staff of bob the cat", "description": "Obtain 1x Staff of bob the cat from an easy clue", "completion_counter": 1, "image_url": "world1/tiles/11.png", "wiki_url": ""},
-        {"id": 12, "tile_name": "Imcando hammer", "description": "Obtain 1x imcando hammer (broken) from camdozal.", "completion_counter": 1, "image_url": "world1/tiles/12.png", "wiki_url": ""},
-        {"id": 13, "tile_name": "Giant Champion Scroll", "description": "Obtain 1x Giant Champion Scroll", "completion_counter": 1, "image_url": "world1/tiles/13.png", "wiki_url": ""},
-        {"id": 14, "tile_name": "Tormented Synapse", "description": "Obtain 1x Tormented Synapse", "completion_counter": 1, "image_url": "world1/tiles/14.png", "wiki_url": ""},
-        {"id": 15, "tile_name": "6x Enhanced Teleport Seeds", "description": "", "completion_counter": 6, "image_url": "world1/tiles/15.png", "wiki_url": ""},
-        {"id": 16, "tile_name": "Crystal grail", "description": "", "completion_counter": 1, "image_url": "world1/tiles/16.png", "wiki_url": ""},
-        {"id": 17, "tile_name": "Shaman mask", "description": "", "completion_counter": 1, "image_url": "world1/tiles/17.png", "wiki_url": ""}
+        {"id": 4, "tile_name": "Herbi Pet", "description": "Obtain 1x Herbi pet", "completion_counter": 1, "image_url": "world1/tiles/4.png", "wiki_url": "https://oldschool.runescape.wiki/w/Herbi"},
+        {"id": 5, "tile_name": "10x Scurrius Spines", "description": "Obtain 10x Scurrius Spines", "completion_counter": 10, "image_url": "world1/tiles/5.png", "wiki_url": "https://oldschool.runescape.wiki/w/Scurrius"},
+        {"id": 6, "tile_name": "4x Guild Hunter Pieces", "description": "Obtain 4x of ANY Guild Hunter Piece. They don't have to be unique.", "completion_counter": 4, "image_url": "world1/tiles/6.png", "wiki_url": "https://oldschool.runescape.wiki/w/Guild_hunter_outfit"},
+        {"id": 7, "tile_name": "Bones from Soul Wars crate", "description": "Obtain 1x Bones from a Soul Wars reward crate.", "completion_counter": 1, "image_url": "world1/tiles/7.png", "wiki_url": "https://oldschool.runescape.wiki/w/Soul_Wars"},
+        {"id": 8, "tile_name": "Mystic Robe Top, Bottom, and Mystic Water Staff from Kraken", "description": "Obtain 3x of the following items from Kraken: Mystic Robe Top, Mystic Robe Bottom, and Mystic Water Staff", "completion_counter": 3, "image_url": "world1/tiles/8.png", "wiki_url": "https://oldschool.runescape.wiki/w/Kraken"},
+        {"id": 9, "tile_name": "3x Prayer Scrolls from CoX", "description": "Obtain 3x Dex and/or Arcane prayer scrolls from CoX.", "completion_counter": 3, "image_url": "world1/tiles/9.png", "wiki_url": "https://oldschool.runescape.wiki/w/Chambers_of_Xeric"},
+        {"id": 10, "tile_name": "Frog Slippers", "description": "Obtain 1x Frog Slippers from a beginner clue", "completion_counter": 1, "image_url": "world1/tiles/10.png", "wiki_url": "https://oldschool.runescape.wiki/w/frog_slippers"},
+        {"id": 11, "tile_name": "Staff of bob the cat", "description": "Obtain 1x Staff of bob the cat from an easy clue", "completion_counter": 1, "image_url": "world1/tiles/11.png", "wiki_url": "https://oldschool.runescape.wiki/w/staff_of_bob_the_cat"},
+        {"id": 12, "tile_name": "Imcando hammer", "description": "Obtain 1x imcando hammer (broken) from camdozal.", "completion_counter": 1, "image_url": "world1/tiles/12.png", "wiki_url": "https://oldschool.runescape.wiki/w/Imcando_hammer"},
+        {"id": 13, "tile_name": "Giant Champion Scroll", "description": "Obtain 1x Giant Champion Scroll", "completion_counter": 1, "image_url": "world1/tiles/13.png", "wiki_url": "https://oldschool.runescape.wiki/w/giant_champion_scroll"},
+        {"id": 14, "tile_name": "Tormented Synapse", "description": "Obtain 1x Tormented Synapse", "completion_counter": 1, "image_url": "world1/tiles/14.png", "wiki_url": "https://oldschool.runescape.wiki/w/Tormented_Synapse"},
+        {"id": 15, "tile_name": "6x Enhanced Teleport Seeds", "description": "Obtain 6x Enhanced Teleport Seeds", "completion_counter": 6, "image_url": "world1/tiles/15.png", "wiki_url": "https://oldschool.runescape.wiki/w/Enhanced_Teleport_Seeds"},
+        {"id": 16, "tile_name": "Crystal grail", "description": "Obtain 1x Crystal grail", "completion_counter": 1, "image_url": "world1/tiles/16.png", "wiki_url": "https://oldschool.runescape.wiki/w/crystal_grail"},
+        {"id": 17, "tile_name": "Shaman mask", "description": "Obtain 1x Shaman mask", "completion_counter": 1, "image_url": "world1/tiles/17.png", "wiki_url": "https://oldschool.runescape.wiki/w/shaman_mask"}
     ],
     "key_tiles": [
-        {"id": 0, "tile_name": "Any CoX Purple", "description": "It's a purple!", "completion_counter": 1, "image_url": "world1/keys/0.png", "wiki_url": ""},
-        {"id": 1, "tile_name": "Crystal Tool Seed", "description": "Premium tools", "completion_counter": 1, "image_url": "world1/keys/1.png", "wiki_url": ""},
-        {"id": 2, "tile_name": "4x Burning Claws", "description": "Sharpening the claws", "completion_counter": 4, "image_url": "world1/keys/2.png", "wiki_url": ""},
-        {"id": 3, "tile_name": "Bryophyta's Essence\n OR Hill Giant Club", "description": "A giant's treasure", "completion_counter": 1, "image_url": "world1/keys/3.png", "wiki_url": ""},
-        {"id": 4, "tile_name": "10x Elite Clues\n from BA High Gambles", "description": "Actually, let's call them lucky dips...", "completion_counter": 10, "image_url": "world1/keys/4.png", "wiki_url": ""}
+        {"id": 0, "tile_name": "Any CoX Purple", "description": "Obtain 1x Unique from a purple chest at CoX", "completion_counter": 1, "image_url": "world1/keys/0.png", "wiki_url": "https://oldschool.runescape.wiki/w/Chambers_of_Xeric"},
+        {"id": 1, "tile_name": "Crystal Tool Seed", "description": "Obtain 1x Crystal Tool Seed", "completion_counter": 1, "image_url": "world1/keys/1.png", "wiki_url": "https://oldschool.runescape.wiki/w/crystal_tool_seed"},
+        {"id": 2, "tile_name": "4x Burning Claws", "description": "Obtain 4x Burning Claws", "completion_counter": 4, "image_url": "world1/keys/2.png", "wiki_url": "https://oldschool.runescape.wiki/w/burning_claws"},
+        {"id": 3, "tile_name": "Bryophyta's Essence\n OR Hill Giant Club", "description": "Obtain 1x Bryophyta's Essence OR Hill Giant Club", "completion_counter": 1, "image_url": "world1/keys/3.png", "wiki_url": "https://oldschool.runescape.wiki/w/Bryophyta%27s_essence"},
+        {"id": 4, "tile_name": "10x Elite Clues\n from BA High Gambles", "description": "Obtain 10x Elite Clues specifically from BA High Gambles", "completion_counter": 10, "image_url": "world1/keys/4.png", "wiki_url": "https://oldschool.runescape.wiki/w/elite_clue"}
     ],
     "boss_tile":
-        {"id": 0, "tile_name": "Any Megarare from CoX. Elder/Kodai/TBow", "description": "Showdown on Mount Quidamortem", "completion_counter": 1, "image_url": "world1/boss/0.png", "wiki_url": ""},
+        {"id": 0, "tile_name": "Any Megarare from CoX. Elder/Kodai/TBow", "description": "Obtain any 1x mega-rare from CoX. Elder/Kodai/Tbow. Olmlet counts too.", "completion_counter": 1, "image_url": "world1/boss/0.png", "wiki_url": "https://oldschool.runescape.wiki/w/Chambers_of_Xeric"},
 }
 
 world2_tiles = {
