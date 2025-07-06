@@ -115,18 +115,16 @@ def create_board_image(team, tile_info, level=None):
     image_path = os.path.abspath(image_path)
     try:
         with Image.open(image_path) as base_img:
+
+            # UI Panel
+            ui_img_path = os.path.join(os.path.dirname(__file__), f'../images/user_interface.png')
+            ui_img_path = os.path.abspath(ui_img_path)
+            with Image.open(ui_img_path) as ui_image:
+                base_img.paste(ui_image, (0, 0), ui_image if ui_image.mode == 'RGBA' else None)
+
             path_img_path = os.path.join(os.path.dirname(__file__), f'../images/world{current_world}/path/w1path{level-1}.png')
             path_img_path = os.path.abspath(path_img_path)
             with Image.open(path_img_path) as path_img:
-                # Create a blacked-out version for drop shadow
-                shadow = Image.new("RGBA", path_img.size, (0, 0, 0, 128))
-                # Use the alpha channel of the original as mask for the shadow
-                if path_img.mode == 'RGBA':
-                    shadow.putalpha(path_img.split()[-1])
-                # Offset for shadow (e.g., 3px down and right)
-                shadow_offset = (3, 3)
-                base_img.paste(shadow, shadow_offset, shadow)
-                # Paste the original path image
                 base_img.paste(path_img, (0, 0), path_img if path_img.mode == 'RGBA' else None)
 
             # Load and paste tile image on top
