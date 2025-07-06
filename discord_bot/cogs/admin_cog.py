@@ -96,7 +96,7 @@ class AdminCog(commands.Cog):
                             await channel.send(f"Submission not found in database for Message ID {str(message.id)}")
                             return
 
-    @app_commands.command(name="clear_channel", description="Deletes all messages in the current channel")
+    @app_commands.command(name="clear_channel", description="(Admin) Deletes all messages in the current channel")
     @app_commands.checks.has_role("Admin")
     async def clear_channel(self, interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=True)
