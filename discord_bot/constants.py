@@ -13,6 +13,8 @@ class DiscordIDs:
 class ApiUrls:
     BASE_URL = "http://game_service_api:5000"
 
+    # Game state
+    GAME_IS_RUNNING = f"{BASE_URL}/game_started"
     # Teams
     TEAM = f"{BASE_URL}/teams"
     TEAM_BY_ID = f"{BASE_URL}/teams/discord/{{id}}"
@@ -42,8 +44,8 @@ class ApiUrls:
     IMAGE_GET = f"{BASE_URL}/images/{{url}}"
 
 WORLD_NAMES = {
-    1: "Twisted Cove",
-    2: "Cozy Caverns",
+    1: "Mystic Cove",
+    2: "Zaros Plateau",
     3: "Tumeken's Oasis",
-    4: "Castle Drakan",
+    4: "Drakan's Void",
 }

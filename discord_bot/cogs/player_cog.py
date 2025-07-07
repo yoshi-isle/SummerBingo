@@ -57,6 +57,12 @@ class PlayerCog(commands.Cog):
 
     @app_commands.command(name="submit", description="Submits your tile completion.")
     async def submit(self, interaction: discord.Interaction, image: discord.Attachment):
+        async with self.session.get(ApiUrls.GAME_IS_RUNNING) as running:
+            running = await running.json()
+            if running["running"] == False:
+                await interaction.response.send_message("Bingo hasn't started yet.")
+                return
+        
         # Get the team info from the API
         team_data = None
         async with self.session.get(ApiUrls.TEAM_BY_ID.format(id=interaction.user.id)) as resp:

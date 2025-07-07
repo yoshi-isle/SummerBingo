@@ -387,6 +387,15 @@ def get_last_rolled(team_id):
         "discord_relative": discord_relative
     }), 200
 
+@teams_blueprint.route("/game_started", methods=["GET"])
+def get_game_started():
+
+    db = get_db()
+    running = db.global_game_state.find_one({"running": 1})
+    return jsonify({
+        "running": running != None
+    }), 200
+
 def get_tile_info(current_world: int, current_tile:int):
     world_tiles_map = {
         1: world1_tiles["world_tiles"],

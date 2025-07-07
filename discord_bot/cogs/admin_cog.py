@@ -4,9 +4,10 @@ import aiohttp
 from discord import Color, Embed, app_commands
 from discord.ext import commands
 from constants import ApiUrls, DiscordIDs, Emojis
+from storyline import StoryLine
 from enums.gamestate import GameState
 from utils.count_keys import count_w1_keys
-from embeds import build_boss_board_embed, build_team_board_embed, build_key_board_embed
+from embeds import build_boss_board_embed, build_team_board_embed, build_key_board_embed, build_storyline_embed
 
 class AdminCog(commands.Cog):
     def __init__(self, bot):
@@ -36,6 +37,12 @@ class AdminCog(commands.Cog):
                 if resp.status == 201:
                     team = await resp.json()
                     await interaction.response.send_message(f"Team '{team_name}' registered!\n{team}", ephemeral=True)
+                    
+                    w1start_msg = await interaction.channel.send(embed=build_storyline_embed(StoryLine.W1_START))
+                    try:
+                        await w1start_msg.pin()
+                    except:
+                        pass
                 else:
                     error = await resp.text()
                     await interaction.response.send_message(f"Failed to register team\n{error}", ephemeral=True)
@@ -143,18 +150,7 @@ class AdminCog(commands.Cog):
                                         file = discord.File(io.BytesIO(image_data), filename="team_board.png")
                                         embed = build_team_board_embed(team_data, tile_info, level_number)
                                         embed.set_image(url="attachment://team_board.png")
-                                        pinned = await team_channel.pins()
-                                        for msg in pinned:
-                                            try:
-                                                await msg.unpin()
-                                            except Exception as e:
-                                                await team_channel.send(f"Failed to unpin a message: {e}")
-
-                                        sent_msg = await team_channel.send(embed=embed, file=file)
-                                        try:
-                                            await sent_msg.pin()
-                                        except Exception as e:
-                                            await team_channel.send(f"Failed to pin the new board: {e}")
+                                        await team_channel.send(embed=embed, file=file)
                                 # 1 - Key Board
                                 elif info["team"]["game_state"] == 1:
                                     await team_channel.send(embed=Embed(title=f"{Emojis.DUNGEON} Your team enters into a dungeon..."))

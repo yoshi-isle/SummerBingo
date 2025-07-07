@@ -108,6 +108,13 @@ def build_boss_board_embed(team_data):
     embed.set_footer(text="Use `/submit` in your team channel to submit your tile completion.")
     return embed
 
+def build_storyline_embed(storyline):
+    embed = discord.Embed(title = storyline["title"])
+    embed.description = storyline["dialogue"]
+    embed.set_footer(text="Use /board to see your team's progress!")
+    return embed
+    
+
 key_tile_names = {
     1: "1-T: Twisted Trial",
     2: "2-T: Icy Path",

@@ -1,6 +1,6 @@
 WORLD_NAMES = {
-    1: "Twisted Cove",
-    2: "Cozy Caverns",
+    1: "Mystic Cove",
+    2: "Zaros Plateau",
     3: "Tumeken's Oasis",
-    4: "Castle Drakan",
+    4: "Drakan's Void",
 }
