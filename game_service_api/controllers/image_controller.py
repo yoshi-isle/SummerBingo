@@ -168,21 +168,47 @@ def create_board_image(team, tile_info, level=None):
             draw.text(ImageSettings.LEVEL_TEXT_COORDINATES, tile_label, fill=text_color, font=font, anchor="la")
             
             # Top right - Tile info
-            font = ImageFont.truetype(font_path, size=ImageSettings.LEVEL_TEXT_FONT_SIZE)
-            outline_range = 2
-            for ox in range(-outline_range, outline_range + 1):
-                for oy in range(-outline_range, outline_range + 1):
-                    if ox == 0 and oy == 0:
-                        continue
-                    draw.text((ImageSettings.TILE_IMAGE_TEXT_COORDINATES[0] + ox, ImageSettings.TILE_IMAGE_TEXT_COORDINATES[1] + oy), tile_info['tile_name'], font=font, fill="black", align="center")
-            draw.text((ImageSettings.TILE_IMAGE_TEXT_COORDINATES[0], ImageSettings.TILE_IMAGE_TEXT_COORDINATES[1]), tile_info['tile_name'], fill="yellow", font=font, align="center")
-            font = ImageFont.truetype(font_path, size=18)
-            for ox in range(-outline_range, outline_range + 1):
-                for oy in range(-outline_range, outline_range + 1):
-                    if ox == 0 and oy == 0:
-                        continue
-                    draw.text((ImageSettings.TILE_IMAGE_TEXT_COORDINATES_DESCRIPTION[0] + ox, ImageSettings.TILE_IMAGE_TEXT_COORDINATES_DESCRIPTION[1] + oy), tile_info['description'], font=font, fill="black", align="center")
-            draw.text((ImageSettings.TILE_IMAGE_TEXT_COORDINATES_DESCRIPTION[0], ImageSettings.TILE_IMAGE_TEXT_COORDINATES_DESCRIPTION[1]), tile_info['description'], fill="white", font=font, align="center")
+            draw_outlined_wrapped_text(
+                draw=draw,
+                text=tile_info['tile_name'],
+                font=ImageFont.truetype(font_path, size=ImageSettings.LEVEL_TEXT_FONT_SIZE),
+                position=ImageSettings.TILE_IMAGE_TEXT_COORDINATES,
+                max_width=330,
+                fill="yellow",
+                outline_fill="black",
+                outline_range=2,
+                line_spacing=2,
+                align="center"
+            )
+            draw_outlined_wrapped_text(
+                draw=draw,
+                text=tile_info['description'],
+                font=ImageFont.truetype(font_path, size=ImageSettings.TILE_DESCRIPTION_FONT_SIZE),
+                position=ImageSettings.TILE_IMAGE_TEXT_COORDINATES_DESCRIPTION,
+                max_width=330,
+                fill="white",
+                outline_fill="black",
+                outline_range=2,
+                line_spacing=2,
+                align="center"
+            )
+
+
+            # font = ImageFont.truetype(font_path, size=ImageSettings.LEVEL_TEXT_FONT_SIZE)
+            # outline_range = 2
+            # for ox in range(-outline_range, outline_range + 1):
+            #     for oy in range(-outline_range, outline_range + 1):
+            #         if ox == 0 and oy == 0:
+            #             continue
+            #         draw.text((ImageSettings.TILE_IMAGE_TEXT_COORDINATES[0] + ox, ImageSettings.TILE_IMAGE_TEXT_COORDINATES[1] + oy), tile_info['tile_name'], font=font, fill="black", align="center")
+            # draw.text((ImageSettings.TILE_IMAGE_TEXT_COORDINATES[0], ImageSettings.TILE_IMAGE_TEXT_COORDINATES[1]), tile_info['tile_name'], fill="yellow", font=font, align="center")
+            # font = ImageFont.truetype(font_path, size=18)
+            # for ox in range(-outline_range, outline_range + 1):
+            #     for oy in range(-outline_range, outline_range + 1):
+            #         if ox == 0 and oy == 0:
+            #             continue
+            #         draw.text((ImageSettings.TILE_IMAGE_TEXT_COORDINATES_DESCRIPTION[0] + ox, ImageSettings.TILE_IMAGE_TEXT_COORDINATES_DESCRIPTION[1] + oy), tile_info['description'], font=font, fill="black", align="center")
+            # draw.text((ImageSettings.TILE_IMAGE_TEXT_COORDINATES_DESCRIPTION[0], ImageSettings.TILE_IMAGE_TEXT_COORDINATES_DESCRIPTION[1]), tile_info['description'], fill="white", font=font, align="center")
 
             font = ImageFont.truetype(font_path, size=ImageSettings.TEAM_TEXT_FONT_SIZE)
             img_io = BytesIO()
@@ -203,3 +229,63 @@ tile_image_coordinates = {
     3: world3_tile_image_coordinates,
     4: world4_tile_image_coordinates,
 }
+
+def draw_outlined_wrapped_text(draw, text, font, position, max_width, fill="white", outline_fill="black", outline_range=2, line_spacing=4, align="left"):
+    """
+    Draw wrapped and outlined text using Pillow with proper word wrapping and alignment.
+
+    Args:
+        draw: ImageDraw.Draw object.
+        text: Text to draw.
+        font: ImageFont.FreeTypeFont object.
+        position: (x, y) top-left start position.
+        max_width: Max width for text wrapping.
+        fill: Fill color for main text.
+        outline_fill: Fill color for the outline.
+        outline_range: Outline thickness in pixels.
+        line_spacing: Pixels between lines.
+        align: One of "left", "center", "right".
+    """
+    def wrap_text(text, font, max_width):
+        words = text.split()
+        lines = []
+        line = ""
+        for word in words:
+            test_line = f"{line} {word}".strip()
+            bbox = draw.textbbox((0, 0), test_line, font=font)
+            line_width = bbox[2] - bbox[0]
+            if line_width <= max_width:
+                line = test_line
+            else:
+                if line:
+                    lines.append(line)
+                line = word
+        if line:
+            lines.append(line)
+        return lines
+
+    x, y = position
+    lines = wrap_text(text, font, max_width)
+
+    for line in lines:
+        bbox = draw.textbbox((0, 0), line, font=font)
+        w = bbox[2] - bbox[0]
+        h = bbox[3] - bbox[1]
+
+        if align == "center":
+            tx = x + (max_width - w) // 2
+        elif align == "right":
+            tx = x + (max_width - w)
+        else:  # default to left
+            tx = x
+
+        # Outline
+        for ox in range(-outline_range, outline_range + 1):
+            for oy in range(-outline_range, outline_range + 1):
+                if ox == 0 and oy == 0:
+                    continue
+                draw.text((tx + ox, y + oy), line, font=font, fill=outline_fill)
+
+        # Main text
+        draw.text((tx, y), line, font=font, fill=fill)
+        y += h + line_spacing
