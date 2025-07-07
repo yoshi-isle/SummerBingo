@@ -164,8 +164,8 @@ def create_board_image(team, tile_info, level=None):
             text_color = (255, 255, 255)
 
             # Top left - Team Name and Level
-            draw.text((ImageSettings.LEVEL_TEXT_COORDINATES[0]+4, ImageSettings.LEVEL_TEXT_COORDINATES[1] + 4), tile_label, fill="black", font=font, anchor="la")
-            draw.text(ImageSettings.LEVEL_TEXT_COORDINATES, tile_label, fill=text_color, font=font, anchor="la")
+            draw.text((ImageSettings.LEVEL_TEXT_COORDINATES[0]+4, ImageSettings.LEVEL_TEXT_COORDINATES[1] + 4), tile_label, fill="black", font=font, anchor="la", align="left")
+            draw.text(ImageSettings.LEVEL_TEXT_COORDINATES, tile_label, fill=text_color, font=font, anchor="la", align="left")
             
             # Top right - Tile info
             draw_outlined_wrapped_text(
