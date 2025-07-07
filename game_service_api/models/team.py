@@ -30,3 +30,5 @@ class Team:
     w2boss_completion_counter: int = 3
     w3boss_completion_counter: int = 1
     w4boss_completion_counter: int = 5
+
+    team_image_path: str = "1.png"

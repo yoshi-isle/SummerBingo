@@ -34,7 +34,7 @@ def generate_board(team_id):
     current_world = team.get("current_world", 1)
     shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
     idx = shuffled_tiles.index(current_tile)
-    level = idx + 1  # 1-based index
+    level = idx + 1
     if game_state == 0:
         img_io = create_board_image(team, tile_info, level)
         return app.response_class(img_io, mimetype='image/png')
@@ -73,7 +73,7 @@ def create_key_image(team, tile_info, level=None):
                 tile_img = tile_img.convert("RGBA")  # Ensure tile image is RGBA
                 base_img.paste(tile_img, (120 + idx*320, 500), tile_img)
                 # Draw text below the image
-                draw = ImageDraw.Draw(base_img)
+                
                 font_path = os.path.join(os.path.dirname(__file__), ImageSettings.FONT)
                 font_path = os.path.abspath(font_path)
                 font = ImageFont.truetype(font_path, size=32)
@@ -112,88 +112,79 @@ def create_board_image(team, tile_info, level=None):
     """
     current_tile = team.get("current_tile")
     current_world = team.get("current_world")
+    team_name = team.get("team_name", "Unknown Team")
 
-    image_path = os.path.join(os.path.dirname(__file__), f'../images/world{current_world}/board/board_background.png')
-    image_path = os.path.abspath(image_path)
+    img_background = os.path.join(os.path.dirname(__file__), f'../images/world{current_world}/board/board_background.png')
+    img_background = os.path.abspath(img_background)
+    font_path = os.path.join(os.path.dirname(__file__), ImageSettings.FONT)
+    font_path = os.path.abspath(font_path)
+    tile_label = f"{WORLD_NAMES[current_world]} {current_world}-{level}" if level is not None else f"{current_world}-{current_tile}-{tile_info['tile_name']}"
+
     try:
-        with Image.open(image_path) as base_img:
+        with Image.open(img_background) as base_img:
+
+            draw = ImageDraw.Draw(base_img)
 
             # UI Panel
             ui_img_path = os.path.join(os.path.dirname(__file__), f'../images/user_interface.png')
             ui_img_path = os.path.abspath(ui_img_path)
             with Image.open(ui_img_path) as ui_image:
                 base_img.paste(ui_image, (0, 0), ui_image if ui_image.mode == 'RGBA' else None)
-
+            # Path Image
             path_img_path = os.path.join(os.path.dirname(__file__), f'../images/world{current_world}/path/w1path{level-1}.png')
             path_img_path = os.path.abspath(path_img_path)
             with Image.open(path_img_path) as path_img:
                 base_img.paste(path_img, (0, 0), path_img if path_img.mode == 'RGBA' else None)
-
-            # Load and paste tile image on top
+            # Team Bubble Image
+            team_image_path = os.path.join(os.path.dirname(__file__), f'../images/teams/{team.get("team_image_path", "1.png")}')
+            team_image_path = os.path.abspath(team_image_path)
+            with Image.open(team_image_path) as team_img:
+                base_img.paste(team_img, world1_tile_image_coordinates[level], team_img if team_img.mode == 'RGBA' else None)
+            # Tile image graphic
+            map_coordinate = ImageSettings.TILE_IMAGE_COORDINATES
             current_tile_img_path = os.path.join(os.path.dirname(__file__), f'../images/world{current_world}/tiles/{current_tile}.png')
             current_tile_img_path = os.path.abspath(current_tile_img_path)
             with Image.open(current_tile_img_path) as tile_img:
-                # Resize tile image to exactly 90x90
-                # Resize tile image to fit within 90x90 while keeping aspect ratio
-                max_size = (140, 140)
-                tile_img.thumbnail(max_size, Image.NEAREST)
-                # Get map image coordinate
-                shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
-                current_tile = team.get("current_tile")
-                current_world = team.get("current_world")
-
-                idx = shuffled_tiles.index(current_tile)
-                level = idx + 1
-
-                map_coordinate = 920, 22
-
+                tile_img = tile_img.convert("RGBA")
+                tile_img = tile_img.resize(ImageSettings.TILE_IMAGE_SCALE, Image.NEAREST)
                 # Draw black outline behind the tile image
-                outline_width = 1
+                outline_width = 2
                 x, y = map_coordinate
                 mask = tile_img.split()[-1] if tile_img.mode == 'RGBA' else None
+                # Create a black image for the outline, same size as tile_img
+                black_img = Image.new("RGBA", tile_img.size, (0, 0, 0, 255))
                 for dx in range(-outline_width, outline_width + 1):
                     for dy in range(-outline_width, outline_width + 1):
                         if dx == 0 and dy == 0:
                             continue
-                        base_img.paste((0, 0, 0), (x + dx, y + dy), mask)
+                        base_img.paste(black_img, (x + dx, y + dy), mask)
                 base_img.paste(tile_img, map_coordinate, mask)
 
-                # Draw outlined text underneath the image
-                draw = ImageDraw.Draw(base_img)
-                font_path = os.path.join(os.path.dirname(__file__), ImageSettings.FONT)
-                font_path = os.path.abspath(font_path)
-                font = ImageFont.truetype(font_path, size=40)
-                text = f"{tile_info['tile_name']}"
-                text_x = 240
-                text_y = 930
-                
-                # Draw outline
-                outline_range = 2
-                for ox in range(-outline_range, outline_range + 1):
-                    for oy in range(-outline_range, outline_range + 1):
-                        if ox == 0 and oy == 0:
-                            continue
-                        draw.text((text_x + ox, text_y + oy), text, font=font, fill="black", anchor="ma")
-                # Draw main text, left aligned
-                draw.text((text_x, text_y), text, font=font, fill="yellow", anchor="la")
-                draw.text((text_x, text_y + 50), tile_info['description'], font=font, fill="white", anchor="la")
-
-            draw = ImageDraw.Draw(base_img)
-            font_path = os.path.join(os.path.dirname(__file__), ImageSettings.FONT)
-            font_path = os.path.abspath(font_path)
-            font = ImageFont.truetype(font_path, size=50)
-
-            team_name = team['team_name']
+            font = ImageFont.truetype(font_path, size=ImageSettings.TEAM_TEXT_FONT_SIZE)
             text_color = (255, 255, 255)
-            text_position = (base_img.width - 20, 50)
-            text_position_tile = (0 + 20, 50)
 
-            draw.text(text_position, team_name, fill=text_color, font=font, anchor="ra")  # Right alignment
+            # Top left - Team Name and Level
+            draw.text((ImageSettings.LEVEL_TEXT_COORDINATES[0]+4, ImageSettings.LEVEL_TEXT_COORDINATES[1] + 4), tile_label, fill="black", font=font, anchor="la")
+            draw.text(ImageSettings.LEVEL_TEXT_COORDINATES, tile_label, fill=text_color, font=font, anchor="la")
+            
+            # Top right - Tile info
+            font = ImageFont.truetype(font_path, size=ImageSettings.LEVEL_TEXT_FONT_SIZE)
+            outline_range = 2
+            for ox in range(-outline_range, outline_range + 1):
+                for oy in range(-outline_range, outline_range + 1):
+                    if ox == 0 and oy == 0:
+                        continue
+                    draw.text((ImageSettings.TILE_IMAGE_TEXT_COORDINATES[0] + ox, ImageSettings.TILE_IMAGE_TEXT_COORDINATES[1] + oy), tile_info['tile_name'], font=font, fill="black", align="center")
+            draw.text((ImageSettings.TILE_IMAGE_TEXT_COORDINATES[0], ImageSettings.TILE_IMAGE_TEXT_COORDINATES[1]), tile_info['tile_name'], fill="yellow", font=font, align="center")
+            font = ImageFont.truetype(font_path, size=18)
+            for ox in range(-outline_range, outline_range + 1):
+                for oy in range(-outline_range, outline_range + 1):
+                    if ox == 0 and oy == 0:
+                        continue
+                    draw.text((ImageSettings.TILE_IMAGE_TEXT_COORDINATES_DESCRIPTION[0] + ox, ImageSettings.TILE_IMAGE_TEXT_COORDINATES_DESCRIPTION[1] + oy), tile_info['description'], font=font, fill="black", align="center")
+            draw.text((ImageSettings.TILE_IMAGE_TEXT_COORDINATES_DESCRIPTION[0], ImageSettings.TILE_IMAGE_TEXT_COORDINATES_DESCRIPTION[1]), tile_info['description'], fill="white", font=font, align="center")
 
-            # If level is provided, use it (discord_id version), else use team['current_tile'] (team_id version)
-            tile_label = f"{WORLD_NAMES[current_world]} {team['current_world']}-{level}" if level is not None else f"{current_world}-{current_tile}-{tile_info['tile_name']}"
-            draw.text(text_position_tile, tile_label, fill=text_color, font=font, anchor="la")
-
+            font = ImageFont.truetype(font_path, size=ImageSettings.TEAM_TEXT_FONT_SIZE)
             img_io = BytesIO()
             base_img.save(img_io, 'PNG')
             img_io.seek(0)
