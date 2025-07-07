@@ -151,9 +151,14 @@ class AdminCog(commands.Cog):
                                         embed = build_team_board_embed(team_data, tile_info, level_number)
                                         embed.set_image(url="attachment://team_board.png")
                                         await team_channel.send(embed=embed, file=file)
-                                # 1 - Key Board
-                                elif info["team"]["game_state"] == 1:
-                                    await team_channel.send(embed=Embed(title=f"{Emojis.DUNGEON} Your team enters into a dungeon..."))
+                                # 1 - Key Board (world 1)
+                                elif info["team"]["game_state"] == 1 and info["team"]["current_world"] == 1:
+                                    w1_key_msg = await team_channel.send(embed=build_storyline_embed(StoryLine.W1_KEY))
+                                    try:
+                                        await w1_key_msg.pin()
+                                    except:
+                                        pass
+
                                     async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=submission['team_id'])) as image_resp:
                                         image_data = await image_resp.read()
                                         file = discord.File(io.BytesIO(image_data), filename="team_board.png")
@@ -161,9 +166,8 @@ class AdminCog(commands.Cog):
                                         embed.set_image(url="attachment://team_board.png")
                                         await team_channel.send(embed=embed, file=file)
                                 
-                                # 2 - Boss Tile
-                                elif info["team"]["game_state"] == 2:
-                                    await team_channel.send(embed=Embed(title=f"{Emojis.DUNGEON} Your team enters into the boss lair..."))
+                                # 2 - Boss Tile (world 1)
+                                elif info["team"]["game_state"] == 2 and info["team"]["current_world"] == 1:
                                     async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=submission['team_id'])) as image_resp:
                                         image_data = await image_resp.read()
                                         file = discord.File(io.BytesIO(image_data), filename="team_board.png")
@@ -187,9 +191,22 @@ class AdminCog(commands.Cog):
                     updated_team = await approve_resp.json()
                     team = updated_team["team"]
                     if count_w1_keys(team) >= 3:
-                        await team_channel.send(embed=Embed(title=f"Your team arrives at the boss..."))
+                        w1_boss_msg = await team_channel.send(embed=build_storyline_embed(StoryLine.W1_BOSS))
+                        try:
+                            await w1_boss_msg.pin()
+                        except:
+                            pass
                         async with self.session.put(ApiUrls.ADVANCE_TO_BOSS_TILE.format(id=team["_id"])) as approve_resp:
-                            return
+                            async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION.format(id=submission['team_id'])) as resp:
+                                    info = await resp.json()
+                                    team_data = info["team"]
+                                    async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=submission['team_id'])) as image_resp:
+                                        image_data = await image_resp.read()
+                                        file = discord.File(io.BytesIO(image_data), filename="team_board.png")
+                                        embed = build_boss_board_embed(team_data)
+                                        embed.set_image(url="attachment://team_board.png")
+                                        await team_channel.send(embed=embed, file=file)
+                                        return
                     if team[f"w1key{submission['key_option']}_completion_counter"] <= 0:
                         await team_channel.send(embed=Embed(title=f"{Emojis.KEY} Key acquired!"))
                     else:

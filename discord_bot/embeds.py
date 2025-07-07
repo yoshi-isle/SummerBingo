@@ -7,8 +7,8 @@ def build_team_board_embed(team_data, tile_info, team_level_string):
         title=team_data['team_name']
     )
     # The image should be set by the caller using set_image(url="attachment://team_board.png")
-    embed.set_thumbnail(url="https://static.wikia.nocookie.net/abobo/images/4/4e/Goomba.png/revision/latest?cb=20200706184805")
-    embed.set_footer(text="Use `/submit` in your team channel to submit your tile completion.", icon_url=Emojis.SKW_LOGO)
+    embed.set_thumbnail(url=team_data["thumbnail_url"])
+    embed.set_footer(text="Use /submit in your team channel to submit your tile completion.", icon_url=Emojis.SKW_LOGO)
     embed.add_field(
         name=f"🗺️ {WORLD_NAMES[team_data['current_world']]} {team_level_string}",
         value=f"{tile_info['tile_name']} ([Wiki]({tile_info['wiki_url']}))",
@@ -30,8 +30,8 @@ def build_key_board_embed(team_data):
     embed = discord.Embed(
         title=team_data['team_name']
     )
-    embed.set_thumbnail(url="https://static.wikia.nocookie.net/abobo/images/4/4e/Goomba.png/revision/latest?cb=20200706184805")
-    embed.set_footer(text="Use `/key` in your team channel to submit your key tile completion.", icon_url=Emojis.SKW_LOGO)
+    embed.set_thumbnail(url=team_data["thumbnail_url"])
+    embed.set_footer(text="Use /key in your team channel to submit your key tile completion.", icon_url=Emojis.SKW_LOGO)
     embed.add_field(
         name=f"{key_tile_names[team_data['current_world']]}",
         value="Collect 3 out of 5 keys to unlock the boss room.",
@@ -50,7 +50,7 @@ def build_key_board_embed(team_data):
         if counter == 0:
             return f"{Emojis.KEY} **Complete!**"
         else:
-            return f"{counter} submissions needed"
+            return f"{counter} submission(s) needed"
 
     submissions_needed_text = (
         f"Key 1: {format_submission(team_data['w1key1_completion_counter'])}\n"
@@ -95,7 +95,7 @@ def build_boss_board_embed(team_data):
         color=discord.Color.dark_purple()
     )
     embed.add_field(
-        name=f"1-B: Showdown on Mount Quidamortem {Emojis.OLMLET}",
+        name=f"{Emojis.OLMLET} 1-B: Showdown at the Summit",
         value="Complete the challenge to clear the world.",
         inline=False
     )
@@ -104,7 +104,7 @@ def build_boss_board_embed(team_data):
         value=f"You cannot skip this challenge.",
         inline=False
     )
-    embed.set_footer(text="Use `/submit` in your team channel to submit your tile completion.", icon_url=Emojis.SKW_LOGO)
+    embed.set_footer(text="Use /boss in your team channel to submit your boss tile completion.", icon_url=Emojis.SKW_LOGO)
     return embed
 
 def build_storyline_embed(storyline):
@@ -115,7 +115,7 @@ def build_storyline_embed(storyline):
     
 
 key_tile_names = {
-    1: "1-T: Twisted Trial",
+    1: "Mystic Cove Trial",
     2: "2-T: Icy Path",
     3: "3-T: Scarab's Labrynth",
     4: "4-T: Drakan's Shade"

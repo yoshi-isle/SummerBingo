@@ -2,7 +2,7 @@ world1_tiles = {
     "world_tiles": [
         {"id": 0, "tile_name": "Hydra Leather", "description": "Obtain 1x Hydra Leather", "completion_counter": 1, "image_url": "world1/tiles/0.png", "wiki_url": "https://oldschool.runescape.wiki/w/Hydra_leather"},
         {"id": 1, "tile_name": "Smoke Battlestaff", "description": "Obtain 1x Smoke Battlestaff", "completion_counter": 1, "image_url": "world1/tiles/1.png", "wiki_url": "https://oldschool.runescape.wiki/w/Smoke_battlestaff"},
-        {"id": 2, "tile_name": "Zulrah Unique", "description": "Obtain 1x of any of the following: Tanzanite Fang, Magic Fang, Serpentine Visage, Pet Snakeling, Uncut Onyx, Jar of Swamp, Magma Mutagen, or Tanzanite Mutagen", "completion_counter": 1, "image_url": "world1/tiles/2.png", "wiki_url": "https://oldschool.runescape.wiki/w/Zulrah"},
+        {"id": 2, "tile_name": "Zulrah Unique", "description": "Tanzanite Fang, Magic Fang, Serp Visage, Pet, Onyx, Jar, Mutagen", "completion_counter": 1, "image_url": "world1/tiles/2.png", "wiki_url": "https://oldschool.runescape.wiki/w/Zulrah"},
         {"id": 3, "tile_name": "2x Zenyte Shards", "description": "Obtain 2x Zenyte Shards", "completion_counter": 2, "image_url": "world1/tiles/3.png", "wiki_url": "https://oldschool.runescape.wiki/w/Zenyte_shard"},
         {"id": 4, "tile_name": "Herbi Pet", "description": "Obtain 1x Herbi pet", "completion_counter": 1, "image_url": "world1/tiles/4.png", "wiki_url": "https://oldschool.runescape.wiki/w/Herbi"},
         {"id": 5, "tile_name": "10x Scurrius Spines", "description": "Obtain 10x Scurrius Spines", "completion_counter": 10, "image_url": "world1/tiles/5.png", "wiki_url": "https://oldschool.runescape.wiki/w/Scurrius"},

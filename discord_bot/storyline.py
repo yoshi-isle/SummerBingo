@@ -9,19 +9,22 @@ From somewhere deep inland, a voice echoes across the map:
 Little do they know the perils that await them... hidden behind every tile.
 '''}
 
-    W1_KEY='''
-The heroes venture into a nearby cave, where a lone key rests beyond a wall of dancing flames.
+    W1_KEY={
+        "title":"Chapter 1-T: The Trial by Fire",
+        "dialogue": '''The heroes venture into a nearby cave, where a lone key rests beyond a wall of dancing flames.
 A voice echoes, "You've done well to make it this far. Complete three of five challenges... and you may earn the right to face me."
-'''
+'''}
 
-    W1_BOSS='''
+    W1_BOSS={
+        "title":"Chapter 1-B: Showdown at the Summit",
+        "dialogue": '''
 As the adventurers ascend to the mountain's peak, the air grows still.
 Suddenly, two massive claws crash down before them, shaking the earth with a deafening roar.
 The ground quakes beneath their feet—The Great Olm has arrived.
 
 A voice—ancient and cold—rattles their bones:
 "To defeat me... you must claim that which is most rare."
-'''
+'''}
 
     W2_START = {
         "title": "Chapter 2: The Sands of Time",

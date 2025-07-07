@@ -10,6 +10,9 @@ import os
 from constants.world_tiles_map import world_tiles_map
 from constants.world_names import WORLD_NAMES
 from constants.image_settings import ImageSettings
+from controllers.image_utils.draw_ui_panel import draw_ui_panel
+from controllers.image_utils.draw_olm_dialogue_1 import draw_olm_dialogue_1
+from controllers.image_utils.draw_team_text import draw_team_text
 
 image_blueprint = Blueprint('image', __name__)
 
@@ -39,11 +42,11 @@ def generate_board(team_id):
         img_io = create_board_image(team, tile_info, level)
         return app.response_class(img_io, mimetype='image/png')
 
-    elif game_state == 1:
-        img_io = create_key_image(team, tile_info, level)
+    elif game_state == 1 and current_world == 1:
+        img_io = create_w1_key_image(team)
         return app.response_class(img_io, mimetype='image/png')
     
-    elif game_state == 2:
+    elif game_state == 2 and current_world == 1:
         img_io = create_boss_image(team)
         return app.response_class(img_io, mimetype='image/png')
 
@@ -57,54 +60,6 @@ def create_boss_image(team):
         base_img.save(img_io, 'PNG')
         img_io.seek(0)
         return img_io
-
-def create_key_image(team, tile_info, level=None):
-    current_world = team.get("current_world")
-    image_path = os.path.join(os.path.dirname(__file__), f'../images/world{current_world}/board/key_background.png')
-    image_path = os.path.abspath(image_path)
-    with Image.open(image_path) as base_img:
-        base_img = base_img.convert("RGBA")  # Ensure base image is RGBA for proper alpha compositing
-        for idx, tile in enumerate(world1_tiles["key_tiles"]):
-            key_tile_img_path = os.path.join(os.path.dirname(__file__), f'../images/{tile["image_url"]}')
-            key_tile_img_path = os.path.abspath(key_tile_img_path)
-            with Image.open(key_tile_img_path) as tile_img:
-                max_size = (90, 90)
-                tile_img.thumbnail(max_size, Image.NEAREST)
-                tile_img = tile_img.convert("RGBA")  # Ensure tile image is RGBA
-                base_img.paste(tile_img, (120 + idx*320, 500), tile_img)
-                # Draw text below the image
-                
-                font_path = os.path.join(os.path.dirname(__file__), ImageSettings.FONT)
-                font_path = os.path.abspath(font_path)
-                font = ImageFont.truetype(font_path, size=32)
-                text = tile["tile_name"]
-                text_x = 120+idx * 350 + tile_img.width // 2
-                text_y = 500 + tile_img.height + 10
-                # Draw outline for tile name
-                outline_range = 2
-                for ox in range(-outline_range, outline_range + 1):
-                    for oy in range(-outline_range, outline_range + 1):
-                        if ox == 0 and oy == 0:
-                            continue
-                        draw.text((text_x + ox, text_y + oy), text, font=font, fill="black", anchor="ma")
-                # Draw main tile name text
-                draw.text((text_x, text_y), text, font=font, fill="white", anchor="ma")
-
-                # Draw index below the tile name
-                index_text = f"/key {str(idx + 1)}"
-                index_text_y = text_y + 38  # 5px below previous text
-                for ox in range(-outline_range, outline_range + 1):
-                    for oy in range(-outline_range, outline_range + 1):
-                        if ox == 0 and oy == 0:
-                            continue
-                        draw.text((text_x + ox, index_text_y + oy), index_text, font=font, fill="black", anchor="ma")
-                draw.text((text_x, index_text_y), index_text, font=font, fill="yellow", anchor="ma")
-
-        img_io = BytesIO()
-        base_img.save(img_io, 'PNG')
-        img_io.seek(0)
-        return img_io
-    
 
 def create_board_image(team, tile_info, level=None):
     """
@@ -123,16 +78,18 @@ def create_board_image(team, tile_info, level=None):
     try:
         with Image.open(img_background) as base_img:
             draw = ImageDraw.Draw(base_img)
-            # UI Panel
-            ui_img_path = os.path.join(os.path.dirname(__file__), f'../images/user_interface.png')
-            ui_img_path = os.path.abspath(ui_img_path)
-            with Image.open(ui_img_path) as ui_image:
-                base_img.paste(ui_image, (0, 0), ui_image if ui_image.mode == 'RGBA' else None)
+            draw_ui_panel(base_img)
             # Path Image
             path_img_path = os.path.join(os.path.dirname(__file__), f'../images/world{current_world}/path/w1path{level-1}.png')
             path_img_path = os.path.abspath(path_img_path)
             with Image.open(path_img_path) as path_img:
                 base_img.paste(path_img, (0, 0), path_img if path_img.mode == 'RGBA' else None)
+            # World Map Image
+            world_map_image = os.path.join(os.path.dirname(__file__), '../images/world_map.png')
+            world_map_image = os.path.abspath(world_map_image)
+            with Image.open(world_map_image) as world_map_img:
+                world_map_img = world_map_img.convert("RGBA")
+                base_img.paste(world_map_img, (20,16), world_map_img if world_map_img.mode == 'RGBA' else None)
             # Team Bubble Image
             team_image_path = os.path.join(os.path.dirname(__file__), f'../images/teams/{team.get("team_image_path", "1.png")}')
             team_image_path = os.path.abspath(team_image_path)
@@ -148,7 +105,6 @@ def create_board_image(team, tile_info, level=None):
                 outline_width = 2
                 x, y = ImageSettings.TILE_IMAGE_COORDINATES
                 mask = tile_img.split()[-1] if tile_img.mode == 'RGBA' else None
-                # Create a black image for the outline, same size as tile_img
                 black_img = Image.new("RGBA", tile_img.size, (0, 0, 0, 255))
                 for dx in range(-outline_width, outline_width + 1):
                     for dy in range(-outline_width, outline_width + 1):
@@ -190,10 +146,7 @@ def create_board_image(team, tile_info, level=None):
                 align="center"
             )
 
-            # Bottom right team name
-            font = ImageFont.truetype(font_path, size=ImageSettings.TEAM_TEXT_FONT_SIZE)
-            draw.text((1904, 1004), text=team_name, font=font, fill="black", anchor="ra", align="right")
-            draw.text((1900, 1000), text=team_name, font=font, fill="white", anchor="ra", align="right")
+            draw_team_text(draw, team["team_name"])
             img_io = BytesIO()
             base_img.save(img_io, 'PNG')
             img_io.seek(0)
@@ -204,6 +157,46 @@ def create_board_image(team, tile_info, level=None):
         print(f"Error generating board: {e}")
         abort(500, description=f"Failed to generate board: {e}")
 
+def create_w1_key_image(team):
+    keys = count_w1_keys(team)
+    which_key_background = {
+        0: '../images/world1/keys/key_board_1.png',
+        1: '../images/world1/keys/key_board_2.png',
+        2: '../images/world1/keys/key_board_3.png',
+    }
+    font_path = os.path.join(os.path.dirname(__file__), ImageSettings.FONT)
+    font_path = os.path.abspath(font_path)
+    font=ImageFont.truetype(font_path, size=ImageSettings.TEAM_TEXT_FONT_SIZE)
+
+    image_path = os.path.join(os.path.dirname(__file__), which_key_background[keys])
+    image_path = os.path.abspath(image_path)
+    with Image.open(image_path) as base_img:
+        draw = ImageDraw.Draw(base_img)
+        draw_ui_panel(base_img)
+        draw_olm_dialogue_1(base_img)
+        draw_team_text(draw, team["team_name"])
+         # Top left - Level
+         # World Map Image
+        key_tile_path = os.path.join(os.path.dirname(__file__), '../images/key_tile.png')
+        key_tile_path = os.path.abspath(key_tile_path)
+        with Image.open(key_tile_path) as key_tile_image:
+            key_tile_image = key_tile_image.convert("RGBA")
+            base_img.paste(key_tile_image, (20,16), key_tile_image if key_tile_image.mode == 'RGBA' else None)
+        
+        # key tile image graphic
+        key_tile_graphic = os.path.join(os.path.dirname(__file__), '../images/world1/key_tiles.png')
+        key_tile_graphic = os.path.abspath(key_tile_graphic)
+        with Image.open(key_tile_graphic) as key_graphic:
+            key_graphic = key_graphic.convert("RGBA")
+            base_img.paste(key_graphic, (20,16), key_graphic if key_graphic.mode == 'RGBA' else None)
+        
+        tile_label = "Mystic Cove Trial"
+        draw.text((ImageSettings.LEVEL_TEXT_COORDINATES[0]+4, ImageSettings.LEVEL_TEXT_COORDINATES[1] + 4), tile_label, fill="black", font=font, anchor="la", align="left")
+        draw.text(ImageSettings.LEVEL_TEXT_COORDINATES, tile_label, fill="white", font=font, anchor="la", align="left")
+        img_io = BytesIO()
+        base_img.save(img_io, 'PNG')
+        img_io.seek(0)
+        return img_io
 
 
 tile_image_coordinates = {
@@ -272,3 +265,12 @@ def draw_outlined_wrapped_text(draw, text, font, position, max_width, fill="whit
         # Main text
         draw.text((tx, y), line, font=font, fill=fill)
         y += h + line_spacing
+
+def count_w1_keys(team):
+    return sum(int(key) == 0 for key in [
+        team["w1key1_completion_counter"],
+        team["w1key2_completion_counter"],
+        team["w1key3_completion_counter"],
+        team["w1key4_completion_counter"],
+        team["w1key5_completion_counter"]
+    ])

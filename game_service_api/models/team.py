@@ -32,3 +32,4 @@ class Team:
     w4boss_completion_counter: int = 5
 
     team_image_path: str = "1.png"
+    thumbnail_url: str = ""
