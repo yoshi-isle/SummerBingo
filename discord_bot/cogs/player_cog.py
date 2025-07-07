@@ -97,7 +97,7 @@ class PlayerCog(commands.Cog):
             description=f"🟡 Status: Pending\n{interaction.user.mention} submitted for {current_tile}. Please wait for an admin to review.",
             color=discord.Color.yellow()
         )
-        embed.set_image(url=image.url)
+        embed.set_thumbnail(url=image.url)
         embed.set_footer(text="Mistake with screenshot? Contact an admin.")
 
         team_msg = await interaction.channel.send(embed=embed)
@@ -182,7 +182,7 @@ class PlayerCog(commands.Cog):
             description=f"🟡 Status: Pending\n{interaction.user.mention} submitted for key tile {option.value}. Please wait for an admin to review.",
             color=discord.Color.orange()
         )
-        embed.set_image(url=image.url)
+        embed.set_thumbnail(url=image.url)
         embed.set_footer(text="Mistake with screenshot? Contact an admin.")
 
         team_msg = await interaction.response.send_message(embed=embed)
@@ -241,7 +241,7 @@ class PlayerCog(commands.Cog):
             description=f"🟡 Status: Pending\n{interaction.user.mention} submitted for the boss tile. Please wait for an admin to review.",
             color=discord.Color.red()
         )
-        embed.set_image(url=image.url)
+        embed.set_thumbnail(url=image.url)
         embed.set_footer(text="Mistake with screenshot? Contact an admin.")
 
         team_msg = await interaction.response.send_message(embed=embed)

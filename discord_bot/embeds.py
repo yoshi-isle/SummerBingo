@@ -47,7 +47,7 @@ def build_key_board_embed(team_data):
         key_count += counter == 0
 
     def format_submission(counter):
-        if counter == 0:
+        if counter <= 0:
             return f"{Emojis.KEY} **Complete!**"
         else:
             return f"{counter} submission(s) needed"
@@ -116,7 +116,7 @@ def build_storyline_embed(storyline):
 
 key_tile_names = {
     1: "Mystic Cove Trial",
-    2: "2-T: Icy Path",
-    3: "3-T: Scarab's Labrynth",
+    2: "Scarab's Labrynth",
+    3: "Icy Path",
     4: "4-T: Drakan's Shade"
 }

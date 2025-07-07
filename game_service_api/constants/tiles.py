@@ -27,10 +27,41 @@ world1_tiles = {
         {"id": 4, "tile_name": "10x Elite Clues\n from BA High Gambles", "description": "Obtain 10x Elite Clues specifically from BA High Gambles", "completion_counter": 10, "image_url": "world1/keys/4.png", "wiki_url": "https://oldschool.runescape.wiki/w/elite_clue"}
     ],
     "boss_tile":
-        {"id": 0, "tile_name": "Any Megarare from CoX. Elder/Kodai/TBow", "description": "Obtain any 1x mega-rare from CoX. Elder/Kodai/Tbow. Olmlet counts too.", "completion_counter": 1, "image_url": "world1/boss/0.png", "wiki_url": "https://oldschool.runescape.wiki/w/Chambers_of_Xeric"},
+        {"id": 0, "tile_name": "Any Megarare from CoX.", "description": "Obtain any 1x mega-rare from CoX. Elder/Kodai/Tbow. Olmlet counts too.", "completion_counter": 1, "image_url": "world1/boss/0.png", "wiki_url": "https://oldschool.runescape.wiki/w/Chambers_of_Xeric"},
 }
 
 world2_tiles = {
+    "world_tiles": [
+        {"id": 0, "tile_name": "Mole pet", "description": "", "completion_counter": 1, "image_url": "world3/tiles/0.png", "wiki_url": ""},
+        {"id": 1, "tile_name": "Broken Dragon Pickaxe", "description": "", "completion_counter": 1, "image_url": "world3/tiles/1.png", "wiki_url": ""},
+        {"id": 2, "tile_name": "2x Dragon 2h from KQ", "description": "", "completion_counter": 2, "image_url": "world3/tiles/2.png", "wiki_url": ""},
+        {"id": 3, "tile_name": "Leviathan's Lure OR Virtus piece from Leviathan", "description": "", "completion_counter": 1, "image_url": "world3/tiles/3.png", "wiki_url": ""},
+        {"id": 4, "tile_name": "4x Eclipse Moon Pieces", "description": "", "completion_counter": 4, "image_url": "world3/tiles/4.png", "wiki_url": ""},
+        {"id": 5, "tile_name": "5x D Scims from Scorpia", "description": "", "completion_counter": 5, "image_url": "world3/tiles/5.png", "wiki_url": ""},
+        {"id": 6, "tile_name": "Big Harpoonfish", "description": "", "completion_counter": 1, "image_url": "world3/tiles/6.png", "wiki_url": ""},
+        {"id": 7, "tile_name": "3x Fangs OR Lightbearers", "description": "", "completion_counter": 3, "image_url": "world3/tiles/7.png", "wiki_url": ""},
+        {"id": 8, "tile_name": "Jar of Eyes", "description": "", "completion_counter": 1, "image_url": "world3/tiles/8.png", "wiki_url": ""},
+        {"id": 9, "tile_name": "5x Fedoras from Crazy Arch", "description": "", "completion_counter": 5, "image_url": "world3/tiles/9.png", "wiki_url": ""},
+        {"id": 10, "tile_name": "3x Sunfire Fanatic Pieces", "description": "", "completion_counter": 3, "image_url": "world3/tiles/10.png", "wiki_url": ""},
+        {"id": 11, "tile_name": "Mole slippers", "description": "", "completion_counter": 1, "image_url": "world3/tiles/11.png", "wiki_url": ""},
+        {"id": 12, "tile_name": "Cat mask", "description": "", "completion_counter": 1, "image_url": "world3/tiles/12.png", "wiki_url": ""},
+        {"id": 13, "tile_name": "4x Angler Pieces", "description": "4x Angler Pieces from Fishing Trawler", "completion_counter": 4, "image_url": "world3/tiles/13.png", "wiki_url": ""},
+        {"id": 14, "tile_name": "Any dye from GOTR", "description": "", "completion_counter": 1, "image_url": "world3/tiles/14.png", "wiki_url": ""},
+        {"id": 15, "tile_name": "Jogre Champion Scroll", "description": "", "completion_counter": 1, "image_url": "world3/tiles/15.png", "wiki_url": ""},
+        {"id": 16, "tile_name": "Dark Bow", "description": "", "completion_counter": 1, "image_url": "world3/tiles/16.png", "wiki_url": ""},
+    ],
+    "key_tiles": [
+        {"id": 0, "tile_name": "Golden Tench", "description": "", "completion_counter": 1, "image_url": "world3/keys/0.png", "wiki_url": ""},
+        {"id": 1, "tile_name": "5x Obsidian Armor Pieces ", "description": "Premium tools", "completion_counter": 5, "image_url": "world3/keys/1.png", "wiki_url": ""},
+        {"id": 2, "tile_name": "Uncut Onyx", "description": "", "completion_counter": 1, "image_url": "world3/keys/2.png", "wiki_url": ""},
+        {"id": 3, "tile_name": "3x Cerberus Crystals", "description": "", "completion_counter": 3, "image_url": "world3/keys/3.png", "wiki_url": ""},
+        {"id": 4, "tile_name": "Any ToA Purple", "description": "", "completion_counter": 1, "image_url": "world3/keys/4.png", "wiki_url": ""}
+    ],
+    "boss_tile":
+        {"id": 0, "tile_name": "Tonalztics of ralos", "description": "Fancy Footwork", "completion_counter": 1, "image_url": "world3/boss/0.png", "wiki_url": ""},
+}
+
+world3_tiles = {
     "world_tiles": [
         {"id": 0, "tile_name": "Magic Seed from Zilyana", "description": "Magic Seed from Zilyana", "completion_counter": 1, "image_url": "world2/tiles/0.png", "wiki_url": ""},
         {"id": 1, "tile_name": "3x Armadyl Armor Pieces", "description": "3x Armadyl Armor Pieces", "completion_counter": 3, "image_url": "world2/tiles/1.png", "wiki_url": ""},
@@ -61,37 +92,6 @@ world2_tiles = {
     ],
     "boss_tile":
         {"id": 0, "tile_name": "Zaryte Crossbow from scratch", "description": "Ancient Prison Break", "completion_counter": 2, "image_url": "world2/boss/0.png", "wiki_url": ""},
-}
-
-world3_tiles = {
-    "world_tiles": [
-        {"id": 0, "tile_name": "Mole pet", "description": "", "completion_counter": 1, "image_url": "world3/tiles/0.png", "wiki_url": ""},
-        {"id": 1, "tile_name": "Broken Dragon Pickaxe", "description": "", "completion_counter": 1, "image_url": "world3/tiles/1.png", "wiki_url": ""},
-        {"id": 2, "tile_name": "2x Dragon 2h from KQ", "description": "", "completion_counter": 2, "image_url": "world3/tiles/2.png", "wiki_url": ""},
-        {"id": 3, "tile_name": "Leviathan's Lure OR Virtus piece from Leviathan", "description": "", "completion_counter": 1, "image_url": "world3/tiles/3.png", "wiki_url": ""},
-        {"id": 4, "tile_name": "4x Eclipse Moon Pieces", "description": "", "completion_counter": 4, "image_url": "world3/tiles/4.png", "wiki_url": ""},
-        {"id": 5, "tile_name": "5x D Scims from Scorpia", "description": "", "completion_counter": 5, "image_url": "world3/tiles/5.png", "wiki_url": ""},
-        {"id": 6, "tile_name": "Big Harpoonfish", "description": "", "completion_counter": 1, "image_url": "world3/tiles/6.png", "wiki_url": ""},
-        {"id": 7, "tile_name": "3x Fangs OR Lightbearers", "description": "", "completion_counter": 3, "image_url": "world3/tiles/7.png", "wiki_url": ""},
-        {"id": 8, "tile_name": "Jar of Eyes", "description": "", "completion_counter": 1, "image_url": "world3/tiles/8.png", "wiki_url": ""},
-        {"id": 9, "tile_name": "5x Fedoras from Crazy Arch", "description": "", "completion_counter": 5, "image_url": "world3/tiles/9.png", "wiki_url": ""},
-        {"id": 10, "tile_name": "3x Sunfire Fanatic Pieces", "description": "", "completion_counter": 3, "image_url": "world3/tiles/10.png", "wiki_url": ""},
-        {"id": 11, "tile_name": "Mole slippers", "description": "", "completion_counter": 1, "image_url": "world3/tiles/11.png", "wiki_url": ""},
-        {"id": 12, "tile_name": "Cat mask", "description": "", "completion_counter": 1, "image_url": "world3/tiles/12.png", "wiki_url": ""},
-        {"id": 13, "tile_name": "4x Angler Pieces from Fishing Trawler", "description": "", "completion_counter": 4, "image_url": "world3/tiles/13.png", "wiki_url": ""},
-        {"id": 14, "tile_name": "Any dye from GOTR", "description": "", "completion_counter": 1, "image_url": "world3/tiles/14.png", "wiki_url": ""},
-        {"id": 15, "tile_name": "Jogre Champion Scroll", "description": "", "completion_counter": 1, "image_url": "world3/tiles/15.png", "wiki_url": ""},
-        {"id": 16, "tile_name": "Dark Bow", "description": "", "completion_counter": 1, "image_url": "world3/tiles/16.png", "wiki_url": ""},
-    ],
-    "key_tiles": [
-        {"id": 0, "tile_name": "Golden Tench", "description": "", "completion_counter": 1, "image_url": "world3/keys/0.png", "wiki_url": ""},
-        {"id": 1, "tile_name": "5x Obsidian Armor Pieces ", "description": "Premium tools", "completion_counter": 5, "image_url": "world3/keys/1.png", "wiki_url": ""},
-        {"id": 2, "tile_name": "Uncut Onyx", "description": "", "completion_counter": 1, "image_url": "world3/keys/2.png", "wiki_url": ""},
-        {"id": 3, "tile_name": "3x Cerberus Crystals", "description": "", "completion_counter": 3, "image_url": "world3/keys/3.png", "wiki_url": ""},
-        {"id": 4, "tile_name": "Any ToA Purple", "description": "", "completion_counter": 1, "image_url": "world3/keys/4.png", "wiki_url": ""}
-    ],
-    "boss_tile":
-        {"id": 0, "tile_name": "Tonalztics of ralos", "description": "Fancy Footwork", "completion_counter": 1, "image_url": "world3/boss/0.png", "wiki_url": ""},
 }
 
 world4_tiles = {
