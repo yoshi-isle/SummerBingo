@@ -8,7 +8,7 @@ def build_team_board_embed(team_data, tile_info, team_level_string):
     )
     # The image should be set by the caller using set_image(url="attachment://team_board.png")
     embed.set_thumbnail(url="https://static.wikia.nocookie.net/abobo/images/4/4e/Goomba.png/revision/latest?cb=20200706184805")
-    embed.set_footer(text="Use `/submit` in your team channel to submit your tile completion.")
+    embed.set_footer(text="Use `/submit` in your team channel to submit your tile completion.", icon_url=Emojis.SKW_LOGO)
     embed.add_field(
         name=f"🗺️ {WORLD_NAMES[team_data['current_world']]} {team_level_string}",
         value=f"{tile_info['tile_name']} ([Wiki]({tile_info['wiki_url']}))",
@@ -31,7 +31,7 @@ def build_key_board_embed(team_data):
         title=team_data['team_name']
     )
     embed.set_thumbnail(url="https://static.wikia.nocookie.net/abobo/images/4/4e/Goomba.png/revision/latest?cb=20200706184805")
-    embed.set_footer(text="Use `/key` in your team channel to submit your key tile completion.")
+    embed.set_footer(text="Use `/key` in your team channel to submit your key tile completion.", icon_url=Emojis.SKW_LOGO)
     embed.add_field(
         name=f"{key_tile_names[team_data['current_world']]}",
         value="Collect 3 out of 5 keys to unlock the boss room.",
@@ -104,14 +104,13 @@ def build_boss_board_embed(team_data):
         value=f"You cannot skip this challenge.",
         inline=False
     )
-    embed.set_thumbnail(url="https://static.wikia.nocookie.net/abobo/images/4/4e/Goomba.png/revision/latest?cb=20200706184805")
-    embed.set_footer(text="Use `/submit` in your team channel to submit your tile completion.")
+    embed.set_footer(text="Use `/submit` in your team channel to submit your tile completion.", icon_url=Emojis.SKW_LOGO)
     return embed
 
 def build_storyline_embed(storyline):
     embed = discord.Embed(title = storyline["title"])
     embed.description = storyline["dialogue"]
-    embed.set_footer(text="Use /board to see your team's progress!")
+    embed.set_footer(text="Use /board to see your team's progress!", icon_url=Emojis.SKW_LOGO)
     return embed
     
 

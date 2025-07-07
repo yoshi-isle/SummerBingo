@@ -3,6 +3,7 @@ class Emojis:
     KEY_NOT_OBTAINED="<:not_obtained:1389646593074139166>"
     DUNGEON="<:dungeon:1389648812355748051>"
     OLMLET="<:Olmlet:1389757224963801229>"
+    SKW_LOGO="https://i.imgur.com/KHEg8dQ.png"
 
 class DiscordIDs:
     PENDING_SUBMISSIONS_CHANNEL_ID = 1379165881518522408

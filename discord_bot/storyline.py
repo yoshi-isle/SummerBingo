@@ -1,6 +1,6 @@
 class StoryLine:
     W1_START={
-        "title":"Humble Beginnings",
+        "title":"Chapter 1: Humble Beginnings",
         "dialogue": '''
 The heroes arrive at a strange, forgotten island—drawn by whispers of treasure and glory.
 They step off their boat, boots sinking into wet sand... only to be greeted by a mob of snippy sand crabs.
@@ -23,12 +23,14 @@ A voice—ancient and cold—rattles their bones:
 "To defeat me... you must claim that which is most rare."
 '''
 
-    W2_START = '''
+    W2_START = {
+        "title": "Chapter 2: The Sands of Time",
+        "dialogue": '''
 The blazing sun beats down as the heroes cross the shifting sands of Tumeken's Oasis.
 Golden scarabs skitter underfoot as they march forward, mirages dancing on the horizon.
 A warm wind carries a voice, playful and mocking:
 "Come find me, if you thirst for power..."
-'''
+'''}
 
     W2_KEY = '''
 Within a half-buried pyramid, the adventurers discover a radiant relic—glowing with divine energy.
@@ -49,14 +51,16 @@ His voice echoes with divine authority:
 The crowd of spirits watches in silence. The battle begins.
 '''
 
-    W3_START = '''
+    W3_START = {
+        "title": "Chapter 3: Cold Rush",
+        "dialogue": '''
 The cold bites harder with each step as the heroes scale the frozen expanse of Zaros Plateau.
 Once a fortress of the god of control, now a shattered land cloaked in snow and silence.
 Frozen bones litter the trail, and howling winds whisper secrets from a time long past.
 Through the blizzard, a voice calls out—sharp and distant:
 "Step forward, if you dare disturb her slumber..."
 '''
-
+    }
     W3_KEY = '''
 Inside a long-abandoned temple, half-buried in frost, lies a shard of Zarosian power.
 It flickers with a strange energy, locked behind a wall of ancient, arcane ice.
@@ -73,7 +77,9 @@ Her voice is chilling:
 "Fate binds us here... bring me the blade born of courage—ZCB, forged from nothing."
 '''
 
-    W4_START = '''
+    W4_START = {
+        "title": "Chapter 4: Endgame",
+        "dialogue": '''
 A blood-red moon looms overhead as the heroes cross into Drakan's Void.
 The land itself is twisted—withered trees, whispering fog, and rivers that run unnaturally dark.
 Every step forward feels watched. Every breath—heavy.
@@ -83,7 +89,7 @@ A voice hisses from the shadows:
 
 This is no longer a quest for glory. It is survival.
 '''
-
+    }
     W4_KEY = '''
 In the depths of a ruined cathedral, drenched in shadows, a black altar pulses with cursed energy.
 Above it floats a key, wrapped in chains of sinew and bone.

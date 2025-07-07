@@ -4,6 +4,8 @@ from discord import app_commands
 import aiohttp
 import io
 from constants import DiscordIDs, ApiUrls, Emojis
+from utils.get_team_from_id import get_team_from_id
+from utils.game_hasnt_started import game_hasnt_started
 from embeds import build_team_board_embed, build_key_board_embed, build_boss_board_embed
 
 class PlayerCog(commands.Cog):
@@ -17,18 +19,16 @@ class PlayerCog(commands.Cog):
     @app_commands.command(name="board", description="View your current tile board.")
     async def view_board(self, interaction: discord.Interaction):
         try:
-            # Guard against viewing board outside of team channel
-            async with self.session.get(ApiUrls.TEAM_BY_ID.format(id=interaction.user.id)) as resp:
-                if resp.status == 200:
-                    team_data = await resp.json()
-                    if str(interaction.channel_id) != team_data['discord_channel_id']:
-                        await interaction.response.send_message("You can only use this command in your team channel.", ephemeral=True)
-                        return
-                else:
-                    await interaction.response.send_message(f"It looks like you're not part of a team. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}> for support")
-                    return
+            team_data = await get_team_from_id(self.session, interaction.user.id)
+            if not team_data:
+                await interaction.response.send_message(f"You are not part of a team. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>", ephemeral=True)
+                return
             
-            # Grab board information
+            in_correct_channel = str(interaction.channel_id) == team_data['discord_channel_id']
+            if not in_correct_channel:
+                await interaction.response.send_message("You can only use this command in your team channel.", ephemeral=True)
+                return
+            
             async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION.format(id=team_data["_id"])) as resp:
                 if resp.status == 200:
                     board_information = await resp.json()
@@ -57,23 +57,14 @@ class PlayerCog(commands.Cog):
 
     @app_commands.command(name="submit", description="Submits your tile completion.")
     async def submit(self, interaction: discord.Interaction, image: discord.Attachment):
-        async with self.session.get(ApiUrls.GAME_IS_RUNNING) as running:
-            running = await running.json()
-            if running["running"] == False:
-                await interaction.response.send_message("Bingo hasn't started yet.")
-                return
+        if await game_hasnt_started(self.session):
+            await interaction.response.send_message("Bingo hasn't started yet.")
+            return
         
-        # Get the team info from the API
-        team_data = None
-        async with self.session.get(ApiUrls.TEAM_BY_ID.format(id=interaction.user.id)) as resp:
-            if resp.status == 200:
-                team_data = await resp.json()
-                if not team_data or 'team_name' not in team_data:
-                    await interaction.response.send_message(f"You are not part of a team. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>", ephemeral=True)
-                    return
-            else:
-                await interaction.response.send_message(f"Error finding team information. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>", ephemeral=True)
-                return
+        team_data = await get_team_from_id(self.session, interaction.user.id)
+        if not team_data:
+            await interaction.response.send_message(f"You are not part of a team. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>", ephemeral=True)
+            return
 
         if team_data["game_state"] == 1:
             await interaction.response.send_message(f"You are on a key tile. Use `/key` instead.", ephemeral=True)
@@ -155,6 +146,10 @@ class PlayerCog(commands.Cog):
         option: app_commands.Choice[int],
         image: discord.Attachment
     ):
+        if await game_hasnt_started(self.session):
+            await interaction.response.send_message("Bingo hasn't started yet.")
+            return
+        
         async with self.session.get(ApiUrls.TEAM_BY_ID.format(id=interaction.user.id)) as resp:
             if resp.status == 200:
                 team_data = await resp.json()
@@ -224,6 +219,10 @@ class PlayerCog(commands.Cog):
 
     @app_commands.command(name="boss", description="Submits your boss tile completion.")
     async def boss(self, interaction: discord.Interaction, image: discord.Attachment):
+        if await game_hasnt_started(self.session):
+            await interaction.response.send_message("Bingo hasn't started yet.")
+            return
+        
         async with self.session.get(ApiUrls.TEAM_BY_ID.format(id=interaction.user.id)) as resp:
             if resp.status == 200:
                 team_data = await resp.json()
