@@ -1,6 +1,8 @@
+from datetime import datetime, timedelta, timezone
 from constants import Emojis
 import discord
 from constants import WORLD_NAMES
+from dateutil import parser
 
 def build_team_board_embed(team_data, tile_info, team_level_string):
     embed = discord.Embed(
@@ -19,9 +21,17 @@ def build_team_board_embed(team_data, tile_info, team_level_string):
         value=f"{team_data['completion_counter']}",
         inline=False
     )
+    last_rolled_at = parser.parse(team_data['last_rolled_at'])  # handles RFC 1123
+    next_allowed_time = last_rolled_at + timedelta(hours=12)
+    discord_epoch_relative = int(next_allowed_time.timestamp())
+
+    # can skip if over 12 hrs
+    can_skip = next_allowed_time < datetime.now(timezone.utc)
+
     embed.add_field(
         name="⏭️ Skip",
-        value=f"You can't skip this tile until <t:1751316173:R>",
+        value=f"You can't skip this tile until <t:{discord_epoch_relative}:R>."
+            if not can_skip else "Your team can skip this tile now!",
         inline=False
     )
     return embed
@@ -92,7 +102,7 @@ def build_w1_key_board_embed(team_data):
         else:
             key_emojis.append(Emojis.KEY_NOT_OBTAINED)
     embed.add_field(
-        name="Trials Completed",
+        name="",
         value=" ".join(key_emojis),
         inline=False
     )
@@ -106,11 +116,6 @@ def build_w1_boss_board_embed(team_data):
     embed.add_field(
         name=f"{Emojis.OLMLET} 1-B: Showdown at the Summit",
         value="Complete the challenge to clear the world.",
-        inline=False
-    )
-    embed.add_field(
-        name="Skips",
-        value=f"You cannot skip this challenge.",
         inline=False
     )
     embed.set_footer(text="Use /boss in your team channel to submit your boss tile completion.", icon_url=Emojis.SKW_LOGO)

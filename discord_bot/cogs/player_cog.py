@@ -1,3 +1,4 @@
+from datetime import timedelta
 import discord
 from discord.ext import commands
 from discord import app_commands
@@ -7,6 +8,7 @@ from constants import DiscordIDs, ApiUrls, Emojis
 from utils.get_team_from_id import get_team_from_id
 from utils.game_hasnt_started import game_hasnt_started
 from embeds import build_team_board_embed, build_w1_key_board_embed, build_w1_boss_board_embed
+from dateutil import parser
 
 class PlayerCog(commands.Cog):
     def __init__(self, bot):
@@ -277,6 +279,54 @@ class PlayerCog(commands.Cog):
             if sub_resp.status != 201:
                 error = await sub_resp.text()
                 await interaction.channel.send(f"Failed to create submission in API: {error}")
-        
+    
+    @app_commands.command(name="skip", description="Skip the current tile.")
+    async def skip(self, interaction: discord.Interaction):
+        if await game_hasnt_started(self.session):
+            await interaction.response.send_message("Bingo hasn't started yet.")
+            return
+
+        async with self.session.get(ApiUrls.TEAM_BY_ID.format(id=interaction.user.id)) as resp:
+            if resp.status == 200:
+                team_data = await resp.json()
+            else:
+                await interaction.response.send_message(f"Error finding team information. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
+                return
+
+        if team_data["game_state"] == 1:
+            await interaction.response.send_message(f"You cannot skip a trial tile.", ephemeral=True)
+            return
+        if team_data["game_state"] == 2:
+            await interaction.response.send_message(f"You cannot skip a boss tile.", ephemeral=True)
+            return
+
+        async with self.session.get(ApiUrls.TEAM_LAST_ROLLED.format(id=team_data["_id"])) as resp:
+            if resp.status == 200:
+                last_rolled_data = await resp.json()
+                last_rolled_str = last_rolled_data.get('last_rolled')
+
+                if last_rolled_str is None:
+                    await interaction.response.send_message("No previous tile roll found.", ephemeral=True)
+                    return
+
+                last_rolled_at = parser.isoparse(last_rolled_str)  # <-- Convert string to datetime
+                current_time = discord.utils.utcnow()
+
+                time_difference = current_time - last_rolled_at
+
+                if time_difference.total_seconds() < 720 * 60:
+                    # Prefer the pre-formatted timestamp if available
+                    next_allowed_time = last_rolled_at + timedelta(hours=12)
+                    next_allowed_epoch = int(next_allowed_time.timestamp())
+                    discord_relative = f"<t:{next_allowed_epoch}:R>"
+                    await interaction.response.send_message(
+                        f"You can only skip a tile once every 12 hours. Wait until: {discord_relative}",
+                        ephemeral=True
+                    )
+                    return
+                # Proceed to skip the tile
+                async with self.session.post(ApiUrls.TEAM_ADVANCE_TILE.format(id=team_data["_id"])):
+                    await interaction.response.send_message("You have skipped the current tile.")
+
 async def setup(bot: commands):
     await bot.add_cog(PlayerCog(bot))

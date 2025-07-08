@@ -47,7 +47,7 @@ class AdminCog(commands.Cog):
                     error = await resp.text()
                     await interaction.response.send_message(f"Failed to register team\n{error}", ephemeral=True)
         except Exception as e:
-            await interaction.response.send_message(f"Error creating team {e}. Please try again")
+            await interaction.response.send_message(f"Error creating team")
             
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
@@ -70,7 +70,7 @@ class AdminCog(commands.Cog):
                     try:
                         await self.handle_approval(submission, message, user)
                     except Exception as e:
-                        await channel.send(f"{e} An error occured approving the submission")
+                        await channel.send(f"An error occured approving the submission")
 
                 if str(payload.emoji) == '❌':
                     pass
@@ -82,7 +82,7 @@ class AdminCog(commands.Cog):
                         try:
                             await self.handle_approval(key_submission, message, user, GameState.KEY)
                         except Exception as e:
-                            await channel.send(f"{e} An error occured approving the submission")
+                            await channel.send(f"An error occured approving the submission")
 
                     if str(payload.emoji) == '❌':
                         pass
@@ -95,7 +95,7 @@ class AdminCog(commands.Cog):
                                 try:
                                     await self.handle_approval(boss_submission, message, user, GameState.BOSS)
                                 except Exception as e:
-                                    await channel.send(f"{e} An error occured approving the submission")
+                                    await channel.send(f"An error occured approving the submission")
 
                             if str(payload.emoji) == '❌':
                                 pass

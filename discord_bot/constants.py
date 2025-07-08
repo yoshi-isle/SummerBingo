@@ -33,6 +33,7 @@ class ApiUrls:
     TEAM_BOARD_INFORMATION = f"{BASE_URL}/teams/id/{{id}}/board_information"
     ADVANCE_TO_BOSS_TILE = f"{BASE_URL}/teams/{{id}}/boss_tile"
     ADVANCE_TO_NEXT_WORLD = f"{BASE_URL}/teams/{{id}}/next_world"
+    TEAM_LAST_ROLLED = f"{BASE_URL}/teams/{{id}}/last_rolled"
 
     # Submissions
     SUBMISSION = f"{BASE_URL}/submission/{{id}}"

@@ -41,19 +41,13 @@ class ImageService:
         team_bubble_coordinates = TeamBubbleCoordinates.coordinate_map[team.get('current_world')]
         with Image.open(background_filepath) as base_img:
             draw = ImageDraw.Draw(base_img)
-            
-            # UI
             self.draw_ui_panel(base_img)
-            
             # Path
             self.paste_image(base_img, f'../images/world{team.get('current_world')}/path/w{team.get('current_world')}path{level_number_from_team(team)-1}.png')
-            
             # World Map Icon
             self.paste_image(base_img, '../images/world_map.png', (20, 16))
-            
             # Team bubble
             self.paste_image(base_img, f'../images/teams/{team.get("team_image_path")}', team_bubble_coordinates[level_number_from_team(team)])
-            
             self.draw_tile_image(base_img, f'../images/world{team.get('current_world')}/tiles/{team.get('current_tile')}.png')
             self.draw_level_text(draw, level_name)
             self.draw_outlined_wrapped_text(

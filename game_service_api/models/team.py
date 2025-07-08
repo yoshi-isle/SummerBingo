@@ -9,13 +9,16 @@ class Team:
     discord_channel_id: str
     players: List[Player]
     last_rolled_at: datetime
+
     current_tile: int = 0
     current_world: int = 0
+
     world1_shuffled_tiles: Optional[List[int]] = None
     world2_shuffled_tiles: Optional[List[int]] = None
     world3_shuffled_tiles: Optional[List[int]] = None
     world4_shuffled_tiles: Optional[List[int]] = None
     completion_counter: int = 1
+
     # 0 = Normal map, 1 = Key, 2 = Boss
     game_state: int = 0
 
@@ -30,6 +33,16 @@ class Team:
     w2boss_completion_counter: int = 3
     w3boss_completion_counter: int = 1
     w4boss_completion_counter: int = 5
+
+    # Completion counters for W2 key tiles
+    w2key1_completion_counter: int = 1
+    w2key2_completion_counter: int = 5
+    w2key3_completion_counter: int = 1
+    w2key4_completion_counter: int = 3
+    w2key5_completion_counter: int = 1
+
+    # World 2 specific state variables
+    w2_path_chosen: int = 0
 
     team_image_path: str = "1.png"
     thumbnail_url: str = ""

@@ -58,7 +58,13 @@ def create_team():
         w2boss_completion_counter=2,
         w3boss_completion_counter=1,
         w4boss_completion_counter=5,
-        last_rolled_at=datetime.now(timezone.utc)
+        last_rolled_at=datetime.now(timezone.utc),
+        w2key1_completion_counter=1,
+        w2key2_completion_counter=5,
+        w2key3_completion_counter=1,        
+        w2key4_completion_counter=3,
+        w2key5_completion_counter=1,
+        w2_path_chosen=0,
     )
 
     # Convert the Team and Player objects to dictionaries for MongoDB
@@ -162,13 +168,19 @@ def advance_tile(team_id):
     except ValueError:
         abort(400, description="Current tile not found in shuffled tiles")
 
+    # Reset the last rolled time
+    db.teams.update_one(
+        {"_id": ObjectId(team_id)}, 
+        {"$set": {"last_rolled_at": datetime.now(timezone.utc)}}
+    )
     # Check if on a key tile to update gamestate
     key_tile_level_index = key_tiles[current_world]
     if idx + 1 == key_tile_level_index:
         db.teams.update_one(
         {"_id": ObjectId(team_id)}, 
         {"$set": 
-         {"game_state": 1}
+         {"game_state": 1,
+        },
         })
         # Convert ObjectId to string for JSON serialization
         if "_id" in team:
