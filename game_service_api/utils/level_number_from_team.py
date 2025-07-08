@@ -5,12 +5,7 @@ def level_number_from_team(team):
     world = int(team.get('current_world', 1))
     level = int(team.get('current_tile', 1))
     shuffled_tiles = team.get(f'world{world}_shuffled_tiles')
-
-    idx = 0
-    for tile in shuffled_tiles:
-        if tile == level:
-            return idx + 1
-        idx += 1
+    return next(i + 1 for i, tile in enumerate(shuffled_tiles) if tile == level)
         
 world_tiles_map = {
     1: world1_tiles,
