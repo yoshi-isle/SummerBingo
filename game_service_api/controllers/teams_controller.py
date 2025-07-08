@@ -188,6 +188,20 @@ def advance_tile(team_id):
         return jsonify(team), 200
 
     # Check if already at the last tile
+
+    # World 2 - go to boss fight
+    if current_world == 2 and idx + 1 == len(shuffled_tiles):
+        db.teams.update_one(
+            {"_id": ObjectId(team_id)}, 
+            {"$set": 
+             {"game_state": 2,
+              "last_rolled_at": datetime.now(timezone.utc)}
+            })
+        # Convert ObjectId to string for JSON serialization
+        if "_id" in team:
+            team["_id"] = str(team["_id"])
+        return jsonify(team), 200
+
     if idx + 1 >= len(shuffled_tiles):
         abort(400, description="Already at last tile")
 
@@ -343,6 +357,44 @@ def get_board_information_by_team_id(team_id):
         "w1key4_completion_counter": team["w1key4_completion_counter"],
         "w1key5_completion_counter": team["w1key5_completion_counter"],
     }), 200
+
+@teams_blueprint.route("/teams/<team_id>/complete_w2_trial", methods=["PUT"])
+def complete_w2_trial(team_id):
+    """
+    Completes the W2 trial
+    Resets game_state to 0 and sets current_level to shuffledw2tiles at index 8
+    """
+    db = get_db()
+    team = db.teams.find_one({"_id": ObjectId(team_id)})
+    if not team:
+        abort(404, description="Team not found")
+
+    # Get the shuffled tiles and current tile
+    current_world = team.get("current_world", 1)
+    next_world_shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
+
+    # Set the current tile to the 8th tile in the shuffled list
+    next_tile = next_world_shuffled_tiles[7]
+
+    # calculate completion counter from the tile index
+    tile_info = get_tile_info(current_world, next_tile)
+    completion_counter = tile_info.get("completion_counter") if tile_info else None
+
+    db.teams.update_one(
+        {"_id": ObjectId(team_id)}, 
+        {"$set": 
+            {"game_state": 0,
+             "current_tile": next_tile,
+             "completion_counter": 1,
+             "last_rolled_at": datetime.now(timezone.utc)
+             }
+        })
+    
+    # Convert ObjectId to string for JSON serialization
+    if "_id" in team:
+        team["_id"] = str(team["_id"])
+    
+    return jsonify(team), 200
 
 
 @teams_blueprint.route("/teams/<team_id>/next_world", methods=["PUT"])

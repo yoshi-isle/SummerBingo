@@ -115,7 +115,33 @@ def build_w1_boss_board_embed(team_data):
     )
     embed.add_field(
         name=f"{Emojis.OLMLET} 1-B: Showdown at the Summit",
-        value="Complete the challenge to clear the world.",
+        value="Obtain 1x CoX megarare - Twisted Bow, Kodai Insignia, Elder Maul, or Olmlet",
+        inline=False
+    )
+    embed.set_footer(text="Use /boss in your team channel to submit your boss tile completion.", icon_url=Emojis.SKW_LOGO)
+    return embed
+
+def build_w2_key_board_embed(team_data):
+    embed = discord.Embed(
+        title=team_data['team_name']
+    )
+    embed.set_thumbnail(url=team_data["thumbnail_url"])
+    embed.set_footer(text="Use /trial in your team channel to submit your trial completion.", icon_url=Emojis.SKW_LOGO)
+    embed.add_field(
+        name="Tumeken's Trial",
+        value="Complete 3 out of 5 trials to complete the trial!",
+        inline=False
+    )
+    return embed
+
+def build_w2_boss_board_embed(team_data):
+    embed = discord.Embed(
+        title=team_data['team_name'],
+        color=discord.Color.dark_purple()
+    )
+    embed.add_field(
+        name="Eclipse of the Sun",
+        value="Obtain 1x Tonalztics of Ralos",
         inline=False
     )
     embed.set_footer(text="Use /boss in your team channel to submit your boss tile completion.", icon_url=Emojis.SKW_LOGO)

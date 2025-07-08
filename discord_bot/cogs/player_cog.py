@@ -7,7 +7,7 @@ import io
 from constants import DiscordIDs, ApiUrls, Emojis
 from utils.get_team_from_id import get_team_from_id
 from utils.game_hasnt_started import game_hasnt_started
-from embeds import build_team_board_embed, build_w1_key_board_embed, build_w1_boss_board_embed
+from embeds import build_team_board_embed, build_w1_key_board_embed, build_w1_boss_board_embed, build_w2_key_board_embed, build_w2_boss_board_embed
 from dateutil import parser
 
 class PlayerCog(commands.Cog):
@@ -48,6 +48,10 @@ class PlayerCog(commands.Cog):
                         embed = build_w1_key_board_embed(team_data)
                     elif int(team_data["game_state"]) == 2 and int(team_data["current_world"]) == 1:
                         embed = build_w1_boss_board_embed(team_data)
+                    elif int(team_data["game_state"]) == 1 and int(team_data["current_world"]) == 2:
+                        embed = build_w2_key_board_embed(team_data)
+                    elif int(team_data["game_state"]) == 2 and int(team_data["current_world"]) == 2:
+                        embed = build_w2_boss_board_embed(team_data)
                     else:
                         await interaction.response.send_message("Not made yet lol")
                         return
