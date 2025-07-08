@@ -6,7 +6,7 @@ import io
 from constants import DiscordIDs, ApiUrls, Emojis
 from utils.get_team_from_id import get_team_from_id
 from utils.game_hasnt_started import game_hasnt_started
-from embeds import build_team_board_embed, build_key_board_embed, build_boss_board_embed
+from embeds import build_team_board_embed, build_w1_key_board_embed, build_w1_boss_board_embed
 
 class PlayerCog(commands.Cog):
     def __init__(self, bot):
@@ -42,10 +42,13 @@ class PlayerCog(commands.Cog):
                     file = discord.File(io.BytesIO(image_data), filename="team_board.png")
                     if int(team_data["game_state"]) == 0:
                         embed = build_team_board_embed(team_data, board_information["tile"], board_information["level_number"])
-                    elif int(team_data["game_state"]) == 1:
-                        embed = build_key_board_embed(team_data)
-                    elif int(team_data["game_state"]) == 2:
-                        embed = build_boss_board_embed(team_data)
+                    elif int(team_data["game_state"]) == 1 and int(team_data["current_world"]) == 1:
+                        embed = build_w1_key_board_embed(team_data)
+                    elif int(team_data["game_state"]) == 2 and int(team_data["current_world"]) == 1:
+                        embed = build_w1_boss_board_embed(team_data)
+                    else:
+                        await interaction.response.send_message("Not made yet lol")
+                        return
                     embed.set_image(url="attachment://team_board.png")
                     await interaction.response.send_message(embed=embed, file=file)
                 else:
@@ -67,7 +70,7 @@ class PlayerCog(commands.Cog):
             return
 
         if team_data["game_state"] == 1:
-            await interaction.response.send_message(f"You are on a key tile. Use `/key` instead.", ephemeral=True)
+            await interaction.response.send_message(f"You are on a trial tile. Use `/trial` instead.", ephemeral=True)
             return
         if team_data["game_state"] == 2:
             await interaction.response.send_message(f"You are on the boss tile. Use `/boss` instead.", ephemeral=True)
@@ -128,19 +131,19 @@ class PlayerCog(commands.Cog):
             await interaction.response.send_message("Pending submissions channel not found. Please contact an admin.", ephemeral=True)
             return
 
-    @app_commands.command(name="key", description="Submit a key tile!")
+    @app_commands.command(name="trial", description="Submit a trial completion")
     @app_commands.describe(
-        option="Choose a key option: 1, 2, 3, 4, or 5",
+        option="Choose a trial option: 1, 2, 3, 4, or 5",
         image="Attach an image as proof"
     )
     @app_commands.choices(option=[
-        app_commands.Choice(name="Key #1", value=1),
-        app_commands.Choice(name="Key #2", value=2),
-        app_commands.Choice(name="Key #3", value=3),
-        app_commands.Choice(name="Key #4", value=4),
-        app_commands.Choice(name="Key #5", value=5),
+        app_commands.Choice(name="Trial #1", value=1),
+        app_commands.Choice(name="Trial #2", value=2),
+        app_commands.Choice(name="Trial #3", value=3),
+        app_commands.Choice(name="Trial #4", value=4),
+        app_commands.Choice(name="Trial #5", value=5),
     ])
-    async def submit_key(
+    async def submit_trial(
         self,
         interaction: discord.Interaction,
         option: app_commands.Choice[int],
@@ -166,7 +169,7 @@ class PlayerCog(commands.Cog):
             return
         
         if team_data[f"w1key{option.value}_completion_counter"] <= 0:
-            await interaction.response.send_message(f"{Emojis.KEY} You already have this key!", ephemeral=True)
+            await interaction.response.send_message(f"{Emojis.KEY} You already have this trail completed. Wrong option?", ephemeral=True)
             return
         
         async with self.session.get(ApiUrls.TEAM_CURRENT_TILE.format(id=team_data["_id"])) as resp:
@@ -178,8 +181,8 @@ class PlayerCog(commands.Cog):
                 return
         
         embed = discord.Embed(
-            title=f"{Emojis.KEY} Key Tile Submitted!",
-            description=f"🟡 Status: Pending\n{interaction.user.mention} submitted for key tile {option.value}. Please wait for an admin to review.",
+            title=f"{Emojis.KEY} Trial Completion Submitted!",
+            description=f"🟡 Status: Pending\n{interaction.user.mention} submitted for trial # {option.value}. Please wait for an admin to review.",
             color=discord.Color.orange()
         )
         embed.set_thumbnail(url=image.url)
@@ -189,8 +192,8 @@ class PlayerCog(commands.Cog):
         team_msg = await interaction.original_response()
 
         admin_embed = discord.Embed(
-            title=f"{Emojis.KEY} Key Tile Submission",
-            description=f"{interaction.user.mention} submitted for world {team_data['current_world']} key {option.value}.\nTeam: {team_data['team_name']}",
+            title=f"{Emojis.KEY} Trial Submission",
+            description=f"{interaction.user.mention} submitted for world {team_data['current_world']} trial # {option.value}.\nTeam: {team_data['team_name']}",
             color=discord.Color.orange()
         )
         admin_embed.set_image(url=image.url)
@@ -233,7 +236,7 @@ class PlayerCog(commands.Cog):
             await interaction.response.send_message(f"You are on an overworld tile. Use `/submit` instead.", ephemeral=True)
             return
         if team_data["game_state"] == 1:
-            await interaction.response.send_message(f"You are on a key tile. Use `/key` instead.", ephemeral=True)
+            await interaction.response.send_message(f"You are on a trial tile. Use `/trial` instead.", ephemeral=True)
             return
         
         embed = discord.Embed(

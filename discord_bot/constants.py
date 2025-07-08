@@ -1,9 +1,15 @@
 class Emojis:
-    KEY="<:key:1389645693941190666>"
+    KEY="<:trial_complete:1391972435170951319>"
     KEY_NOT_OBTAINED="<:not_obtained:1389646593074139166>"
     DUNGEON="<:dungeon:1389648812355748051>"
     OLMLET="<:Olmlet:1389757224963801229>"
     SKW_LOGO="https://i.imgur.com/KHEg8dQ.png"
+    
+    TRIAL_W1_1="<:any_cox_purple:1391970457217007677>"
+    TRIAL_W1_2="<:Crystal_tool_seed:1391971507365740555>"
+    TRIAL_W1_3="<:Burning_claw:1391971831681912964>"
+    TRIAL_W1_4="<:Bryophyta27s_essence:1391971963378860093>"
+    TRIAL_W1_5="<:Clue_scroll_28elite29:1391972076545511464>"
 
 class DiscordIDs:
     PENDING_SUBMISSIONS_CHANNEL_ID = 1379165881518522408

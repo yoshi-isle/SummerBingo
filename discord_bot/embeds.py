@@ -26,44 +26,58 @@ def build_team_board_embed(team_data, tile_info, team_level_string):
     )
     return embed
 
-def build_key_board_embed(team_data):
+def build_w1_key_board_embed(team_data):
     embed = discord.Embed(
         title=team_data['team_name']
     )
     embed.set_thumbnail(url=team_data["thumbnail_url"])
-    embed.set_footer(text="Use /key in your team channel to submit your key tile completion.", icon_url=Emojis.SKW_LOGO)
+    embed.set_footer(text="Use /trial in your team channel to submit your trial completion.", icon_url=Emojis.SKW_LOGO)
     embed.add_field(
         name=f"{key_tile_names[team_data['current_world']]}",
-        value="Collect 3 out of 5 keys to unlock the boss room.",
+        value="Complete 3 out of 5 trials to unlock the boss key!",
         inline=False
     )
 
-    key_count = 0
+    trial_count = 0
     for counter in [team_data["w1key1_completion_counter"], 
                     team_data["w1key2_completion_counter"],
                     team_data["w1key3_completion_counter"],
                     team_data["w1key4_completion_counter"],
                     team_data["w1key5_completion_counter"]]:
-        key_count += counter == 0
+        trial_count += counter == 0
 
     def format_submission(counter):
         if counter <= 0:
-            return f"{Emojis.KEY} **Complete!**"
+            return f"`Complete!`"
         else:
             return f"{counter} submission(s) needed"
 
-    submissions_needed_text = (
-        f"Key 1: {format_submission(team_data['w1key1_completion_counter'])}\n"
-        f"Key 2: {format_submission(team_data['w1key2_completion_counter'])}\n"
-        f"Key 3: {format_submission(team_data['w1key3_completion_counter'])}\n"
-        f"Key 4: {format_submission(team_data['w1key4_completion_counter'])}\n"
-        f"Key 5: {format_submission(team_data['w1key5_completion_counter'])}"
-    )
     embed.add_field(
-        name="Submissions Needed",
-        value=submissions_needed_text,
+        name=f"{Emojis.TRIAL_W1_1} Trial 1: Any CoX Purple",
+        value=f"`{format_submission(team_data['w1key1_completion_counter'])}`",
         inline=False
     )
+    embed.add_field(
+        name=f"{Emojis.TRIAL_W1_2} Trial 2: Crystal Tool Seed",
+        value=f"`{format_submission(team_data['w1key2_completion_counter'])}`",
+        inline=False
+    )
+    embed.add_field(
+        name=f"{Emojis.TRIAL_W1_3} Trial 3: 4x Burning Claws",
+        value=f"`{format_submission(team_data['w1key3_completion_counter'])}`",
+        inline=False
+    )
+    embed.add_field(
+        name=f"{Emojis.TRIAL_W1_4} Trial 4: Bryophyta's Essence OR Hill Giant Club",
+        value=f"`{format_submission(team_data['w1key4_completion_counter'])}`",
+        inline=False
+    )
+    embed.add_field(
+        name=f"{Emojis.TRIAL_W1_5} Trial 5: 10x Elite Clues from BA High Gambles",
+        value=f"`{format_submission(team_data['w1key5_completion_counter'])}`",
+        inline=False
+    )
+
     # Show 5 emojis: KEY if obtained (counter == 0), KEY_NOT_OBTAINED otherwise
     key_emojis = []
     for counter in [
@@ -78,18 +92,13 @@ def build_key_board_embed(team_data):
         else:
             key_emojis.append(Emojis.KEY_NOT_OBTAINED)
     embed.add_field(
-        name="Keys Acquired",
+        name="Trials Completed",
         value=" ".join(key_emojis),
-        inline=False
-    )
-    embed.add_field(
-        name="Skips",
-        value=f"You cannot skip this challenge.",
         inline=False
     )
     return embed
 
-def build_boss_board_embed(team_data):
+def build_w1_boss_board_embed(team_data):
     embed = discord.Embed(
         title=team_data['team_name'],
         color=discord.Color.dark_purple()

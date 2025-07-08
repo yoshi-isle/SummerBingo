@@ -7,7 +7,7 @@ from constants import ApiUrls, DiscordIDs, Emojis
 from storyline import StoryLine
 from enums.gamestate import GameState
 from utils.count_keys import count_w1_keys
-from embeds import build_boss_board_embed, build_team_board_embed, build_key_board_embed, build_storyline_embed
+from embeds import build_w1_boss_board_embed, build_team_board_embed, build_w1_key_board_embed, build_storyline_embed
 
 class AdminCog(commands.Cog):
     def __init__(self, bot):
@@ -162,7 +162,7 @@ class AdminCog(commands.Cog):
                                     async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=submission['team_id'])) as image_resp:
                                         image_data = await image_resp.read()
                                         file = discord.File(io.BytesIO(image_data), filename="team_board.png")
-                                        embed = build_key_board_embed(team_data)
+                                        embed = build_w1_key_board_embed(team_data)
                                         embed.set_image(url="attachment://team_board.png")
                                         await team_channel.send(embed=embed, file=file)
                                 
@@ -171,7 +171,7 @@ class AdminCog(commands.Cog):
                                     async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=submission['team_id'])) as image_resp:
                                         image_data = await image_resp.read()
                                         file = discord.File(io.BytesIO(image_data), filename="team_board.png")
-                                        embed = build_key_board_embed(team_data)
+                                        embed = build_w1_key_board_embed(team_data)
                                         embed.set_image(url="attachment://team_board.png")
                                         await team_channel.send(embed=embed, file=file)
                             else:
@@ -203,16 +203,16 @@ class AdminCog(commands.Cog):
                                     async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=submission['team_id'])) as image_resp:
                                         image_data = await image_resp.read()
                                         file = discord.File(io.BytesIO(image_data), filename="team_board.png")
-                                        embed = build_boss_board_embed(team_data)
+                                        embed = build_w1_boss_board_embed(team_data)
                                         embed.set_image(url="attachment://team_board.png")
                                         await team_channel.send(embed=embed, file=file)
                                         return
                     if team[f"w1key{submission['key_option']}_completion_counter"] <= 0:
-                        await team_channel.send(embed=Embed(title=f"{Emojis.KEY} Key acquired!"))
+                        await team_channel.send(embed=Embed(title=f"{Emojis.KEY} Trial completed!"))
                     else:
                         key_option = submission['key_option']
                         remaining = team[f'w1key{key_option}_completion_counter']
-                        await team_channel.send(embed=Embed(title=f"{Emojis.KEY_NOT_OBTAINED} Progress updated on key tile {key_option}. You still need to complete {remaining} more submissions to obtain this key."))
+                        await team_channel.send(embed=Embed(title=f"{Emojis.KEY_NOT_OBTAINED} Progress updated on trial # {key_option}. You still need to complete {remaining} more submissions to complete it."))
                 elif approve_resp.status == 404:
                     await team_channel.send("Key submission not found.")
                 else:
@@ -255,9 +255,9 @@ class AdminCog(commands.Cog):
                     if int(team_data["game_state"]) == 0:
                         embed = build_team_board_embed(team_data, board_information["tile"], board_information["level_number"])
                     elif int(team_data["game_state"]) == 1:
-                        embed = build_key_board_embed(team_data)
+                        embed = build_w1_key_board_embed(team_data)
                     elif int(team_data["game_state"]) == 2:
-                        embed = build_boss_board_embed(team_data)
+                        embed = build_w1_boss_board_embed(team_data)
                     embed.set_image(url="attachment://team_board.png")
                     await interaction.response.send_message(embed=embed, file=file)
                 else:
