@@ -31,20 +31,32 @@ A voice—ancient and cold—rattles their bones:
         "dialogue": '''
 The blazing sun beats down as the heroes cross the shifting sands of Tumeken's Oasis.
 Golden scarabs skitter underfoot as they march forward, mirages dancing on the horizon.
-A warm wind carries a voice, playful and mocking:
-"Come find me, if you thirst for power..."
-'''}
 
-    W2_KEY = '''
-Within a half-buried pyramid, the adventurers discover a radiant relic—glowing with divine energy.
-But between them and their prize lie deadly traps, ancient curses, and puzzles untouched for centuries.
+Yet, as they approach the looming pyramid, a thick fog clings to the path ahead—concealing what lies beyond.
+The adventurers can't help but feel that something is missing... that the true challenge still awaits, hidden just out of sight.
+'''
+    }
+
+    W2_KEY = {"title": "Chapter 2-T: The Trials of Tumeken",
+              "dialogue": '''
 As sand spills from the walls, a voice booms from above:
 "Only those who endure the trials of Tumeken may continue. Complete three of five challenges to proceed."
+'''
+}
+    
+
+    W2_KEY_COMPLETE = {"title": "Chapter 2-T: The Trials of Tumeken - Complete",
+                       "dialogue": '''
+As the final mechanism clicks into place, the thick fog outside begins to lift.
+In the distance, a colossal arena emerges from the haze—its towering pillars and sun-bleached stands promising both glory and peril.
 
 The door groans open, revealing the path forward.
 '''
+}
 
-    W2_BOSS = '''
+    W2_BOSS = {
+    "title": "Chapter 2-B: The Sands of Time - Boss",
+    "dialogue": '''
 At the heart of the colosseum, beneath the ever-burning sun, the sand trembles.
 A thunderous crack splits the arena floor as a massive figure emerges—Sol Heredit, Champion of Ralos.
 
@@ -52,7 +64,7 @@ His voice echoes with divine authority:
 "To prove your worth... bring me Ralos, the rarest gift of the sands."
 
 The crowd of spirits watches in silence. The battle begins.
-'''
+'''}
 
     W3_START = {
         "title": "Chapter 3: Cold Rush",
