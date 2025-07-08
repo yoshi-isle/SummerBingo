@@ -55,7 +55,7 @@ world2_tiles = {
         {"id": 1, "tile_name": "5x Obsidian Armor Pieces ", "description": "Premium tools", "completion_counter": 5, "image_url": "world3/keys/1.png", "wiki_url": ""},
         {"id": 2, "tile_name": "Uncut Onyx", "description": "", "completion_counter": 1, "image_url": "world3/keys/2.png", "wiki_url": ""},
         {"id": 3, "tile_name": "3x Cerberus Crystals", "description": "", "completion_counter": 3, "image_url": "world3/keys/3.png", "wiki_url": ""},
-        {"id": 4, "tile_name": "Any ToA Purple", "description": "", "completion_counter": 1, "image_url": "world3/keys/4.png", "wiki_url": ""}
+        {"id": 4, "tile_name": "Any ToA Purple", "description": "", "completion_counter": 1, "image_url": "world3/keys/4.png", "wiki_url": ""},
     ],
     "boss_tile":
         {"id": 0, "tile_name": "Tonalztics of ralos", "description": "Fancy Footwork", "completion_counter": 1, "image_url": "world3/boss/0.png", "wiki_url": ""},

@@ -30,6 +30,7 @@ def handle_exception(e):
     app.logger.error("Unhandled Exception", exc_info=e)
     return jsonify(error=str(e)), 500
 
+
 @app.route("/", methods=["GET"])
 def health_check():
     try:
