@@ -36,6 +36,14 @@ class ImageService:
         level_name = level_name_from_team(team)
         tile_info = tile_info_from_team(team)
         board_background_to_use = f'../images/world{team.get('current_world')}/board/board_background.png'
+        
+        # World 2 specific - fog or no fog
+        if team.get('current_world') == 2:
+            if level_number_from_team(team) >= 8:
+                board_background_to_use = f'../images/world{team.get('current_world')}/board/board_background_no_fog.png'
+            else:
+                board_background_to_use = f'../images/world{team.get('current_world')}/board/board_background_fog.png'
+
         background_filepath = os.path.join(os.path.dirname(__file__), board_background_to_use)
         background_filepath = os.path.abspath(background_filepath)
         team_bubble_coordinates = TeamBubbleCoordinates.coordinate_map[team.get('current_world')]
