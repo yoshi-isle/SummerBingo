@@ -423,13 +423,17 @@ def advance_to_next_world(team_id):
     # Get the shuffled tiles and current tile
     next_world = team.get("current_world", 1) + 1
     next_world_shuffled_tiles = team.get(f"world{next_world}_shuffled_tiles", [])
+    
+    tile_info = get_tile_info(next_world, next_world_shuffled_tiles[0])
+    completion_counter = tile_info.get("completion_counter") if tile_info else None
 
     db.teams.update_one(
     {"_id": ObjectId(team_id)}, 
     {"$set": 
         {"game_state": 0,
          "current_world": next_world,
-         "current_tile": next_world_shuffled_tiles[0]}
+         "current_tile": next_world_shuffled_tiles[0],
+         "completion_counter": completion_counter}
     })
     # Convert ObjectId to string for JSON serialization
     if "_id" in team:

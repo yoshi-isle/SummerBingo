@@ -58,7 +58,7 @@ world2_tiles = {
         {"id": 4, "tile_name": "Any ToA Purple", "description": "", "completion_counter": 1, "image_url": "world3/keys/4.png", "wiki_url": ""},
     ],
     "boss_tile":
-        {"id": 0, "tile_name": "Tonalztics of ralos", "description": "Fancy Footwork", "completion_counter": 1, "image_url": "world3/boss/0.png", "wiki_url": ""},
+        {"id": 0, "tile_name": "Tonalztics of ralos", "description": "Obtain 1x Tonalztics of Ralos OR Smol Heredit from the Fortis Colosseum", "completion_counter": 1, "image_url": "world3/boss/0.png", "wiki_url": ""},
 }
 
 world3_tiles = {

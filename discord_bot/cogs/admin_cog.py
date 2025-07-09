@@ -17,7 +17,7 @@ class AdminCog(commands.Cog):
     async def cog_unload(self):
         await self.session.close()
 
-    @app_commands.command(name="register_team", description="(Admin) Registers a new team")
+    @app_commands.command(name="admin_register_team", description="(Admin) Registers a new team")
     @app_commands.checks.has_role("Admin")
     async def register_team(self, interaction: discord.Interaction, users: str, team_name: str):
         try:
@@ -38,7 +38,24 @@ class AdminCog(commands.Cog):
                     team = await resp.json()
                     await interaction.response.send_message(f"Team '{team_name}' registered!\n{team}", ephemeral=True)
                     
-                    w1start_msg = await interaction.channel.send(embed=build_storyline_embed(StoryLine.W1_START))
+                    embed, file = build_storyline_embed(StoryLine.W1_START)
+                    w1start_msg = await interaction.channel.send(embed=embed, file=file)
+
+                    # Send the first team board, too
+                    async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION.format(id=team["_id"])) as resp:
+                        if resp.status == 200:
+                            board_information = await resp.json()
+                    async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=team["_id"])) as image_resp:
+                        image_data = await image_resp.read()
+
+                    tile_info = board_information.get("tile", {})
+                    team_level_string = board_information.get("level_info", "")
+                    file = discord.File(io.BytesIO(image_data), filename="team_board.png")
+
+                    embed = build_team_board_embed(team, tile_info, team_level_string)
+                    embed.set_image(url="attachment://team_board.png")
+                    await interaction.channel.send(embed=embed, file=file)
+
                     try:
                         await w1start_msg.pin()
                     except:
@@ -95,7 +112,7 @@ class AdminCog(commands.Cog):
                                 try:
                                     await self.handle_approval(boss_submission, message, user, GameState.BOSS)
                                 except Exception as e:
-                                    await channel.send(f"An error occured approving the submission")
+                                    await channel.send(f"{e} An error occured approving the submission")
 
                             if str(payload.emoji) == '❌':
                                 pass
@@ -103,7 +120,7 @@ class AdminCog(commands.Cog):
                             await channel.send(f"Submission not found in database for Message ID {str(message.id)}")
                             return
 
-    @app_commands.command(name="clear_channel", description="(Admin) Deletes all messages in the current channel")
+    @app_commands.command(name="admin_clear_channel", description="(Admin) Deletes all messages in the current channel")
     @app_commands.checks.has_role("Admin")
     async def clear_channel(self, interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=True)
@@ -153,7 +170,8 @@ class AdminCog(commands.Cog):
                                         await team_channel.send(embed=embed, file=file)
                                 # 1 - Key Board (world 1)
                                 elif info["team"]["game_state"] == 1 and info["team"]["current_world"] == 1:
-                                    w1_key_msg = await team_channel.send(embed=build_storyline_embed(StoryLine.W1_KEY))
+                                    embed, file = build_storyline_embed(StoryLine.W1_KEY)
+                                    w1_key_msg = await team_channel.send(embed=embed, file=file)
                                     try:
                                         await w1_key_msg.pin()
                                     except:
@@ -191,7 +209,8 @@ class AdminCog(commands.Cog):
                     updated_team = await approve_resp.json()
                     team = updated_team["team"]
                     if count_w1_keys(team) >= 3:
-                        w1_boss_msg = await team_channel.send(embed=build_storyline_embed(StoryLine.W1_BOSS))
+                        embed, file = build_storyline_embed(StoryLine.W1_BOSS)
+                        w1_boss_msg = await team_channel.send(embed=embed, file=file)
                         try:
                             await w1_boss_msg.pin()
                         except:
@@ -208,11 +227,11 @@ class AdminCog(commands.Cog):
                                         await team_channel.send(embed=embed, file=file)
                                         return
                     if team[f"w1key{submission['key_option']}_completion_counter"] <= 0:
-                        await team_channel.send(embed=Embed(title=f"{Emojis.KEY} Trial completed!"))
+                        await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_COMPLETE} Trial completed!"))
                     else:
                         key_option = submission['key_option']
                         remaining = team[f'w1key{key_option}_completion_counter']
-                        await team_channel.send(embed=Embed(title=f"{Emojis.KEY_NOT_OBTAINED} Progress updated on trial # {key_option}. You still need to complete {remaining} more submissions to complete it."))
+                        await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_INCOMPLETE} Progress updated on trial # {key_option}. You still need to complete {remaining} more submissions to complete it."))
                 elif approve_resp.status == 404:
                     await team_channel.send("Key submission not found.")
                 else:
@@ -221,20 +240,35 @@ class AdminCog(commands.Cog):
         elif GameState == GameState.BOSS:
             async with self.session.put(ApiUrls.APPROVE_BOSS_SUBMISSION.format(id=submission["_id"])) as approve_resp:
                 if approve_resp.status == 200:
-                    await team_channel.send(embed=Embed(title=f"Your team completed world {world}!"))
+                    await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_COMPLETE} Your team completed the boss tile!"))
                     updated_team = await approve_resp.json()
                     team = updated_team["team"]
                     world = team["current_world"]
                     if int(team[f"w{world}boss_completion_counter"]) <= 0:
                         async with self.session.put(ApiUrls.ADVANCE_TO_NEXT_WORLD.format(id=team["_id"])) as adv_world_resp:
                             if team["current_world"] == 1:
-                                w2_start_msg = await team_channel.send(embed=build_storyline_embed(StoryLine.W2_START))
+                                embed, file = build_storyline_embed(StoryLine.W2_START)
+                                w2_start_msg = await team_channel.send(embed=embed, file=file)
                                 try:
                                     await w2_start_msg.pin()
                                 except:
                                     pass
 
-    @app_commands.command(name="force_complete", description="(Admin) Force complete current tile and advance to next")
+                                # Send the new board
+                                async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION.format(id=submission['team_id'])) as resp:
+                                    info = await resp.json()
+                                    team_data = info["team"]
+                                    async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=submission['team_id'])) as image_resp:
+                                        image_data = await image_resp.read()
+                                        file = discord.File(io.BytesIO(image_data), filename="team_board.png")
+                                        tile_info = info["tile"]
+                                        level_number = info["level_number"]
+                                        embed = build_team_board_embed(team_data, tile_info=tile_info, team_level_string=level_number)
+                                        embed.set_image(url="attachment://team_board.png")
+                                        await team_channel.send(embed=embed, file=file)
+                                        return
+
+    @app_commands.command(name="admin_force_complete", description="(Admin) Force complete current tile and advance to next")
     @app_commands.checks.has_role("Admin")
     async def force_complete(self, interaction: discord.Interaction, user: discord.User):
         try:
@@ -270,7 +304,8 @@ class AdminCog(commands.Cog):
                             await team_channel.send(embed=embed, file=file)
                     # Key Board (world 1)
                     elif info["team"]["game_state"] == 1 and info["team"]["current_world"] == 1:
-                        w1_key_msg = await team_channel.send(embed=build_storyline_embed(StoryLine.W1_KEY))
+                        embed, file = build_storyline_embed(StoryLine.W1_KEY)
+                        w1_key_msg = await team_channel.send(embed=embed, file=file)
                         try:
                             await w1_key_msg.pin()
                         except:
@@ -285,7 +320,8 @@ class AdminCog(commands.Cog):
                     
                     # Key Board (world 2)
                     elif info["team"]["game_state"] == 1 and info["team"]["current_world"] == 2:
-                        w2_key_msg = await team_channel.send(embed=build_storyline_embed(StoryLine.W2_KEY))
+                        embed, file = build_storyline_embed(StoryLine.W2_KEY)
+                        w2_key_msg = await team_channel.send(embed=embed, file=file)
                         try:
                             await w2_key_msg.pin()
                         except:
@@ -316,7 +352,7 @@ class AdminCog(commands.Cog):
             print(f"Error in force_complete: {e}")
             await interaction.response.send_message(f"There was an unknown error. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>", ephemeral=True)
 
-    @app_commands.command(name="view_a_players_board", description="(Admin) View a player's board.")
+    @app_commands.command(name="admin_view_a_board", description="(Admin) View a player's board.")
     @app_commands.checks.has_role("Admin")
     async def view_board(self, interaction: discord.Interaction, user: discord.User):
         try:

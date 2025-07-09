@@ -8,6 +8,7 @@ from utils.count_w1_keys import count_w1_keys
 from utils.tile_info_from_team import tile_info_from_team
 from utils.level_number_from_team import level_number_from_team
 from utils.level_name_from_team import level_name_from_team
+from constants.tiles import world1_tiles, world2_tiles, world3_tiles, world4_tiles
 
 from constants.team_bubble_coordinates import TeamBubbleCoordinates
 from PIL import Image, ImageDraw, ImageFont
@@ -106,7 +107,12 @@ class ImageService:
         with Image.open(image_path) as base_img:
             draw = ImageDraw.Draw(base_img)
             self.draw_ui_panel(base_img)
-            self.paste_image(base_img, f'../images/world1/olm_dialogue_1.png')
+            if keys == 0:
+                self.paste_image(base_img, f'../images/world1/olm_dialogue_1.png')
+            elif keys == 1:
+                self.paste_image(base_img, f'../images/world1/olm_dialogue_2.png')
+            elif keys == 2:
+                self.paste_image(base_img, f'../images/world1/olm_dialogue_3.png')
             self.draw_team_text(draw, team["team_name"])
             self.paste_image(base_img, '../images/key_tile.png', (20,16))
             self.paste_image(base_img, '../images/world1/key_tiles.png')
@@ -119,14 +125,45 @@ class ImageService:
             img_io.seek(0)
             return img_io
     
+    # Great olm boss
     def generate_w1_boss_image(self, team):
         image_path = os.path.join(os.path.dirname(__file__), '../images/world1/board/boss_background.png')
         image_path = os.path.abspath(image_path)
+        tile_info = world1_tiles['boss_tile']
         with Image.open(image_path) as base_img:
             draw = ImageDraw.Draw(base_img)
             self.draw_ui_panel(base_img)
             self.draw_team_text(draw, team["team_name"])
             tile_label = "Mystic Cove Summit"
+            self.paste_image(base_img, '../images/key_tile.png', (20,16))
+            self.draw_tile_image(base_img, f'../images/world1/boss/0.png')
+            self.paste_image(base_img, f'../images/world1/path/bosspath.png')
+            self.paste_image(base_img, f'../images/teams/{team.get("team_image_path")}', (1083, 840))
+            self.paste_image(base_img, f'../images/world1/olm_dialogue_4.png')
+            self.draw_outlined_wrapped_text(
+                draw=draw,
+                text=tile_info['tile_name'],
+                font=ImageFont.truetype(self.font_path, size=ImageSettings.LEVEL_TEXT_FONT_SIZE),
+                position=ImageSettings.TILE_IMAGE_TEXT_COORDINATES,
+                max_width=330,
+                fill="yellow",
+                outline_fill="black",
+                outline_range=2,
+                line_spacing=2,
+                align="center"
+            )
+            self.draw_outlined_wrapped_text(
+                draw=draw,
+                text=tile_info['description'],
+                font=ImageFont.truetype(self.font_path, size=ImageSettings.TILE_DESCRIPTION_FONT_SIZE),
+                position=ImageSettings.TILE_IMAGE_TEXT_COORDINATES_DESCRIPTION,
+                max_width=330,
+                fill="white",
+                outline_fill="black",
+                outline_range=2,
+                line_spacing=2,
+                align="left"
+            )
             font = ImageFont.truetype(self.font_path, size=ImageSettings.LEVEL_TEXT_FONT_SIZE)
             draw.text((ImageSettings.LEVEL_TEXT_COORDINATES[0]+4, ImageSettings.LEVEL_TEXT_COORDINATES[1] + 4), tile_label, fill="black", font=font, anchor="la", align="left")
             draw.text(ImageSettings.LEVEL_TEXT_COORDINATES, tile_label, fill="white", font=font, anchor="la", align="left")
@@ -153,13 +190,40 @@ class ImageService:
             return img_io
     
     def generate_w2_boss_image(self, team):
-        image_path = os.path.join(os.path.dirname(__file__), '../images/world1/board/boss_background.png')
+        image_path = os.path.join(os.path.dirname(__file__), '../images/world2/board/boss_background.png')
         image_path = os.path.abspath(image_path)
+        tile_info = world2_tiles['boss_tile']
         with Image.open(image_path) as base_img:
             draw = ImageDraw.Draw(base_img)
             self.draw_ui_panel(base_img)
             self.draw_team_text(draw, team["team_name"])
+            self.paste_image(base_img, '../images/key_tile.png', (20,16))
             tile_label = "Eclipse of the Sun"
+            self.draw_tile_image(base_img, f'../images/world2/boss/0.png')
+            self.draw_outlined_wrapped_text(
+                draw=draw,
+                text=tile_info['tile_name'],
+                font=ImageFont.truetype(self.font_path, size=ImageSettings.LEVEL_TEXT_FONT_SIZE),
+                position=ImageSettings.TILE_IMAGE_TEXT_COORDINATES,
+                max_width=330,
+                fill="yellow",
+                outline_fill="black",
+                outline_range=2,
+                line_spacing=2,
+                align="center"
+            )
+            self.draw_outlined_wrapped_text(
+                draw=draw,
+                text=tile_info['description'],
+                font=ImageFont.truetype(self.font_path, size=ImageSettings.TILE_DESCRIPTION_FONT_SIZE),
+                position=ImageSettings.TILE_IMAGE_TEXT_COORDINATES_DESCRIPTION,
+                max_width=330,
+                fill="white",
+                outline_fill="black",
+                outline_range=2,
+                line_spacing=2,
+                align="left"
+            )
             font = ImageFont.truetype(self.font_path, size=ImageSettings.LEVEL_TEXT_FONT_SIZE)
             draw.text((ImageSettings.LEVEL_TEXT_COORDINATES[0]+4, ImageSettings.LEVEL_TEXT_COORDINATES[1] + 4), tile_label, fill="black", font=font, anchor="la", align="left")
             draw.text(ImageSettings.LEVEL_TEXT_COORDINATES, tile_label, fill="white", font=font, anchor="la", align="left")

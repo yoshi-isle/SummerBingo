@@ -3,6 +3,7 @@ from constants import Emojis
 import discord
 from constants import WORLD_NAMES
 from dateutil import parser
+import os
 
 def build_team_board_embed(team_data, tile_info, team_level_string):
     embed = discord.Embed(
@@ -41,7 +42,7 @@ def build_w1_key_board_embed(team_data):
         title=team_data['team_name']
     )
     embed.set_thumbnail(url=team_data["thumbnail_url"])
-    embed.set_footer(text="Use /trial in your team channel to submit your trial completion.", icon_url=Emojis.SKW_LOGO)
+    embed.set_footer(text="Use /submit in your team channel to submit your trial completion.", icon_url=Emojis.SKW_LOGO)
     embed.add_field(
         name=f"{key_tile_names[team_data['current_world']]}",
         value="Complete 3 out of 5 trials to unlock the boss key!",
@@ -98,9 +99,9 @@ def build_w1_key_board_embed(team_data):
         team_data["w1key5_completion_counter"]
     ]:
         if counter <= 0:
-            key_emojis.append(Emojis.KEY)
+            key_emojis.append(Emojis.TRIAL_COMPLETE)
         else:
-            key_emojis.append(Emojis.KEY_NOT_OBTAINED)
+            key_emojis.append(Emojis.TRIAL_INCOMPLETE)
     embed.add_field(
         name="",
         value=" ".join(key_emojis),
@@ -115,10 +116,20 @@ def build_w1_boss_board_embed(team_data):
     )
     embed.add_field(
         name=f"{Emojis.OLMLET} 1-B: Showdown at the Summit",
-        value="Obtain 1x CoX megarare - Twisted Bow, Kodai Insignia, Elder Maul, or Olmlet",
+        value=f"{Emojis.TWISTED_BOW} Obtain 1x CoX megarare - Twisted Bow, Kodai Insignia, Elder Maul, or Olmlet",
         inline=False
     )
-    embed.set_footer(text="Use /boss in your team channel to submit your boss tile completion.", icon_url=Emojis.SKW_LOGO)
+    embed.add_field(
+        name="Submissions Needed",
+        value="1",
+        inline=False
+    )
+    embed.add_field(
+        name=f"",
+        value="Complete the boss tile to advance to World 2!",
+        inline=False
+    )
+    embed.set_footer(text="Use /submit in your team channel to submit your boss tile completion.", icon_url=Emojis.SKW_LOGO)
     return embed
 
 def build_w2_key_board_embed(team_data):
@@ -126,7 +137,7 @@ def build_w2_key_board_embed(team_data):
         title=team_data['team_name']
     )
     embed.set_thumbnail(url=team_data["thumbnail_url"])
-    embed.set_footer(text="Use /trial in your team channel to submit your trial completion.", icon_url=Emojis.SKW_LOGO)
+    embed.set_footer(text="Use /submit in your team channel to submit your trial completion.", icon_url=Emojis.SKW_LOGO)
     embed.add_field(
         name="Tumeken's Trial",
         value="Complete 3 out of 5 trials to complete the trial!",
@@ -151,7 +162,16 @@ def build_storyline_embed(storyline):
     embed = discord.Embed(title = storyline["title"])
     embed.description = storyline["dialogue"]
     embed.set_footer(text="Use /board to see your team's progress!", icon_url=Emojis.SKW_LOGO)
-    return embed
+    
+    # Handle image attachment
+    file = None
+    if storyline.get("image"):
+        image_path = os.path.join(os.path.dirname(__file__), "images", storyline["image"])
+        if os.path.exists(image_path):
+            file = discord.File(image_path, filename=storyline["image"])
+            embed.set_image(url=f"attachment://{storyline['image']}")
+    
+    return embed, file
     
 
 key_tile_names = {

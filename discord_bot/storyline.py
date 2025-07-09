@@ -7,13 +7,15 @@ They step off their boat, boots sinking into wet sand... only to be greeted by a
 From somewhere deep inland, a voice echoes across the map:
 "Come forward.."
 Little do they know the perils that await them... hidden behind every tile.
-'''}
+''',
+        "image": "story_1.png"}
 
     W1_KEY={
         "title":"Chapter 1-T: The Trial by Fire",
         "dialogue": '''The heroes venture into a nearby cave, where a lone key rests beyond a wall of dancing flames.
 A voice echoes, "You've done well to make it this far. Complete three of five challenges... and you may earn the right to face me."
-'''}
+''',
+        "image": "story_2.png"}
 
     W1_BOSS={
         "title":"Chapter 1-B: Showdown at the Summit",
@@ -24,7 +26,8 @@ The ground quakes beneath their feet—The Great Olm has arrived.
 
 A voice—ancient and cold—rattles their bones:
 "To defeat me... you must claim that which is most rare."
-'''}
+''',
+        "image": "story_3.png"}
 
     W2_START = {
         "title": "Chapter 2: The Sands of Time",
@@ -34,7 +37,8 @@ Golden scarabs skitter underfoot as they march forward, mirages dancing on the h
 
 Yet, as they approach the looming pyramid, a thick fog clings to the path ahead—concealing what lies beyond.
 The adventurers can't help but feel that something is missing... that the true challenge still awaits, hidden just out of sight.
-'''
+''',
+    "image": "story_4.png"
     }
 
     W2_KEY = {"title": "Chapter 2-T: The Trials of Tumeken",

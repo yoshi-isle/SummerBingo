@@ -1,6 +1,6 @@
 class Emojis:
-    KEY="<:trial_complete:1391972435170951319>"
-    KEY_NOT_OBTAINED="<:not_obtained:1389646593074139166>"
+    TRIAL_COMPLETE="<:trial_complete:1391972435170951319>"
+    TRIAL_INCOMPLETE="<:trial_incomplete:1392530655761535147>"
     DUNGEON="<:dungeon:1389648812355748051>"
     OLMLET="<:Olmlet:1389757224963801229>"
     SKW_LOGO="https://i.imgur.com/KHEg8dQ.png"
@@ -10,6 +10,8 @@ class Emojis:
     TRIAL_W1_3="<:Burning_claw:1391971831681912964>"
     TRIAL_W1_4="<:Bryophyta27s_essence:1391971963378860093>"
     TRIAL_W1_5="<:Clue_scroll_28elite29:1391972076545511464>"
+
+    TWISTED_BOW="<:Twisted_bow:1392562692472176641>"
 
     ADMIN="<:admin:1392259079497584844>"
     

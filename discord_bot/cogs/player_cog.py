@@ -130,7 +130,25 @@ class PlayerCog(commands.Cog):
                 
                 return trials
             
-            # For boss tiles (game_state 2), return empty (will use /boss command)
+            # If on boss tiles (game_state 2), show boss options
+            elif game_state == 2:
+                world_bosses = {
+                    1: [
+                        app_commands.Choice(name="Any CoX Mega-rare", value=1),
+                    ],
+                    2: [
+                        app_commands.Choice(name="Tonalztics of Ralos", value=1),
+                    ],
+                }
+                
+                bosses = world_bosses.get(current_world, world_bosses[1])
+                
+                # Filter based on current input if provided
+                if current:
+                    bosses = [boss for boss in bosses if current.lower() in boss.name.lower()]
+                
+                return bosses
+            
             else:
                 return []
             
@@ -151,6 +169,8 @@ class PlayerCog(commands.Cog):
         option: int,
         image: discord.Attachment
     ):
+        pending_submissions_channel = self.bot.get_channel(DiscordIDs.PENDING_SUBMISSIONS_CHANNEL_ID)
+
         if await game_hasnt_started(self.session):
             await interaction.response.send_message("Bingo hasn't started yet.")
             return
@@ -162,9 +182,44 @@ class PlayerCog(commands.Cog):
 
         game_state = team_data["game_state"]
         
-        # Handle boss tiles separately
+        # Boss_submission creation
         if game_state == 2:
-            await interaction.response.send_message(f"You are on the boss tile. Use `/boss` instead.", ephemeral=True)
+            admin_embed = discord.Embed(
+                title=f"{Emojis.TRIAL_COMPLETE} Boss Submission",
+                description=f"{interaction.user.mention} submitted for world {team_data['current_world']} boss tile.\nTeam: {team_data['team_name']}",
+                color=discord.Color.red()
+            )
+            embed = discord.Embed(
+                title=f"{Emojis.TRIAL_COMPLETE} Boss Tile Submitted!",
+                description=f"🟡 Status: Pending\n{interaction.user.mention} submitted the boss tile. Please wait for an admin to review.",
+                color=discord.Color.yellow()
+            )
+            embed.set_thumbnail(url=image.url)
+            embed.set_footer(text="Mistake with screenshot? Contact an admin.")
+
+            team_msg = await interaction.response.send_message(embed=embed)
+            team_msg = await interaction.original_response()
+
+            admin_embed.set_image(url=image.url)
+            admin_embed.set_footer(text="Approve or reject this submission.")
+
+            admin_msg = await pending_submissions_channel.send(embed=admin_embed)
+            await admin_msg.add_reaction("✅")
+            await admin_msg.add_reaction("❌")
+
+            submission_data = {
+                "discord_user_id": str(interaction.user.id),
+                "approved": False,
+                "admin_approval_embed_id": str(admin_msg.id),
+                "team_channel_id": str(interaction.channel.id),
+                "pending_team_embed_id": str(team_msg.id),
+                "team_id": team_data['_id'],
+                "current_world": team_data['current_world']
+            }
+            async with self.session.post(ApiUrls.CREATE_BOSS_SUBMISSION, json=submission_data) as sub_resp:
+                if sub_resp.status != 201:
+                    error = await sub_resp.text()
+                    await interaction.followup.send(f"Failed to create submission in API: {error}")
             return
 
         # Get the current tile from the API
@@ -175,8 +230,6 @@ class PlayerCog(commands.Cog):
             else:
                 await interaction.response.send_message(f"Error finding team information. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
                 return
-
-        pending_submissions_channel = self.bot.get_channel(DiscordIDs.PENDING_SUBMISSIONS_CHANNEL_ID)
         
         # Handle overworld tiles (game_state 0)
         if game_state == 0:
@@ -253,11 +306,11 @@ class PlayerCog(commands.Cog):
                         return
 
             if team_data[f"w{team_data['current_world']}key{option}_completion_counter"] <= 0:
-                await interaction.response.send_message(f"{Emojis.KEY} You already have this trial completed. Wrong option?", ephemeral=True)
+                await interaction.response.send_message(f"{Emojis.TRIAL_COMPLETE} You already have this trial completed. Wrong option?", ephemeral=True)
                 return
             
             embed = discord.Embed(
-                title=f"{Emojis.KEY} Trial Completion Submitted!",
+                title=f"{Emojis.TRIAL_COMPLETE} Trial Completion Submitted!",
                 description=f"🟡 Status: Pending\n{interaction.user.mention} submitted for trial # {option}. Please wait for an admin to review.",
                 color=discord.Color.orange()
             )
@@ -268,7 +321,7 @@ class PlayerCog(commands.Cog):
             team_msg = await interaction.original_response()
 
             admin_embed = discord.Embed(
-                title=f"{Emojis.KEY} Trial Submission",
+                title=f"{Emojis.TRIAL_COMPLETE} Trial Submission",
                 description=f"{interaction.user.mention} submitted for world {team_data['current_world']} trial # {option}.\nTeam: {team_data['team_name']}",
                 color=discord.Color.orange()
             )
@@ -295,64 +348,6 @@ class PlayerCog(commands.Cog):
                     error = await sub_resp.text()
                     await interaction.followup.send(f"Failed to create submission in API: {error}")
 
-    @app_commands.command(name="boss", description="Submits your boss tile completion.")
-    async def boss(self, interaction: discord.Interaction, image: discord.Attachment):
-        if await game_hasnt_started(self.session):
-            await interaction.response.send_message("Bingo hasn't started yet.")
-            return
-        
-        async with self.session.get(ApiUrls.TEAM_BY_ID.format(id=interaction.user.id)) as resp:
-            if resp.status == 200:
-                team_data = await resp.json()
-            else:
-                await interaction.response.send_message(f"Error finding team information. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
-                return
-        if team_data["game_state"] == 0:
-            await interaction.response.send_message(f"You are on an overworld tile. Use `/submit` instead.", ephemeral=True)
-            return
-        if team_data["game_state"] == 1:
-            await interaction.response.send_message(f"You are on a trial tile. Use `/trial` instead.", ephemeral=True)
-            return
-        
-        embed = discord.Embed(
-            title=f"{Emojis.OLMLET} Boss Tile Submitted!",
-            description=f"🟡 Status: Pending\n{interaction.user.mention} submitted for the boss tile. Please wait for an admin to review.",
-            color=discord.Color.red()
-        )
-        embed.set_thumbnail(url=image.url)
-        embed.set_footer(text="Mistake with screenshot? Contact an admin.")
-
-        team_msg = await interaction.response.send_message(embed=embed)
-        team_msg = await interaction.original_response()
-
-        admin_embed = discord.Embed(
-            title=f"{Emojis.OLMLET} Boss Tile Submission",
-            description=f"{interaction.user.mention} submitted for world {team_data['current_world']} boss tile.\nTeam: {team_data['team_name']}",
-            color=discord.Color.orange()
-        )
-        admin_embed.set_image(url=image.url)
-        admin_embed.set_footer(text="Approve or reject this submission.")
-
-        pending_submissions_channel = self.bot.get_channel(DiscordIDs.PENDING_SUBMISSIONS_CHANNEL_ID)
-        admin_msg = await pending_submissions_channel.send(embed=admin_embed)
-        await admin_msg.add_reaction("✅")
-        await admin_msg.add_reaction("❌")
-
-        submission_data = {
-            "discord_user_id": str(interaction.user.id),
-            "approved": False,
-            "admin_approval_embed_id": str(admin_msg.id),
-            "team_channel_id": str(interaction.channel.id),
-            "pending_team_embed_id": str(team_msg.id),
-            "team_id": team_data['_id'],
-            "current_world": team_data['current_world'],
-        }
-
-        async with self.session.post(ApiUrls.CREATE_BOSS_SUBMISSION, json=submission_data) as sub_resp:
-            if sub_resp.status != 201:
-                error = await sub_resp.text()
-                await interaction.channel.send(f"Failed to create submission in API: {error}")
-    
     @app_commands.command(name="skip", description="Skip the current tile.")
     async def skip(self, interaction: discord.Interaction):
         if await game_hasnt_started(self.session):
