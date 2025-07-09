@@ -137,22 +137,84 @@ class PlayerCog(commands.Cog):
             await interaction.response.send_message("Pending submissions channel not found. Please contact an admin.", ephemeral=True)
             return
 
+    async def trial_autocomplete(
+        self,
+        interaction: discord.Interaction,
+        current: str,
+    ) -> list[app_commands.Choice[int]]:
+        try:
+            # Get the user's team data to determine their current world
+            team_data = await get_team_from_id(self.session, interaction.user.id)
+            if not team_data:
+                return []
+            
+            # Don't show any autocomplete options if user is on overworld tiles (game_state 0)
+            if team_data.get('game_state', 0) == 0:
+                return []
+            
+            current_world = team_data.get('current_world', 1)
+            
+            # Define different trial options for each world
+            world_trials = {
+                1: [
+                    app_commands.Choice(name="Any CoX Purple", value=1),
+                    app_commands.Choice(name="Crystal Tool Seed", value=2),
+                    app_commands.Choice(name="4x Burning Claws", value=3),
+                    app_commands.Choice(name="Bryophyta's Essence\n OR Hill Giant Club", value=4),
+                    app_commands.Choice(name="10x Elite Clues", value=5),
+                ],
+                2: [
+                    app_commands.Choice(name="Golden Tench", value=1),
+                    app_commands.Choice(name="5x Obsidian Armor Pieces", value=2),
+                    app_commands.Choice(name="Uncut Onyx", value=3),
+                    app_commands.Choice(name="3x Cerberus Crystals", value=4),
+                    app_commands.Choice(name="Any ToA Purple", value=5),
+                ],
+            }
+            
+            # Get trials for the current world, default to world 1 if not found
+            trials = world_trials.get(current_world, world_trials[1])
+
+            # For world 2, we need to dynamically filter based on the path chosen
+            if current_world == 2:
+                w2_path_chosen = int(team_data.get('w2_path_chosen', 0))
+                if w2_path_chosen == 0:
+                    trials = [trial for trial in trials if trial.value in [1, 2]]
+                elif w2_path_chosen == -1:
+                    trials = [trial for trial in trials if trial.value in [3]]
+                elif w2_path_chosen == 1:
+                    trials = [trial for trial in trials if trial.value in [4]]
+                elif w2_path_chosen == 2:
+                    trials = [trial for trial in trials if trial.value in [5]]
+
+            # Filter based on current input if provided
+            if current:
+                trials = [trial for trial in trials if current.lower() in trial.name.lower()]
+            
+            # Ensure we always return a list (even if empty)
+            return trials
+            
+        except Exception as e:
+            print(f"Error in trial_autocomplete: {e}")
+            # Return default choices if there's an error
+            return [
+                app_commands.Choice(name="Trial #1", value=1),
+                app_commands.Choice(name="Trial #2", value=2),
+                app_commands.Choice(name="Trial #3", value=3),
+                app_commands.Choice(name="Trial #4", value=4),
+                app_commands.Choice(name="Trial #5", value=5),
+            ]
+
     @app_commands.command(name="trial", description="Submit a trial completion")
     @app_commands.describe(
-        option="Choose a trial option: 1, 2, 3, 4, or 5",
+        option="Choose a trial option based on your current world",
         image="Attach an image as proof"
     )
-    @app_commands.choices(option=[
-        app_commands.Choice(name="Trial #1", value=1),
-        app_commands.Choice(name="Trial #2", value=2),
-        app_commands.Choice(name="Trial #3", value=3),
-        app_commands.Choice(name="Trial #4", value=4),
-        app_commands.Choice(name="Trial #5", value=5),
-    ])
+    @app_commands.autocomplete(option=trial_autocomplete)
     async def submit_trial(
         self,
         interaction: discord.Interaction,
-        option: app_commands.Choice[int],
+        option: int,
         image: discord.Attachment
     ):
         if await game_hasnt_started(self.session):
@@ -173,9 +235,36 @@ class PlayerCog(commands.Cog):
         if team_data["game_state"] == 2:
             await interaction.response.send_message("You are on the boss tile. Please use `/boss` instead.", ephemeral=True)
             return
-        
-        if team_data[f"w1key{option.value}_completion_counter"] <= 0:
-            await interaction.response.send_message(f"{Emojis.KEY} You already have this trail completed. Wrong option?", ephemeral=True)
+
+        # World 2 - Pick a path - Must start by submitting /key1 or /key2
+        # w2_path_chosen 1 = right, -1 = left
+        if team_data['current_world'] == 2:
+            if team_data['w2_path_chosen'] == 0:
+                not_allowed = [3, 4, 5]
+                if option in not_allowed and team_data[f'w2key{option}_completion_counter'] != 0:
+                    await interaction.response.send_message(f"You cannot submit {option} yet. Start with trial 1 or 2 instead.", ephemeral=True)
+                    return
+            # If going left, you complete trial 3 next.
+            elif team_data['w2_path_chosen'] == -1:
+                not_allowed = [1, 2, 4, 5]
+                if option in not_allowed and team_data[f'w2key{option}_completion_counter'] != 0:
+                    await interaction.response.send_message(f"You cannot submit {option}. Complete trial 3 instead.", ephemeral=True)
+                    return
+            # If going right, you complete trial 4 next.
+            elif team_data['w2_path_chosen'] == 1:
+                not_allowed = [1, 2, 3, 5]
+                if option in not_allowed and team_data[f'w2key{option}_completion_counter'] != 0:
+                    await interaction.response.send_message(f"You cannot submit {option}. Complete trial 4 instead.", ephemeral=True)
+                    return
+            # Both paths end up at trial 5
+            elif team_data['w2_path_chosen'] == 2:
+                not_allowed = [1, 2, 3, 4]
+                if option in not_allowed and team_data[f'w2key{option}_completion_counter'] != 0:
+                    await interaction.response.send_message(f"You cannot submit {option} yet. Start with trial 5 instead.", ephemeral=True)
+                    return
+
+        if team_data[f"w{team_data['current_world']}key{option}_completion_counter"] <= 0:
+            await interaction.response.send_message(f"{Emojis.KEY} You already have this trial completed. Wrong option?", ephemeral=True)
             return
         
         async with self.session.get(ApiUrls.TEAM_CURRENT_TILE.format(id=team_data["_id"])) as resp:
@@ -188,7 +277,7 @@ class PlayerCog(commands.Cog):
         
         embed = discord.Embed(
             title=f"{Emojis.KEY} Trial Completion Submitted!",
-            description=f"🟡 Status: Pending\n{interaction.user.mention} submitted for trial # {option.value}. Please wait for an admin to review.",
+            description=f"🟡 Status: Pending\n{interaction.user.mention} submitted for trial # {option}. Please wait for an admin to review.",
             color=discord.Color.orange()
         )
         embed.set_thumbnail(url=image.url)
@@ -199,7 +288,7 @@ class PlayerCog(commands.Cog):
 
         admin_embed = discord.Embed(
             title=f"{Emojis.KEY} Trial Submission",
-            description=f"{interaction.user.mention} submitted for world {team_data['current_world']} trial # {option.value}.\nTeam: {team_data['team_name']}",
+            description=f"{interaction.user.mention} submitted for world {team_data['current_world']} trial # {option}.\nTeam: {team_data['team_name']}",
             color=discord.Color.orange()
         )
         admin_embed.set_image(url=image.url)
@@ -218,7 +307,7 @@ class PlayerCog(commands.Cog):
             "pending_team_embed_id": str(team_msg.id),
             "team_id": team_data['_id'],
             "current_world": team_data['current_world'],
-            "key_option": option.value
+            "key_option": option
         }
 
         async with self.session.post(ApiUrls.CREATE_KEY_SUBMISSION, json=submission_data) as sub_resp:
