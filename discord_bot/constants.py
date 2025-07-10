@@ -11,6 +11,14 @@ class Emojis:
     TRIAL_W1_4="<:Bryophyta27s_essence:1391971963378860093>"
     TRIAL_W1_5="<:Clue_scroll_28elite29:1391972076545511464>"
 
+    TRIAL_ICON_W1="<:Ancient_remnant:1392604921190289530>"
+
+    TRIAL_W2_1="<:Golden_tench:1392602820737368220>"
+    TRIAL_W2_2="<:Obsidian_platebody:1392603054955696199>"
+    TRIAL_W2_3="<:Uncut_onyx:1392603338293379202>"
+    TRIAL_W2_4="<:Primordial_crystal:1392603490328776774>"
+    TRIAL_W2_5="<:Elidinis27_ward:1392603633907929228>"
+
     TWISTED_BOW="<:Twisted_bow:1392562692472176641>"
 
     ADMIN="<:admin:1392259079497584844>"
@@ -40,6 +48,9 @@ class ApiUrls:
     ADVANCE_TO_NEXT_WORLD = f"{BASE_URL}/teams/{{id}}/next_world"
     TEAM_LAST_ROLLED = f"{BASE_URL}/teams/{{id}}/last_rolled"
 
+    TEAM_COMPLETE_W2_TRIAL = f"{BASE_URL}/teams/{{id}}/complete_w2_trial"
+
+    TEAM_COMPLETE_W3_TRIAL = f"{BASE_URL}/teams/{{id}}/{{brazier_number}}/complete_w3_trial"
     # Submissions
     SUBMISSION = f"{BASE_URL}/submission/{{id}}"
     KEY_SUBMISSION = f"{BASE_URL}/key_submission/{{id}}"
@@ -59,6 +70,6 @@ class ApiUrls:
 WORLD_NAMES = {
     1: "Mystic Cove",
     2: "Tumeken's Oasis",
-    3: "Zaros Plateau",
-    4: "Drakan's Void",
+    3: "Withering Frostlands",
+    4: "Haunted Hellfire",
 }

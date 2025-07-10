@@ -42,7 +42,7 @@ def build_w1_key_board_embed(team_data):
         title=team_data['team_name']
     )
     embed.set_thumbnail(url=team_data["thumbnail_url"])
-    embed.set_footer(text="Use /submit in your team channel to submit your trial completion.", icon_url=Emojis.SKW_LOGO)
+    embed.set_footer(text="Use /submit in your team channel to submit your trial completion. There will be multiple selections.", icon_url=Emojis.SKW_LOGO)
     embed.add_field(
         name=f"{key_tile_names[team_data['current_world']]}",
         value="Complete 3 out of 5 trials to unlock the boss key!",
@@ -56,12 +56,6 @@ def build_w1_key_board_embed(team_data):
                     team_data["w1key4_completion_counter"],
                     team_data["w1key5_completion_counter"]]:
         trial_count += counter == 0
-
-    def format_submission(counter):
-        if counter <= 0:
-            return f"`Complete!`"
-        else:
-            return f"{counter} submission(s) needed"
 
     embed.add_field(
         name=f"{Emojis.TRIAL_W1_1} Trial 1: Any CoX Purple",
@@ -139,10 +133,50 @@ def build_w2_key_board_embed(team_data):
     embed.set_thumbnail(url=team_data["thumbnail_url"])
     embed.set_footer(text="Use /submit in your team channel to submit your trial completion.", icon_url=Emojis.SKW_LOGO)
     embed.add_field(
-        name="Tumeken's Trial",
-        value="Complete 3 out of 5 trials to complete the trial!",
+        name=f"{Emojis.TRIAL_ICON_W1} Tumeken's Trial",
+        value="Navigate your way through the perilous tombs...",
         inline=False
     )
+    w2_path_chosen = team_data.get("w2_path_chosen", 0)
+    if w2_path_chosen == 0:
+        embed.add_field(
+            name="Complete **one of your choice** to advance to the next room.",
+            value="",
+            inline=False
+        )
+        embed.add_field(
+            name=f"**Trial 1-A: {Emojis.TRIAL_W2_1} Golden Tench**",
+            value=f"`{format_submission(team_data['w2key1_completion_counter'])}`",
+            inline=False
+        )
+        embed.add_field(
+            name=f"**Trial 1-B: {Emojis.TRIAL_W2_2} 5x Obsidian Armor Pieces**",
+            value=f"`{format_submission(team_data['w2key2_completion_counter'])}`",
+            inline=False
+        )
+    elif w2_path_chosen == 1:
+        embed.add_field(
+            name=f"**Trial 2: {Emojis.TRIAL_W2_4} 3x Cerberus Crystals**",
+            value=f"`{format_submission(team_data['w2key4_completion_counter'])}`",
+            inline=False
+        )
+    elif w2_path_chosen == -1:
+        embed.add_field(
+            name=f"**Trial 2: {Emojis.TRIAL_W2_3} Uncut Onyx**",
+            value=f"`{format_submission(team_data['w2key3_completion_counter'])}`",
+            inline=False
+        )
+    elif w2_path_chosen == 2:
+        embed.add_field(
+            name=f"**Trial 3: {Emojis.TRIAL_W2_5} Any ToA Purple**",
+            value=f"`{format_submission(team_data['w2key5_completion_counter'])}`",
+            inline=False
+        )
+        embed.add_field(
+            name=f"Complete this trial to obtain the desert key.",
+            value=f"",
+            inline=False
+        )
     return embed
 
 def build_w2_boss_board_embed(team_data):
@@ -156,6 +190,30 @@ def build_w2_boss_board_embed(team_data):
         inline=False
     )
     embed.set_footer(text="Use /boss in your team channel to submit your boss tile completion.", icon_url=Emojis.SKW_LOGO)
+    return embed
+
+def build_w3_key_board_embed(team_data):
+    embed = discord.Embed(
+        title=team_data['team_name']
+    )
+    embed.set_thumbnail(url=team_data["thumbnail_url"])
+    embed.set_footer(text="Use /submit in your team channel to submit your trial completion.", icon_url=Emojis.SKW_LOGO)
+    embed.add_field(
+        name=f"Ancient Brazier",
+        value="Complete **one trial of your choosing** to light the brazier.",
+        inline=False
+    )
+    
+    embed.add_field(
+        name=f"**Trial 1-A: 3x Chromium Ingots from Whisperer**",
+        value=f"`{format_submission(team_data['w3key1_completion_counter'])}`",
+        inline=False
+    )
+    embed.add_field(
+        name=f"**Trial 1-B: Moxi**",
+        value=f"`{format_submission(team_data['w3key2_completion_counter'])}`",
+        inline=False
+    )    
     return embed
 
 def build_storyline_embed(storyline):
@@ -173,6 +231,11 @@ def build_storyline_embed(storyline):
     
     return embed, file
     
+def format_submission(counter):
+    if counter <= 0:
+        return f"`Complete!`"
+    else:
+        return f"{counter} submission(s) needed"
 
 key_tile_names = {
     1: "Mystic Cove Trial",

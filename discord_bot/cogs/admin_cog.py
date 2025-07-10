@@ -7,7 +7,8 @@ from constants import ApiUrls, DiscordIDs, Emojis
 from storyline import StoryLine
 from enums.gamestate import GameState
 from utils.count_keys import count_w1_keys
-from embeds import build_w1_boss_board_embed, build_team_board_embed, build_w1_key_board_embed, build_w2_key_board_embed, build_storyline_embed
+from utils.post_board import post_team_board
+from embeds import build_w1_boss_board_embed, build_team_board_embed, build_w1_key_board_embed, build_w2_boss_board_embed, build_w2_key_board_embed, build_storyline_embed
 
 class AdminCog(commands.Cog):
     def __init__(self, bot):
@@ -42,19 +43,7 @@ class AdminCog(commands.Cog):
                     w1start_msg = await interaction.channel.send(embed=embed, file=file)
 
                     # Send the first team board, too
-                    async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION.format(id=team["_id"])) as resp:
-                        if resp.status == 200:
-                            board_information = await resp.json()
-                    async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=team["_id"])) as image_resp:
-                        image_data = await image_resp.read()
-
-                    tile_info = board_information.get("tile", {})
-                    team_level_string = board_information.get("level_info", "")
-                    file = discord.File(io.BytesIO(image_data), filename="team_board.png")
-
-                    embed = build_team_board_embed(team, tile_info, team_level_string)
-                    embed.set_image(url="attachment://team_board.png")
-                    await interaction.channel.send(embed=embed, file=file)
+                    await post_team_board(self.session, team["_id"], interaction.channel, "overworld")
 
                     try:
                         await w1start_msg.pin()
@@ -130,7 +119,7 @@ class AdminCog(commands.Cog):
     async def handle_approval(self, submission, message, user, GameState=GameState.OVERWORLD):
         async with self.session.get(ApiUrls.TEAM_BY_ID_WITHOUT_DISCORD.format(id=submission['team_id'])) as team_resp:
             team = await team_resp.json()
-
+        current_world = team['current_world']
         approved_channel = message.guild.get_channel(DiscordIDs.APPROVED_SUBMISSIONS_CHANNEL_ID)
         team_channel = message.guild.get_channel(int(submission['team_channel_id']))
         
@@ -162,12 +151,7 @@ class AdminCog(commands.Cog):
                                 # 0 - Normal Board
                                 if info["team"]["game_state"] == 0:
                                     await team_channel.send(embed=Embed(title="Tile complete! Posting your new board:"))
-                                    async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=submission['team_id'])) as image_resp:
-                                        image_data = await image_resp.read()
-                                        file = discord.File(io.BytesIO(image_data), filename="team_board.png")
-                                        embed = build_team_board_embed(team_data, tile_info, level_number)
-                                        embed.set_image(url="attachment://team_board.png")
-                                        await team_channel.send(embed=embed, file=file)
+                                    await post_team_board(self.session, submission['team_id'], team_channel, "overworld")
                                 # 1 - Key Board (world 1)
                                 elif info["team"]["game_state"] == 1 and info["team"]["current_world"] == 1:
                                     embed, file = build_storyline_embed(StoryLine.W1_KEY)
@@ -177,21 +161,20 @@ class AdminCog(commands.Cog):
                                     except:
                                         pass
 
-                                    async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=submission['team_id'])) as image_resp:
-                                        image_data = await image_resp.read()
-                                        file = discord.File(io.BytesIO(image_data), filename="team_board.png")
-                                        embed = build_w1_key_board_embed(team_data)
-                                        embed.set_image(url="attachment://team_board.png")
-                                        await team_channel.send(embed=embed, file=file)
+                                    await post_team_board(self.session, submission['team_id'], team_channel, "w1_key")
                                 
                                 # 2 - Boss Tile (world 1)
                                 elif info["team"]["game_state"] == 2 and info["team"]["current_world"] == 1:
-                                    async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=submission['team_id'])) as image_resp:
-                                        image_data = await image_resp.read()
-                                        file = discord.File(io.BytesIO(image_data), filename="team_board.png")
-                                        embed = build_w1_key_board_embed(team_data)
-                                        embed.set_image(url="attachment://team_board.png")
-                                        await team_channel.send(embed=embed, file=file)
+                                    await post_team_board(self.session, submission['team_id'], team_channel, "w1_boss")
+                                # Boss Tile (World 2)
+                                elif info["team"]["game_state"] == 2 and info["team"]["current_world"] == 2:
+                                    embed, file = build_storyline_embed(StoryLine.W2_BOSS)
+                                    w2_boss_msg = await team_channel.send(embed=embed, file=file)
+                                    try:
+                                        await w2_boss_msg.pin()
+                                    except:
+                                        pass
+                                    await post_team_board(self.session, submission['team_id'], team_channel, "w2_boss")
                             else:
                                 error = await advance_resp.text()
                                 await message.channel.send(f"Failed to advance tile: {error}")
@@ -202,36 +185,78 @@ class AdminCog(commands.Cog):
                         receipt.color = Color.green()
                         await team_channel.send(embed=receipt)
                 if approve_resp.status == 208:
-                    await approved_channel.send(embed=Embed(title="Submission was outdated so nothing happened. (No harm done)"))
+                    await approved_channel.send(embed=Embed(title="Admin Note: Submission was outdated so system deleted it. (No harm done)"))
         elif GameState == GameState.KEY:
             async with self.session.put(ApiUrls.APPROVE_KEY_SUBMISSION.format(id=submission["_id"], key_id=submission["key_option"])) as approve_resp:
                 if approve_resp.status == 200:
                     updated_team = await approve_resp.json()
                     team = updated_team["team"]
-                    if count_w1_keys(team) >= 3:
-                        embed, file = build_storyline_embed(StoryLine.W1_BOSS)
-                        w1_boss_msg = await team_channel.send(embed=embed, file=file)
-                        try:
-                            await w1_boss_msg.pin()
-                        except:
-                            pass
-                        async with self.session.put(ApiUrls.ADVANCE_TO_BOSS_TILE.format(id=team["_id"])) as approve_resp:
-                            async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION.format(id=submission['team_id'])) as resp:
-                                    info = await resp.json()
-                                    team_data = info["team"]
-                                    async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=submission['team_id'])) as image_resp:
-                                        image_data = await image_resp.read()
-                                        file = discord.File(io.BytesIO(image_data), filename="team_board.png")
-                                        embed = build_w1_boss_board_embed(team_data)
-                                        embed.set_image(url="attachment://team_board.png")
-                                        await team_channel.send(embed=embed, file=file)
-                                        return
-                    if team[f"w1key{submission['key_option']}_completion_counter"] <= 0:
-                        await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_COMPLETE} Trial completed!"))
-                    else:
-                        key_option = submission['key_option']
-                        remaining = team[f'w1key{key_option}_completion_counter']
-                        await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_INCOMPLETE} Progress updated on trial # {key_option}. You still need to complete {remaining} more submissions to complete it."))
+
+                    # World 1 - 3 keys complete, so advance
+                    if team["current_world"] == 1:
+                        if count_w1_keys(team) >= 3:
+                            embed, file = build_storyline_embed(StoryLine.W1_BOSS)
+                            w1_boss_msg = await team_channel.send(embed=embed, file=file)
+                            try:
+                                await w1_boss_msg.pin()
+                            except:
+                                pass
+                            async with self.session.put(ApiUrls.ADVANCE_TO_BOSS_TILE.format(id=team["_id"])) as approve_resp:
+                                await post_team_board(self.session, submission['team_id'], team_channel, "w1_boss")
+                                return
+                        if team[f"w{current_world}key{submission['key_option']}_completion_counter"] <= 0:
+                            await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_COMPLETE} Trial completed!"))
+                            await post_team_board(self.session, submission['team_id'], team_channel, f"w{current_world}key{submission['key_option']}")
+                        else:
+                            key_option = submission['key_option']
+                            remaining = team[f'w{current_world}key{key_option}_completion_counter']
+                            await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_INCOMPLETE} Progress updated on trial # {key_option}. You still need to complete {remaining} more submissions to complete it."))
+                    
+                    # World 2 - Pick-a-path
+                    key_option = submission["key_option"]
+                    if team["current_world"] == 2:
+                        # Initial trial selection
+                        if team["w2_path_chosen"] == 0:
+                            if team[f"w2key{key_option}_completion_counter"] <= 0:
+                                await team_channel.send("Advance! (not implemented yet)")
+                            else:
+                                await team_channel.send(f"progress {team[f'w2key{key_option}_completion_counter']} remaining")
+                        # Left path
+                        elif team["w2_path_chosen"] == -1:
+                            if team[f"w2key{key_option}_completion_counter"] <= 0:
+                                await team_channel.send("Advance! (not implemented yet)")
+                            else:
+                                await team_channel.send(f"progress {team[f'w2key{key_option}_completion_counter']} remaining")
+                        # Right path
+                        elif team["w2_path_chosen"] == 1:
+                            if team[f"w2key{key_option}_completion_counter"] <= 0:
+                                await team_channel.send("Advance! (not implemented yet)")
+                            else:
+                                await team_channel.send(f"progress {team[f'w2key{key_option}_completion_counter']} remaining")
+                        # Top of the path
+                        elif team["w2_path_chosen"] == 2:
+                            if team[f"w2key{key_option}_completion_counter"] <= 0:
+                                embed, file = build_storyline_embed(StoryLine.W2_KEY_COMPLETE)
+                                w2_trial_completed = await team_channel.send(embed=embed, file=file)
+                                try:
+                                    await w2_trial_completed.pin()
+                                except:
+                                    pass
+                                await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_COMPLETE} Trial completed!"))
+                                await self.session.put(ApiUrls.TEAM_COMPLETE_W2_TRIAL.format(id=team["_id"]))
+                                await post_team_board(self.session, submission['team_id'], team_channel, "overworld")
+                            else:
+                                await team_channel.send(f"progress {team[f'w2key{key_option}_completion_counter']} remaining")
+                    # World 3 - Light a brazier
+                    elif team["current_world"] == 3:
+                        if team[f"w3key{key_option}_completion_counter"] <= 0:
+                            await self.session.put(ApiUrls.TEAM_COMPLETE_W3_TRIAL.format(id=team["_id"], brazier_number=team["w3_braziers_lit"]))
+                            await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_COMPLETE} Trial completed!"))
+                            await post_team_board(self.session, submission['team_id'], team_channel, "overworld")
+                        else:
+                            remaining = team[f'w3key{key_option}_completion_counter']
+                            await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_INCOMPLETE} Progress updated on trial # {key_option}. You still need to complete {remaining} more submissions to complete it."))
+
                 elif approve_resp.status == 404:
                     await team_channel.send("Key submission not found.")
                 else:
@@ -240,11 +265,11 @@ class AdminCog(commands.Cog):
         elif GameState == GameState.BOSS:
             async with self.session.put(ApiUrls.APPROVE_BOSS_SUBMISSION.format(id=submission["_id"])) as approve_resp:
                 if approve_resp.status == 200:
-                    await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_COMPLETE} Your team completed the boss tile!"))
                     updated_team = await approve_resp.json()
                     team = updated_team["team"]
                     world = team["current_world"]
                     if int(team[f"w{world}boss_completion_counter"]) <= 0:
+                        await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_COMPLETE} Your team completed the boss tile!"))
                         async with self.session.put(ApiUrls.ADVANCE_TO_NEXT_WORLD.format(id=team["_id"])) as adv_world_resp:
                             if team["current_world"] == 1:
                                 embed, file = build_storyline_embed(StoryLine.W2_START)
@@ -253,20 +278,17 @@ class AdminCog(commands.Cog):
                                     await w2_start_msg.pin()
                                 except:
                                     pass
-
-                                # Send the new board
-                                async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION.format(id=submission['team_id'])) as resp:
-                                    info = await resp.json()
-                                    team_data = info["team"]
-                                    async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=submission['team_id'])) as image_resp:
-                                        image_data = await image_resp.read()
-                                        file = discord.File(io.BytesIO(image_data), filename="team_board.png")
-                                        tile_info = info["tile"]
-                                        level_number = info["level_number"]
-                                        embed = build_team_board_embed(team_data, tile_info=tile_info, team_level_string=level_number)
-                                        embed.set_image(url="attachment://team_board.png")
-                                        await team_channel.send(embed=embed, file=file)
-                                        return
+                                await post_team_board(self.session, submission['team_id'], team_channel, "overworld")
+                                return
+                            elif team["current_world"] == 2:
+                                embed, file = build_storyline_embed(StoryLine.W3_START)
+                                w3_start_msg = await team_channel.send(embed=embed, file=file)
+                                try:
+                                    await w3_start_msg.pin()
+                                except:
+                                    pass
+                                await post_team_board(self.session, submission['team_id'], team_channel, "overworld")
+                                return
 
     @app_commands.command(name="admin_force_complete", description="(Admin) Force complete current tile and advance to next")
     @app_commands.checks.has_role("Admin")
@@ -296,12 +318,7 @@ class AdminCog(commands.Cog):
                     
                     # 0 - Normal Board
                     if info["team"]["game_state"] == 0:
-                        async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=team_data['_id'])) as image_resp:
-                            image_data = await image_resp.read()
-                            file = discord.File(io.BytesIO(image_data), filename="team_board.png")
-                            embed = build_team_board_embed(team_data, tile_info, level_number)
-                            embed.set_image(url="attachment://team_board.png")
-                            await team_channel.send(embed=embed, file=file)
+                        await post_team_board(self.session, team_data['_id'], team_channel, "overworld")
                     # Key Board (world 1)
                     elif info["team"]["game_state"] == 1 and info["team"]["current_world"] == 1:
                         embed, file = build_storyline_embed(StoryLine.W1_KEY)
@@ -311,12 +328,7 @@ class AdminCog(commands.Cog):
                         except:
                             pass
 
-                        async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=team_data['_id'])) as image_resp:
-                            image_data = await image_resp.read()
-                            file = discord.File(io.BytesIO(image_data), filename="team_board.png")
-                            embed = build_w1_key_board_embed(team_data)
-                            embed.set_image(url="attachment://team_board.png")
-                            await team_channel.send(embed=embed, file=file)
+                        await post_team_board(self.session, team_data['_id'], team_channel, "w1_key")
                     
                     # Key Board (world 2)
                     elif info["team"]["game_state"] == 1 and info["team"]["current_world"] == 2:
@@ -327,21 +339,11 @@ class AdminCog(commands.Cog):
                         except:
                             pass
 
-                        async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=team_data['_id'])) as image_resp:
-                            image_data = await image_resp.read()
-                            file = discord.File(io.BytesIO(image_data), filename="team_board.png")
-                            embed = build_w2_key_board_embed(team_data)
-                            embed.set_image(url="attachment://team_board.png")
-                            await team_channel.send(embed=embed, file=file)
+                        await post_team_board(self.session, team_data['_id'], team_channel, "w2_key")
                     
                     # Boss Tile (world 1)
                     elif info["team"]["game_state"] == 2 and info["team"]["current_world"] == 1:
-                        async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=team_data['_id'])) as image_resp:
-                            image_data = await image_resp.read()
-                            file = discord.File(io.BytesIO(image_data), filename="team_board.png")
-                            embed = build_w1_boss_board_embed(team_data)
-                            embed.set_image(url="attachment://team_board.png")
-                            await team_channel.send(embed=embed, file=file)
+                        await post_team_board(self.session, team_data['_id'], team_channel, "w1_boss")
 
                     await interaction.response.send_message(f"{Emojis.ADMIN} {interaction.user.mention} Force completed tile for {user.mention}'s team - posting new board...")
                 else:
@@ -368,28 +370,44 @@ class AdminCog(commands.Cog):
             async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION.format(id=team_data["_id"])) as resp:
                 if resp.status == 200:
                     board_information = await resp.json()
+                    await self.send_team_board_to_interaction(interaction, team_data, board_information)
                 else:
                     await interaction.response.send_message(f"There was an error getting the user's board information.", ephemeral=True)
                     return
 
+        except Exception as e:
+            print(f"Error in view_board: {e}")
+            await interaction.response.send_message(f"There was an unknown error. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
+
+    async def send_team_board_to_interaction(self, interaction: discord.Interaction, team_data: dict, board_information: dict):
+        """Send a team board as an interaction response"""
+        try:
             async with self.session.get(ApiUrls.IMAGE_BOARD.format(id=team_data["_id"])) as resp:
                 if resp.status == 200:
                     image_data = await resp.read()
                     file = discord.File(io.BytesIO(image_data), filename="team_board.png")
+                    
+                    # Determine embed type based on game state
                     if int(team_data["game_state"]) == 0:
                         embed = build_team_board_embed(team_data, board_information["tile"], board_information["level_number"])
-                    elif int(team_data["game_state"]) == 1:
+                    elif int(team_data["game_state"]) == 1 and int(team_data["current_world"]) == 1:
                         embed = build_w1_key_board_embed(team_data)
-                    elif int(team_data["game_state"]) == 2:
+                    elif int(team_data["game_state"]) == 1 and int(team_data["current_world"]) == 2:
+                        embed = build_w2_key_board_embed(team_data)
+                    elif int(team_data["game_state"]) == 1 and int(team_data["current_world"]) == 1:
                         embed = build_w1_boss_board_embed(team_data)
+                    elif int(team_data["game_state"]) == 1 and int(team_data["current_world"]) == 2:
+                        embed = build_w2_boss_board_embed(team_data)
+                    else:
+                        embed = build_team_board_embed(team_data, board_information["tile"], board_information["level_number"])
+                    
                     embed.set_image(url="attachment://team_board.png")
                     await interaction.response.send_message(embed=embed, file=file)
                 else:
                     await interaction.response.send_message(f"There was an error getting the user's board image.")
-
         except Exception as e:
-            print(f"Error in view_board: {e}")
-            await interaction.response.send_message(f"There was an unknown error. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
+            print(f"Error in send_team_board_to_interaction: {e}")
+            await interaction.response.send_message(f"There was an error displaying the board.")
 
 async def setup(bot: commands):
     await bot.add_cog(AdminCog(bot))

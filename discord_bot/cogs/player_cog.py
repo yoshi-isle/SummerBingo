@@ -7,7 +7,14 @@ import io
 from constants import DiscordIDs, ApiUrls, Emojis
 from utils.get_team_from_id import get_team_from_id
 from utils.game_hasnt_started import game_hasnt_started
-from embeds import build_team_board_embed, build_w1_key_board_embed, build_w1_boss_board_embed, build_w2_key_board_embed, build_w2_boss_board_embed
+from embeds import (
+    build_team_board_embed,
+    build_w1_key_board_embed,
+    build_w1_boss_board_embed,
+    build_w2_key_board_embed,
+    build_w2_boss_board_embed,
+    build_w3_key_board_embed,
+)
 from dateutil import parser
 
 class PlayerCog(commands.Cog):
@@ -52,6 +59,8 @@ class PlayerCog(commands.Cog):
                         embed = build_w2_key_board_embed(team_data)
                     elif int(team_data["game_state"]) == 2 and int(team_data["current_world"]) == 2:
                         embed = build_w2_boss_board_embed(team_data)
+                    elif int(team_data["game_state"]) == 1 and int(team_data["current_world"]) == 3:
+                        embed = build_w3_key_board_embed(team_data)
                     else:
                         await interaction.response.send_message("Not made yet lol")
                         return
@@ -107,6 +116,14 @@ class PlayerCog(commands.Cog):
                         app_commands.Choice(name="3x Cerberus Crystals", value=4),
                         app_commands.Choice(name="Any ToA Purple", value=5),
                     ],
+                    3: [
+                        app_commands.Choice(name="3x Chromium Ingots (Whisperer)", value=1),
+                        app_commands.Choice(name="Moxi", value=2),
+                        app_commands.Choice(name="10x Vorkath Heads", value=3),
+                        app_commands.Choice(name="Full Ancient Ceremonial Robes", value=4),
+                        app_commands.Choice(name="Any Tome", value=5),
+                        app_commands.Choice(name="Ice Quartz", value=6),
+                    ],
                 }
                 
                 # Get trials for the current world, default to world 1 if not found
@@ -123,6 +140,16 @@ class PlayerCog(commands.Cog):
                         trials = [trial for trial in trials if trial.value in [4]]
                     elif w2_path_chosen == 2:
                         trials = [trial for trial in trials if trial.value in [5]]
+
+                # For world 3, filter based on the braziers lit
+                if current_world == 3:
+                    braziers_lit = team_data.get('w3_braziers_lit', 0)
+                    if braziers_lit == 0:
+                        trials = [trial for trial in trials if trial.value in [1, 2]]
+                    elif braziers_lit == 1:
+                        trials = [trial for trial in trials if trial.value in [3, 4]]
+                    elif braziers_lit == 2:
+                        trials = [trial for trial in trials if trial.value in [5, 6]]
 
                 # Filter based on current input if provided
                 if current:

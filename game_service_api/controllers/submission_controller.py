@@ -137,7 +137,7 @@ def approve_submission(submission_id):
     # Update the submission status to approved
     db.submissions.update_one({"_id": ObjectId(submission_id)}, {"$set": {"approved": True}})
 
-    if team["current_world"] != submission["current_world"] or team["current_tile"] != submission["current_tile"]:
+    if team["game_state"] != 0 or team["current_world"] != submission["current_world"] or team["current_tile"] != submission["current_tile"]:
         return jsonify({
             "message": "Submission ignored: team's position has changed since submission.",
         }), 208  # 208 Already Reported
@@ -178,7 +178,7 @@ def approve_key_submission(key_id, submission_id):
     # Decrement the team's completion counter by 1
     db.teams.update_one(
         {"_id": ObjectId(team_id)},
-        {"$inc": {f"w1key{int(key_id)}_completion_counter": -1}}
+        {"$inc": {f"w{team['current_world']}key{int(key_id)}_completion_counter": -1}}
     )
 
     # Fetch the updated team object

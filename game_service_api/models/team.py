@@ -30,8 +30,8 @@ class Team:
     w1key5_completion_counter: int = 10
 
     w1boss_completion_counter: int = 1
-    w2boss_completion_counter: int = 3
-    w3boss_completion_counter: int = 1
+    w2boss_completion_counter: int = 1
+    w3boss_completion_counter: int = 2
     w4boss_completion_counter: int = 5
 
     # Completion counters for W2 key tiles

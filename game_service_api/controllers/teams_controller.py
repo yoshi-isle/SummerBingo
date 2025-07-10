@@ -55,8 +55,8 @@ def create_team():
         w1key4_completion_counter=1,
         w1key5_completion_counter=10,
         w1boss_completion_counter=1,
-        w2boss_completion_counter=2,
-        w3boss_completion_counter=1,
+        w2boss_completion_counter=1,
+        w3boss_completion_counter=2,
         w4boss_completion_counter=5,
         last_rolled_at=datetime.now(timezone.utc),
         w2key1_completion_counter=1,
@@ -190,7 +190,7 @@ def advance_tile(team_id):
 
     # Check if on a key tile to update gamestate
     key_tile_level_index = key_tiles[current_world]
-    if idx + 1 == key_tile_level_index:
+    if idx + 1 in key_tile_level_index:
         db.teams.update_one(
         {"_id": ObjectId(team_id)}, 
         {"$set": 
@@ -375,7 +375,7 @@ def get_board_information_by_team_id(team_id):
 def complete_w2_trial(team_id):
     """
     Completes the W2 trial
-    Resets game_state to 0 and sets current_level to shuffledw2tiles at index 8
+    Resets game_state to 0 and sets current_tile to shuffledw2tiles at index 8
     """
     db = get_db()
     team = db.teams.find_one({"_id": ObjectId(team_id)})
@@ -395,20 +395,66 @@ def complete_w2_trial(team_id):
 
     db.teams.update_one(
         {"_id": ObjectId(team_id)}, 
-        {"$set": 
-            {"game_state": 0,
-             "current_tile": next_tile,
-             "completion_counter": 1,
-             "last_rolled_at": datetime.now(timezone.utc)
-             }
-        })
-    
+        {"$set": {
+            "game_state": 0,
+            "current_tile": next_tile,
+            "completion_counter": completion_counter,
+            "last_rolled_at": datetime.now(timezone.utc)
+        }
+    })
+
     # Convert ObjectId to string for JSON serialization
     if "_id" in team:
         team["_id"] = str(team["_id"])
     
     return jsonify(team), 200
 
+@teams_blueprint.route("/teams/<team_id>/<brazier_number>/complete_w3_trial", methods=["PUT"])
+def complete_w3_trial(team_id, brazier_number):
+    """
+    Completes the W3 trial by lighting a brazier.
+    Resets game_state to 0 and sets current_tile to a tile based on the brazier lit.
+    """
+    db = get_db()
+    team = db.teams.find_one({"_id": ObjectId(team_id)})
+    if not team:
+        abort(404, description="Team not found")
+
+    which_tile_to_go_to_based_on_brazier = {
+        0: 5,
+        1: 10,
+        2: 15
+    }
+
+    # Get the shuffled tiles and current tile
+    current_world = team.get("current_world", 1)
+    world_shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
+
+    next_tile = world_shuffled_tiles[which_tile_to_go_to_based_on_brazier[int(brazier_number)]]
+
+    # calculate completion counter from the tile index
+    tile_info = get_tile_info(current_world, next_tile)
+    completion_counter = tile_info.get("completion_counter") if tile_info else None
+
+    # Update the brazier lit count
+    brazier_lit_count = team.get('w3_braziers_lit', 0) + 1
+
+    db.teams.update_one(
+        {"_id": ObjectId(team_id)}, 
+        {"$set": {
+            "game_state": 0,
+            "current_tile": next_tile,
+            "completion_counter": completion_counter,
+            "last_rolled_at": datetime.now(timezone.utc),
+            "w3_braziers_lit": brazier_lit_count
+        }
+    })
+
+    # Convert ObjectId to string for JSON serialization
+    if "_id" in team:
+        team["_id"] = str(team["_id"])
+    
+    return jsonify(team), 200
 
 @teams_blueprint.route("/teams/<team_id>/next_world", methods=["PUT"])
 def advance_to_next_world(team_id):
