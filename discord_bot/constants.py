@@ -27,6 +27,7 @@ class Emojis:
 class DiscordIDs:
     PENDING_SUBMISSIONS_CHANNEL_ID = 1379165881518522408
     APPROVED_SUBMISSIONS_CHANNEL_ID = 1379165982391533588
+    DENIED_SUBMISSIONS_CHANNEL_ID = 1386546724935307475
     GUILD_ID = 1367922296764891246
     TANGY_DISCORD_ID = 726237123857874975
 
@@ -48,9 +49,11 @@ class ApiUrls:
     ADVANCE_TO_NEXT_WORLD = f"{BASE_URL}/teams/{{id}}/next_world"
     TEAM_LAST_ROLLED = f"{BASE_URL}/teams/{{id}}/last_rolled"
 
+    TEAM_TRAVERSE_W2_TRIAL = f"{BASE_URL}/teams/{{id}}/{{option}}/w2_trial_traverse_path"
+    
     TEAM_COMPLETE_W2_TRIAL = f"{BASE_URL}/teams/{{id}}/complete_w2_trial"
-
     TEAM_COMPLETE_W3_TRIAL = f"{BASE_URL}/teams/{{id}}/{{brazier_number}}/complete_w3_trial"
+   
     # Submissions
     SUBMISSION = f"{BASE_URL}/submission/{{id}}"
     KEY_SUBMISSION = f"{BASE_URL}/key_submission/{{id}}"

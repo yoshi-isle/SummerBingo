@@ -2,7 +2,12 @@ import discord
 import io
 import aiohttp
 from constants import ApiUrls
-from embeds import build_team_board_embed, build_w1_key_board_embed, build_w2_boss_board_embed, build_w2_key_board_embed, build_w1_boss_board_embed
+from embeds import (build_team_board_embed,
+                    build_w1_key_board_embed,
+                    build_w2_boss_board_embed,
+                    build_w2_key_board_embed,
+                    build_w1_boss_board_embed, build_w3_boss_board_embed,
+                    build_w3_key_board_embed)
 
 async def post_team_board(session: aiohttp.ClientSession, team_id: str, team_channel: discord.TextChannel, board_type: str = "auto"):
     """
@@ -61,6 +66,10 @@ async def post_team_board(session: aiohttp.ClientSession, team_id: str, team_cha
         embed = build_w1_boss_board_embed(team_data)
     elif board_type == "w2_boss":
         embed = build_w2_boss_board_embed(team_data)
+    elif board_type == "w3_key":
+        embed = build_w3_key_board_embed(team_data)
+    elif board_type == "w3_boss":
+        embed = build_w3_boss_board_embed(team_data)
     else:
         # fallback to overworld
         embed = build_team_board_embed(team_data, tile_info, level_number)

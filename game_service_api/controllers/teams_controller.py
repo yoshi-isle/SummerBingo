@@ -371,6 +371,40 @@ def get_board_information_by_team_id(team_id):
         "w1key5_completion_counter": team["w1key5_completion_counter"],
     }), 200
 
+@teams_blueprint.route("/teams/<team_id>/<option>/w2_trial_traverse_path", methods=["PUT"])
+def set_w2_trial_path_chosen(team_id, option):
+    """
+    Sets the W2 trial path chosen by the team.
+    """
+    db = get_db()
+    team = db.teams.find_one({"_id": ObjectId(team_id)})
+    if not team:
+        abort(404, description="Team not found")
+    option = int(option)
+    path_chosen = 0
+    if option == 1:
+        path_chosen = -1
+    elif option == 2:
+        path_chosen = 1
+    elif option == 3:
+        path_chosen = 2
+    elif option == 4:
+        path_chosen = 2
+
+    db.teams.update_one(
+        {"_id": ObjectId(team_id)}, 
+        {"$set": {"w2_path_chosen": path_chosen}}
+    )
+
+    # Convert ObjectId to string for JSON serialization
+    if "_id" in team:
+        team["_id"] = str(team["_id"])
+    
+    return jsonify({
+        "message": f"W2 trial path set to {option}",
+        "team": team
+    }), 200
+
 @teams_blueprint.route("/teams/<team_id>/complete_w2_trial", methods=["PUT"])
 def complete_w2_trial(team_id):
     """

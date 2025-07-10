@@ -268,12 +268,22 @@ class PlayerCog(commands.Cog):
         if game_state == 0:
             # Create submission for admin channel
             admin_embed = discord.Embed(
-                title="🗺️ Board Tile Submission",
-                description=f"{interaction.user.mention} submitted for {current_tile}.\nTeam: {team_data['team_name']}",
+                title="🗺️ Overworld Tile Submission",
+                description=f"Submission by {interaction.user.mention}.",
                 color=discord.Color.yellow()
             )
+            admin_embed.add_field(
+                name="Team",
+                value=team_data['team_name'],
+                inline=True
+            )
+            admin_embed.add_field(
+                name="Tile",
+                value=current_tile,
+                inline=True
+            )
             admin_embed.set_image(url=image.url)
-            admin_embed.set_footer(text="Approve or reject this submission.")
+            admin_embed.set_footer(text="Approve or reject this submission.", icon_url=Emojis.SKW_LOGO)
 
             embed = discord.Embed(
                 title="Tile Submitted!",

@@ -76,10 +76,13 @@ class AdminCog(commands.Cog):
                     try:
                         await self.handle_approval(submission, message, user)
                     except Exception as e:
-                        await channel.send(f"An error occured approving the submission")
+                        await channel.send(f"{e} An error occured approving the submission")
 
                 if str(payload.emoji) == '❌':
-                    pass
+                    try:
+                        await self.handle_denial(submission, message, user)
+                    except Exception as e:
+                        await channel.send(f"{e} An error occured denying the submission")
         if submission == None:
             async with self.session.get(ApiUrls.KEY_SUBMISSION.format(id=str(message.id))) as key_resp:
                 if key_resp.status == 200:
@@ -91,7 +94,10 @@ class AdminCog(commands.Cog):
                             await channel.send(f"An error occured approving the submission")
 
                     if str(payload.emoji) == '❌':
-                        pass
+                        try:
+                            await self.handle_denial(key_submission, message, user, GameState.KEY)
+                        except Exception as e:
+                            await channel.send(f"An error occured denying the submission")
                 else:
 
                     async with self.session.get(ApiUrls.BOSS_SUBMISSION.format(id=str(message.id))) as boss_resp:
@@ -104,7 +110,10 @@ class AdminCog(commands.Cog):
                                     await channel.send(f"{e} An error occured approving the submission")
 
                             if str(payload.emoji) == '❌':
-                                pass
+                                try:
+                                    await self.handle_denial(boss_submission, message, user, GameState.BOSS)
+                                except Exception as e:
+                                    await channel.send(f"{e} An error occured denying the submission")
                         else:
                             await channel.send(f"Submission not found in database for Message ID {str(message.id)}")
                             return
@@ -184,6 +193,11 @@ class AdminCog(commands.Cog):
                                     except:
                                         pass
                                     await post_team_board(self.session, submission['team_id'], team_channel, "w3_boss")
+                                # Key Board (world 3)
+                                elif info["team"]["game_state"] == 1 and info["team"]["current_world"] == 3:
+                                    w3_key_msg = await team_channel.send(embed=Embed(description=f"{Emojis.TRIAL_COMPLETE} The team come across a frozen brazier. Maybe completing the trial will light it..."))
+                                    await post_team_board(self.session, submission['team_id'], team_channel, "w3_key")
+
                             else:
                                 error = await advance_resp.text()
                                 await message.channel.send(f"Failed to advance tile: {error}")
@@ -215,7 +229,7 @@ class AdminCog(commands.Cog):
                                 return
                         if team[f"w{current_world}key{submission['key_option']}_completion_counter"] <= 0:
                             await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_COMPLETE} Trial completed!"))
-                            await post_team_board(self.session, submission['team_id'], team_channel, f"w{current_world}key{submission['key_option']}")
+                            await post_team_board(self.session, submission['team_id'], team_channel, "w1_key")
                         else:
                             key_option = submission['key_option']
                             remaining = team[f'w{current_world}key{key_option}_completion_counter']
@@ -225,23 +239,30 @@ class AdminCog(commands.Cog):
                     key_option = submission["key_option"]
                     if team["current_world"] == 2:
                         # Initial trial selection
+                        remaining = team[f'w2key{key_option}_completion_counter']
                         if team["w2_path_chosen"] == 0:
                             if team[f"w2key{key_option}_completion_counter"] <= 0:
-                                await team_channel.send("Advance! (not implemented yet)")
+                                await self.session.put(ApiUrls.TEAM_TRAVERSE_W2_TRIAL.format(id=team["_id"], option=key_option))
+                                await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_COMPLETE} Trial completed!\nYour team hears a click, and enters the nearby door..."))
+                                await post_team_board(self.session, submission['team_id'], team_channel, "w2_key")
                             else:
-                                await team_channel.send(f"progress {team[f'w2key{key_option}_completion_counter']} remaining")
+                                await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_INCOMPLETE} Progress updated on the trial. You still need to complete {remaining} more submissions to complete it."))
                         # Left path
                         elif team["w2_path_chosen"] == -1:
                             if team[f"w2key{key_option}_completion_counter"] <= 0:
-                                await team_channel.send("Advance! (not implemented yet)")
+                                await self.session.put(ApiUrls.TEAM_TRAVERSE_W2_TRIAL.format(id=team["_id"], option=key_option))
+                                await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_COMPLETE} Trial completed!\nYour team hears a click, and enters the nearby door..."))
+                                await post_team_board(self.session, submission['team_id'], team_channel, "w2_key")
                             else:
-                                await team_channel.send(f"progress {team[f'w2key{key_option}_completion_counter']} remaining")
+                                await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_INCOMPLETE} Progress updated on the trial. You still need to complete {remaining} more submissions to complete it."))
                         # Right path
                         elif team["w2_path_chosen"] == 1:
                             if team[f"w2key{key_option}_completion_counter"] <= 0:
-                                await team_channel.send("Advance! (not implemented yet)")
+                                await self.session.put(ApiUrls.TEAM_TRAVERSE_W2_TRIAL.format(id=team["_id"], option=key_option))
+                                await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_COMPLETE} Trial completed!\nYour team hears a click, and enters the nearby door..."))
+                                await post_team_board(self.session, submission['team_id'], team_channel, "w2_key")
                             else:
-                                await team_channel.send(f"progress {team[f'w2key{key_option}_completion_counter']} remaining")
+                                await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_INCOMPLETE} Progress updated on the trial. You still need to complete {remaining} more submissions to complete it."))
                         # Top of the path
                         elif team["w2_path_chosen"] == 2:
                             if team[f"w2key{key_option}_completion_counter"] <= 0:
@@ -298,6 +319,34 @@ class AdminCog(commands.Cog):
                                     pass
                                 await post_team_board(self.session, submission['team_id'], team_channel, "overworld")
                                 return
+                            elif team["current_world"] == 3:
+                                embed, file = build_storyline_embed(StoryLine.W4_START)
+                                w4_start_msg = await team_channel.send(embed=embed, file=file)
+                                try:
+                                    await w4_start_msg.pin()
+                                except:
+                                    pass
+                                await post_team_board(self.session, submission['team_id'], team_channel, "overworld")
+                                return
+
+    async def handle_denial(self, submission, message, user, GameState=GameState.OVERWORLD): 
+        async with self.session.get(ApiUrls.TEAM_BY_ID_WITHOUT_DISCORD.format(id=submission['team_id'])) as team_resp:
+            team = await team_resp.json()
+        current_world = team['current_world']
+        team_channel = message.guild.get_channel(int(submission['team_channel_id']))
+        pending_message = await team_channel.fetch_message(int(submission['pending_team_embed_id']))
+        if pending_message and pending_message.embeds:
+            denied_embed = pending_message.embeds[0].copy()
+            denied_embed.color = discord.Color.red()
+            denied_embed.title = f"Denied by {user.display_name}"
+            denied_embed.set_footer(text="")
+            denied_embed.description = f"🔴 Status: Denied by {user.mention}."
+            await pending_message.edit(embed=denied_embed)
+            await message.delete()
+            denied_embed.description = f"See the submission in the team's channel here: https://discord.com/channels/{pending_message.guild.id}/{pending_message.channel.id}/{pending_message.id}"
+            denied_channel = message.guild.get_channel(DiscordIDs.DENIED_SUBMISSIONS_CHANNEL_ID)
+            await denied_channel.send(embed=denied_embed)
+
 
     @app_commands.command(name="admin_force_complete", description="(Admin) Force complete current tile and advance to next")
     @app_commands.checks.has_role("Admin")
@@ -354,6 +403,15 @@ class AdminCog(commands.Cog):
                     elif info["team"]["game_state"] == 2 and info["team"]["current_world"] == 1:
                         await post_team_board(self.session, team_data['_id'], team_channel, "w1_boss")
 
+                    # Boss Tile (world 2)
+                    elif info["team"]["game_state"] == 2 and info["team"]["current_world"] == 2:
+                        embed, file = build_storyline_embed(StoryLine.W2_BOSS)
+                        w2_boss_msg = await team_channel.send(embed=embed, file=file)
+                        try:
+                            await w2_boss_msg.pin()
+                        except:
+                            pass
+                        await post_team_board(self.session, team_data['_id'], team_channel, "w2_boss")
                     await interaction.response.send_message(f"{Emojis.ADMIN} {interaction.user.mention} Force completed tile for {user.mention}'s team - posting new board...")
                 else:
                     error = await advance_resp.text()

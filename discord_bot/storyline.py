@@ -88,13 +88,13 @@ A voice, void of warmth, speaks:
 "Three of five challenges must be conquered... only then shall the ice yield."
 '''
 
-    W3_BOSS = '''
+    W3_BOSS = {
+        "title": "Chapter 3-B: Zaros Sanctum",
+        "dialogue": '''
 The blizzard dies suddenly, and an eerie silence falls over the Zarosian sanctum.
 Two crimson eyes glow in the dark, and from the frozen mist, Nex emerges—wings spread wide.
-
-Her voice is chilling:
-"Fate binds us here... bring me the blade born of courage—ZCB, forged from nothing."
 '''
+}
 
     W4_START = {
         "title": "Chapter 4: Endgame",
