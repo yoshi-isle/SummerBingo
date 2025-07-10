@@ -38,6 +38,7 @@ class ApiUrls:
     GAME_IS_RUNNING = f"{BASE_URL}/game_started"
     # Teams
     TEAM = f"{BASE_URL}/teams"
+    TEAM_ALL = f"{BASE_URL}/teams"
     TEAM_BY_ID = f"{BASE_URL}/teams/discord/{{id}}"
     TEAM_BY_ID_WITHOUT_DISCORD = f"{BASE_URL}/teams/id/{{id}}"
     TEAM_CURRENT_TILE = f"{BASE_URL}/teams/{{id}}/current_tile"

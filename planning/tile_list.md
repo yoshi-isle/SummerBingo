@@ -1,6 +1,6 @@
 # Summer Bingo Tile List
 
-*Generated on July 08, 2025 at 04:55 PM*
+*Generated on July 10, 2025 at 12:59 PM*
 
 ---
 
@@ -27,7 +27,7 @@
 | 5 | 10x Scurrius Spines | Obtain 10x Scurrius Spines | 10 | [Wiki](https://oldschool.runescape.wiki/w/Scurrius) |
 | 6 | 4x Guild Hunter Pieces | Obtain 4x of ANY Guild Hunter Piece. They don't have to be unique. | 4 | [Wiki](https://oldschool.runescape.wiki/w/Guild_hunter_outfit) |
 | 7 | Bones from Soul Wars crate | Obtain 1x Bones from a Soul Wars reward crate. | 1 | [Wiki](https://oldschool.runescape.wiki/w/Soul_Wars) |
-| 8 | Mystic Top, Bottom, and Water Staff from Kraken |  | 3 | [Wiki](https://oldschool.runescape.wiki/w/Kraken) |
+| 8 | Mystic Top, Bottom, and Mystic Water Staff from Kraken |  | 3 | [Wiki](https://oldschool.runescape.wiki/w/Kraken) |
 | 9 | 3x Prayer Scrolls from CoX | Obtain 3x Dex and/or Arcane prayer scrolls from CoX. | 3 | [Wiki](https://oldschool.runescape.wiki/w/Chambers_of_Xeric) |
 | 10 | Frog Slippers | Obtain 1x Frog Slippers from a beginner clue | 1 | [Wiki](https://oldschool.runescape.wiki/w/frog_slippers) |
 | 11 | Staff of bob the cat | Obtain 1x Staff of bob the cat from an easy clue | 1 | [Wiki](https://oldschool.runescape.wiki/w/staff_of_bob_the_cat) |
@@ -94,7 +94,7 @@
 
 | ID | Tile Name | Description | Required Count | Wiki Link |
 |----|-----------| ------------|---------------|----------|
-| 0 | Tonalztics of ralos | Fancy Footwork | 1 | N/A |
+| 0 | Tonalztics of ralos | Obtain 1x Tonalztics of Ralos OR Smol Heredit from the Fortis Colosseum | 1 | N/A |
 
 ---
 
@@ -104,41 +104,36 @@
 
 | ID | Tile Name | Description | Required Count | Wiki Link |
 |----|-----------| ------------|---------------|----------|
-| 0 | Magic Seed from Zilyana | Magic Seed from Zilyana | 1 | N/A |
-| 1 | 3x Armadyl Armor Pieces | 3x Armadyl Armor Pieces | 3 | N/A |
-| 2 | Zamorak Hilt |  | 1 | N/A |
-| 3 | Rune Sword from General Graardor |  | 2 | N/A |
-| 4 | 10 Awakener's Orbs from Duke Sucellus |  | 10 | N/A |
-| 5 | Rune Platebody + Platelegs from Amoxiatl |  | 2 | N/A |
-| 6 | Dragon Hunter Wand |  | 1 | N/A |
-| 7 | 5x Venator Shards |  | 5 | N/A |
-| 8 | 4x Blue Moon Pieces |  | 4 | N/A |
-| 9 | 4x DKS Rings |  | 4 | N/A |
-| 10 | Bruma Torch |  | 1 | N/A |
-| 11 | Any Torva piece from Nex  |  | 1 | N/A |
-| 12 | Bear Feet |  | 1 | N/A |
-| 13 | Any orn kit from clues (all tiers) |  | 1 | N/A |
-| 14 | Basilisk Jaw OR Head |  | 1 | N/A |
-| 15 | Glacial Temotli AND Sulphur Blades |  | 2 | N/A |
-| 16 | Broken Zombie Helmet |  | 1 | N/A |
-| 17 | Gnome scarf |  | 1 | N/A |
-| 18 | Fire & Ice Staff Crown pieces |  | 2 | N/A |
+| 0 | Magic Seed from Zilyana | Obtain 1x Magic Seed from Zilyana | 1 | [Wiki](https://oldschool.runescape.wiki/w/commander_zilyana) |
+| 1 | 3x Armadyl Armor Pieces | Obtain 3x Armadyl Armor Pieces | 3 | [Wiki](https://oldschool.runescape.wiki/w/kreearra) |
+| 2 | Zamorak Hilt | Obtain 1x Zamorak Hilt | 1 | [Wiki](https://oldschool.runescape.wiki/w/zamorak_hilt) |
+| 3 | Rune Sword from General Graardor | Obtain 2x Rune Sword from General Graardor | 2 | [Wiki](https://oldschool.runescape.wiki/w/general_graardor) |
+| 4 | 10 Awakener's Orbs from Duke Sucellus | Obtain 10x Awakener's Orbs from Duke Sucellus | 10 | [Wiki](https://oldschool.runescape.wiki/w/duke_sucellus) |
+| 5 | Rune Platebody + Platelegs from Amoxiatl |  | 2 | [Wiki](https://oldschool.runescape.wiki/w/amoxiatl) |
+| 6 | Dragon Hunter Wand | Obtain 1x Dragon Hunter Wand | 1 | [Wiki](https://oldschool.runescape.wiki/w/dragon_hunter_wand) |
+| 7 | 5x Venator Shards | Obtain 5x Venator Shards | 5 | [Wiki](https://oldschool.runescape.wiki/w/venator_shard) |
+| 8 | 4x Blue Moon Pieces | Obtain 4x Blue Moon Pieces | 4 | [Wiki](https://oldschool.runescape.wiki/w/Blue_Moon) |
+| 9 | 4x DKS Rings | Obtain 4x DKS Rings | 4 | [Wiki](https://oldschool.runescape.wiki/w/dagannoth_kings) |
+| 10 | Bruma Torch | Obtain 1x Bruma Torch | 1 | [Wiki](https://oldschool.runescape.wiki/w/Bruma_Torch) |
+| 11 | Any Torva piece from Nex  | Obtain 1x Any Torva piece from Nex | 1 | [Wiki](https://oldschool.runescape.wiki/w/Nex) |
+| 12 | Bear Feet | Obtain 1x Bear Feet | 1 | [Wiki](https://oldschool.runescape.wiki/w/Bear_Feet) |
+| 13 | Any orn kit from clues | Obtain 1x Any orn kit from clues (all tiers) | 1 | [Wiki](https://oldschool.runescape.wiki/w/Ornament_kit) |
+| 14 | Basilisk Jaw OR Head | Obtain 1x Basilisk Jaw OR Head | 1 | [Wiki](https://oldschool.runescape.wiki/w/Basilisk_Jaw) |
+| 15 | Glacial Temotli AND Sulphur Blades | Obtain 2x Glacial Temotli AND Sulphur Blades | 2 | [Wiki](https://oldschool.runescape.wiki/w/Glacial_Temotli) |
+| 16 | Broken Zombie Helmet | Obtain 1x Broken Zombie Helmet | 1 | [Wiki](https://oldschool.runescape.wiki/w/Broken_Zombie_Helmet) |
+| 17 | Gnome scarf | Obtain 1x Gnome scarf | 1 | [Wiki](https://oldschool.runescape.wiki/w/Gnome_scarf) |
+| 18 | Fire & Ice Staff Crown pieces | Obtain 2x Fire & Ice Staff Crown pieces | 2 | [Wiki](https://oldschool.runescape.wiki/w/royal_titans) |
 
 ### Key Tiles
 
 | ID | Tile Name | Description | Required Count | Wiki Link |
 |----|-----------| ------------|---------------|----------|
-| 0 | 3 Chromium Ingots from Whisperer |  | 3 | N/A |
-| 1 | 10x Vorkath Heads | Premium tools | 10 | N/A |
-| 2 | Full Ancient Ceremonial Robes |  | 5 | N/A |
-| 3 | Moxi |  | 1 | N/A |
-| 4 | Any Tome |  | 1 | N/A |
-
-### Boss Tile
-
-| ID | Tile Name | Description | Required Count | Wiki Link |
-|----|-----------| ------------|---------------|----------|
-| 0 | Zaryte Crossbow from scratch | Ancient Prison Break | 2 | N/A |
+| 0 | 3x Chromium Ingots from Whisperer |  | 3 | [Wiki](https://oldschool.runescape.wiki/w/Chromium_Ingot) |
+| 1 | Moxi |  | 1 | [Wiki](https://oldschool.runescape.wiki/w/Moxi) |
+| 2 | 10x Vorkath Heads | Premium tools | 10 | [Wiki](https://oldschool.runescape.wiki/w/Vorkath) |
+| 3 | Full Ancient Ceremonial Robes |  | 5 | [Wiki](https://oldschool.runescape.wiki/w/Ancient_Ceremonial_Robes) |
+| 4 | Any Tome |  | 1 | [Wiki](https://oldschool.runescape.wiki/w/Tome_of_fire) |
+| 5 | Ice Quartz |  | 1 | [Wiki](https://oldschool.runescape.wiki/w/Ice_Quartz) |
 
 ---
 
@@ -148,25 +143,25 @@
 
 | ID | Tile Name | Description | Required Count | Wiki Link |
 |----|-----------| ------------|---------------|----------|
-| 0 | Araxyte fang |  | 1 | N/A |
-| 1 | Full barrows set from 1 brother |  | 4 | N/A |
-| 2 | Tyrannical ring |  | 1 | N/A |
-| 3 | Leviathan's Lure OR Virtus piece from Leviathan |  | 1 | N/A |
-| 4 | Voidwaker gem |  | 1 | N/A |
-| 5 | Skull of vetion |  | 1 | N/A |
-| 6 | Any corp sigil |  | 1 | N/A |
-| 7 | Any 4 Blood Moon pieces |  | 4 | N/A |
-| 8 | 10x KBD heads |  | 10 | N/A |
-| 9 | 8x Blood Shards |  | 8 | N/A |
-| 10 | 3x Dossiers |  | 3 | N/A |
-| 11 | 5x Blood Quartz |  | 5 | N/A |
-| 12 | 20x LMS Wins  |  | 20 | N/A |
-| 13 | 3x Ancient Crystal |  | 3 | N/A |
-| 14 | Any inq piece OR orb |  | 1 | N/A |
-| 15 | Lesser Demon Scroll |  | 1 | N/A |
-| 16 | 3x Elder Chaos Pieces |  | 3 | N/A |
-| 17 | 5x ToB Purples |  | 5 | N/A |
-| 18 | Soulflame Horn |  | 1 | N/A |
+| 0 | Araxyte fang | Obtain 1x Araxyte Fang | 1 | [Wiki](https://oldschool.runescape.wiki/w/Araxyte_fang) |
+| 1 | Full barrows set from 1 brother | Obtain a full barrows set from 1 brother | 4 | [Wiki](https://oldschool.runescape.wiki/w/Barrows) |
+| 2 | Tyrannical ring | Obtain 1x Tyrannical ring | 1 | [Wiki](https://oldschool.runescape.wiki/w/Tyrannical_ring) |
+| 3 | Leviathan's Lure OR Virtus piece from Leviathan | Obtain 1x Leviathan's Lure OR Virtus piece from Leviathan | 1 | [Wiki](https://oldschool.runescape.wiki/w/Leviathan's_Lure) |
+| 4 | Voidwaker gem | Obtain 1x Voidwaker gem | 1 | [Wiki](https://oldschool.runescape.wiki/w/Voidwaker_gem) |
+| 5 | Skull of vetion | Obtain 1x Skull of vetion | 1 | [Wiki](https://oldschool.runescape.wiki/w/Skull_of_vetion) |
+| 6 | Any corp sigil | Obtain 1x Any corp sigil | 1 | [Wiki](https://oldschool.runescape.wiki/w/Corporeal_beast) |
+| 7 | Any 4 Blood Moon pieces | Obtain 4x Any Blood Moon pieces | 4 | [Wiki](https://oldschool.runescape.wiki/w/Blood_Moon) |
+| 8 | 10x KBD heads | Obtain 10x KBD heads | 10 | [Wiki](https://oldschool.runescape.wiki/w/King_black_dragon) |
+| 9 | 8x Blood Shards | Obtain 8x Blood Shards | 8 | [Wiki](https://oldschool.runescape.wiki/w/Blood_shard) |
+| 10 | 3x Dossiers | Obtain 3x Dossiers | 3 | [Wiki](https://oldschool.runescape.wiki/w/Dossier) |
+| 11 | 5x Blood Quartz | Obtain 5x Blood Quartz | 5 | [Wiki](https://oldschool.runescape.wiki/w/Blood_quartz) |
+| 12 | 20x LMS Wins  | Obtain 20x LMS Wins | 20 | [Wiki](https://oldschool.runescape.wiki/w/last_man_standing) |
+| 13 | 3x Ancient Crystal | Obtain 3x Ancient Crystal | 3 | [Wiki](https://oldschool.runescape.wiki/w/Ancient_Crystal) |
+| 14 | Any inq piece OR orb | Obtain 1x Any inq piece OR orb | 1 | [Wiki](https://oldschool.runescape.wiki/w/Inquisitor's_Armour) |
+| 15 | Lesser Demon Scroll | Obtain 1x Lesser Demon Scroll | 1 | [Wiki](https://oldschool.runescape.wiki/w/Lesser_Demon) |
+| 16 | 3x Elder Chaos Pieces | Obtain 3x Elder Chaos Pieces | 3 | [Wiki](https://oldschool.runescape.wiki/w/Elder_Chaos) |
+| 17 | 5x ToB Purples | Obtain 5x ToB Purples | 5 | [Wiki](https://oldschool.runescape.wiki/w/Theatre_of_Blood) |
+| 18 | Soulflame Horn | Obtain 1x Soulflame Horn | 1 | [Wiki](https://oldschool.runescape.wiki/w/Soulflame_Horn) |
 
 ### Key Tiles
 
@@ -182,7 +177,7 @@
 
 | ID | Tile Name | Description | Required Count | Wiki Link |
 |----|-----------| ------------|---------------|----------|
-| 0 | 5x HMT kits |  | 5 | N/A |
+| 0 | 5x HMT kits |  | 5 | [Wiki](https://oldschool.runescape.wiki/w/theatre_of_blood) |
 
 ---
 

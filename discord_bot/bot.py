@@ -14,7 +14,7 @@ class Bot(commands.Bot):
     async def setup_hook(self) -> None:
         self.add_view(InformationView(self))
 
-        cogs = ["cogs.information_cog", "cogs.admin_cog", "cogs.player_cog"]
+        cogs = ["cogs.information_cog", "cogs.admin_cog", "cogs.player_cog", "cogs.leaderboard_cog"]
         for cog in cogs:
             try:
                 await self.load_extension(cog)

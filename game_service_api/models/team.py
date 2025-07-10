@@ -15,12 +15,12 @@ class Team:
     
     # 0 = Normal map, 1 = Key, 2 = Boss
     game_state: int = 0
+    completion_counter: int = 1
 
     world1_shuffled_tiles: Optional[List[int]] = None
     world2_shuffled_tiles: Optional[List[int]] = None
     world3_shuffled_tiles: Optional[List[int]] = None
     world4_shuffled_tiles: Optional[List[int]] = None
-    completion_counter: int = 1
 
     # Completion counters for W1 key tiles
     w1key1_completion_counter: int = 1

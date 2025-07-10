@@ -557,6 +557,42 @@ def get_game_started():
         "running": running != None
     }), 200
 
+@teams_blueprint.route("/teams", methods=["GET"])
+def get_all_teams():
+    """
+    Retrieve all teams for leaderboard purposes.
+    Returns all team documents with calculated level information.
+    """
+    db = get_db()
+    teams = list(db.teams.find({}))
+    
+    for team in teams:
+        # Calculate current level for each team
+        current_world = team.get("current_world", 1)
+        current_tile = team.get("current_tile")
+        shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
+        
+        try:
+            tile_index = shuffled_tiles.index(current_tile)
+            level = tile_index + 1
+            team["current_level"] = f"{current_world}-{level}"
+            team["world_number"] = current_world
+            team["level_number"] = level
+        except ValueError:
+            # If current_tile not found in shuffled_tiles, default to level 1
+            team["current_level"] = f"{current_world}-1"
+            team["world_number"] = current_world
+            team["level_number"] = 1
+        
+        # Convert ObjectId to string for JSON serialization
+        if "_id" in team:
+            team["_id"] = str(team["_id"])
+    
+    # Sort teams by world (descending) then by level (descending) for leaderboard order
+    teams.sort(key=lambda x: (x["world_number"], x["level_number"]), reverse=True)
+    
+    return jsonify(teams)
+
 def get_tile_info(current_world: int, current_tile:int):
     world_tiles_map = {
         1: world1_tiles["world_tiles"],
