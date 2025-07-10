@@ -202,8 +202,8 @@ def advance_tile(team_id):
             team["_id"] = str(team["_id"])
         return jsonify(team), 200
 
-    # World 2 - go to boss fight
-    if current_world == 2 and idx + 1 == len(shuffled_tiles):
+    # World 2 and 3 - go to boss fight
+    if current_world in [2, 3] and idx + 1 == len(shuffled_tiles):
         db.teams.update_one(
             {"_id": ObjectId(team_id)}, 
             {"$set": 

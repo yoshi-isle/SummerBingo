@@ -51,6 +51,7 @@ class Team:
     w3key3_completion_counter: int = 1
     w3key4_completion_counter: int = 3
     w3key5_completion_counter: int = 1
+    w3key6_completion_counter: int = 1
 
     # World 4 specific state variables
     w4key1_completion_counter: int = 1

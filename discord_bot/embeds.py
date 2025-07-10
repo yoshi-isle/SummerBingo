@@ -203,17 +203,54 @@ def build_w3_key_board_embed(team_data):
         value="Complete **one trial of your choosing** to light the brazier.",
         inline=False
     )
-    
-    embed.add_field(
-        name=f"**Trial 1-A: 3x Chromium Ingots from Whisperer**",
-        value=f"`{format_submission(team_data['w3key1_completion_counter'])}`",
-        inline=False
+
+    w3_braziers_lit = team_data.get("w3_braziers_lit", 0)
+    if w3_braziers_lit == 0:
+        embed.add_field(
+            name=f"**Trial 1-A: 3x Chromium Ingots from Whisperer**",
+            value=f"`{format_submission(team_data['w3key1_completion_counter'])}`",
+            inline=False
+        )
+        embed.add_field(
+            name=f"**Trial 1-B: Moxi**",
+            value=f"`{format_submission(team_data['w3key2_completion_counter'])}`",
+            inline=False
+        )    
+    if w3_braziers_lit == 1:
+        embed.add_field(
+            name=f"**Trial 2-A: 10x Vorkath Heads**",
+            value=f"`{format_submission(team_data['w3key3_completion_counter'])}`",
+            inline=False
+        )
+        embed.add_field(
+            name=f"**Trial 2-B: Full Ancient Ceremonial Robes**",
+            value=f"`{format_submission(team_data['w3key4_completion_counter'])}`",
+            inline=False
+        )
+    if w3_braziers_lit == 2:
+        embed.add_field(
+            name=f"**Trial 3-A: Any Tome**",
+            value=f"`{format_submission(team_data['w3key5_completion_counter'])}`",
+            inline=False
+        )
+        embed.add_field(
+            name=f"**Trial 3-B: Ice Quartz**",
+            value=f"`{format_submission(team_data['w3key6_completion_counter'])}`",
+            inline=False
+        )
+    return embed
+
+def build_w3_boss_board_embed(team_data):
+    embed = discord.Embed(
+        title=team_data['team_name'],
+        color=discord.Color.dark_purple()
     )
     embed.add_field(
-        name=f"**Trial 1-B: Moxi**",
-        value=f"`{format_submission(team_data['w3key2_completion_counter'])}`",
+        name="Ancient Confrontation",
+        value="Build a ZCB from scratch.\nObtain 1x Nihil Horn and 1x Armadyl Crossbow",
         inline=False
-    )    
+    )
+    embed.set_footer(text="Use /boss in your team channel to submit your boss tile completion.", icon_url=Emojis.SKW_LOGO)
     return embed
 
 def build_storyline_embed(storyline):

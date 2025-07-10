@@ -14,6 +14,7 @@ from embeds import (
     build_w2_key_board_embed,
     build_w2_boss_board_embed,
     build_w3_key_board_embed,
+    build_w3_boss_board_embed
 )
 from dateutil import parser
 
@@ -61,6 +62,8 @@ class PlayerCog(commands.Cog):
                         embed = build_w2_boss_board_embed(team_data)
                     elif int(team_data["game_state"]) == 1 and int(team_data["current_world"]) == 3:
                         embed = build_w3_key_board_embed(team_data)
+                    elif int(team_data["game_state"]) == 2 and int(team_data["current_world"]) == 3:
+                        embed = build_w3_boss_board_embed(team_data)
                     else:
                         await interaction.response.send_message("Not made yet lol")
                         return
@@ -165,6 +168,9 @@ class PlayerCog(commands.Cog):
                     ],
                     2: [
                         app_commands.Choice(name="Tonalztics of Ralos", value=1),
+                    ],
+                    3: [
+                        app_commands.Choice(name="ZCB from scratch", value=1),
                     ],
                 }
                 

@@ -175,6 +175,15 @@ class AdminCog(commands.Cog):
                                     except:
                                         pass
                                     await post_team_board(self.session, submission['team_id'], team_channel, "w2_boss")
+                                # Boss Tile (World 3)
+                                elif info["team"]["game_state"] == 2 and info["team"]["current_world"] == 3:
+                                    embed, file = build_storyline_embed(StoryLine.W3_BOSS)
+                                    w3_boss_msg = await team_channel.send(embed=embed, file=file)
+                                    try:
+                                        await w3_boss_msg.pin()
+                                    except:
+                                        pass
+                                    await post_team_board(self.session, submission['team_id'], team_channel, "w3_boss")
                             else:
                                 error = await advance_resp.text()
                                 await message.channel.send(f"Failed to advance tile: {error}")
