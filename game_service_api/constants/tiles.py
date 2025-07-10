@@ -67,7 +67,7 @@ world3_tiles = {
         {"id": 1, "tile_name": "3x Armadyl Armor Pieces", "description": "Obtain 3x Armadyl Armor Pieces", "completion_counter": 3, "image_url": "world2/tiles/1.png", "wiki_url": "https://oldschool.runescape.wiki/w/kreearra"},
         {"id": 2, "tile_name": "Zamorak Hilt", "description": "Obtain 1x Zamorak Hilt", "completion_counter": 1, "image_url": "world2/tiles/2.png", "wiki_url": "https://oldschool.runescape.wiki/w/zamorak_hilt"},
         {"id": 3, "tile_name": "Rune Sword from General Graardor", "description": "Obtain 2x Rune Sword from General Graardor", "completion_counter": 2, "image_url": "world2/tiles/3.png", "wiki_url": "https://oldschool.runescape.wiki/w/general_graardor"},
-        {"id": 4, "tile_name": "10 Awakener's Orbs from Duke Sucellus", "description": "Obtain 10x Awakener's Orbs from Duke Sucellus", "completion_counter": 10, "image_url": "world2/tiles/4.png", "wiki_url": "https://oldschool.runescape.wiki/w/duke_sucellus"},
+        {"id": 4, "tile_name": "10 Awakener's Orbs (Duke)", "description": "Obtain 10x Awakener's Orbs from Duke Sucellus", "completion_counter": 10, "image_url": "world2/tiles/4.png", "wiki_url": "https://oldschool.runescape.wiki/w/duke_sucellus"},
         {"id": 5, "tile_name": "Rune Platebody + Platelegs from Amoxiatl", "description": "", "completion_counter": 2, "image_url": "world2/tiles/5.png", "wiki_url": "https://oldschool.runescape.wiki/w/amoxiatl"},
         {"id": 6, "tile_name": "Dragon Hunter Wand", "description": "Obtain 1x Dragon Hunter Wand", "completion_counter": 1, "image_url": "world2/tiles/6.png", "wiki_url": "https://oldschool.runescape.wiki/w/dragon_hunter_wand"},
         {"id": 7, "tile_name": "5x Venator Shards", "description": "Obtain 5x Venator Shards", "completion_counter": 5, "image_url": "world2/tiles/8.png", "wiki_url": "https://oldschool.runescape.wiki/w/venator_shard"},
@@ -91,9 +91,8 @@ world3_tiles = {
         {"id": 4, "tile_name": "Any Tome", "description": "", "completion_counter": 1, "image_url": "world2/keys/4.png", "wiki_url": "https://oldschool.runescape.wiki/w/Tome_of_fire"},
         {"id": 5, "tile_name": "Ice Quartz", "description": "", "completion_counter": 1, "image_url": "world2/keys/5.png", "wiki_url": "https://oldschool.runescape.wiki/w/Ice_Quartz"},
     ],
-    "boss_tiles": [
-        {"id": 0, "tile_name": "Zaryte Crossbow from scratch", "description": "Ancient Prison Break", "completion_counter": 2, "image_url": "world2/boss/0.png", "wiki_url": "https://oldschool.runescape.wiki/w/Zaryte_Crossbow"},
-    ]
+    "boss_tile": 
+        {"id": 0, "tile_name": "Zaryte Crossbow from scratch", "description": "Obtain 1x Nihil Horn and 1x Armadyl Crossbow", "completion_counter": 2, "image_url": "world2/boss/0.png", "wiki_url": "https://oldschool.runescape.wiki/w/Zaryte_Crossbow"},
 }
 
 world4_tiles = {
@@ -127,5 +126,5 @@ world4_tiles = {
         {"id": 4, "tile_name": "5x Armor/Wep Seeds OR 1x Enh", "description": "", "completion_counter": 5, "image_url": "world3/keys/4.png", "wiki_url": ""}
     ],
     "boss_tile":
-        {"id": 0, "tile_name": "5x HMT kits", "description": "", "completion_counter": 5, "image_url": "world3/boss/0.png", "wiki_url": "https://oldschool.runescape.wiki/w/theatre_of_blood"},
+        {"id": 0, "tile_name": "5x HMT kits", "description": "Obtain 5x Holy Kit, Sanguine Kit, or Sanguine Dust from HMT", "completion_counter": 5, "image_url": "world3/boss/0.png", "wiki_url": "https://oldschool.runescape.wiki/w/theatre_of_blood"},
 }

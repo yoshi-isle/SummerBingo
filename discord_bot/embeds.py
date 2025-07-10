@@ -114,7 +114,7 @@ def build_w1_boss_board_embed(team_data):
         inline=False
     )
     embed.add_field(
-        name="Submissions Needed",
+        name="📝 Submissions Remaining",
         value="1",
         inline=False
     )
@@ -247,7 +247,44 @@ def build_w3_boss_board_embed(team_data):
     )
     embed.add_field(
         name="Ancient Confrontation",
-        value="Build a ZCB from scratch.\nObtain 1x Nihil Horn and 1x Armadyl Crossbow",
+        value="Build a ZCB from scratch.\n\nObtain 1x Nihil Horn and 1x Armadyl Crossbow",
+        inline=False
+    )
+    embed.add_field(
+        name="📝 Submissions Remaining",
+        value=f"{team_data['w3boss_completion_counter']}",
+        inline=False
+    )
+    embed.set_footer(text="Use /boss in your team channel to submit your boss tile completion.", icon_url=Emojis.SKW_LOGO)
+    return embed
+
+def build_w4_key_board_embed(team_data):
+    embed = discord.Embed(
+        title=team_data['team_name']
+    )
+    embed.set_thumbnail(url=team_data["thumbnail_url"])
+    embed.set_footer(text="Use /submit in your team channel to submit your trial completion.", icon_url=Emojis.SKW_LOGO)
+    embed.add_field(
+        name=f"Drakan's Trial",
+        value="Complete **one trial of your choosing** to advance to the next room.",
+        inline=False
+    )
+
+    return embed
+
+def build_w4_boss_board_embed(team_data):
+    embed = discord.Embed(
+        title=team_data['team_name'],
+        color=discord.Color.dark_purple()
+    )
+    embed.add_field(
+        name="It's not over til...",
+        value="5 Hmt kits",
+        inline=False
+    )
+    embed.add_field(
+        name="📝 Submissions Remaining",
+        value=f"{team_data['w4boss_completion_counter']}",
         inline=False
     )
     embed.set_footer(text="Use /boss in your team channel to submit your boss tile completion.", icon_url=Emojis.SKW_LOGO)

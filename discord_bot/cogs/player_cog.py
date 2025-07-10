@@ -14,7 +14,9 @@ from embeds import (
     build_w2_key_board_embed,
     build_w2_boss_board_embed,
     build_w3_key_board_embed,
-    build_w3_boss_board_embed
+    build_w3_boss_board_embed,
+    build_w4_key_board_embed,
+    build_w4_boss_board_embed
 )
 from dateutil import parser
 
@@ -64,6 +66,10 @@ class PlayerCog(commands.Cog):
                         embed = build_w3_key_board_embed(team_data)
                     elif int(team_data["game_state"]) == 2 and int(team_data["current_world"]) == 3:
                         embed = build_w3_boss_board_embed(team_data)
+                    elif int(team_data["game_state"]) == 1 and int(team_data["current_world"]) == 4:
+                        embed = build_w4_key_board_embed(team_data)
+                    elif int(team_data["game_state"]) == 2 and int(team_data["current_world"]) == 4:
+                        embed = build_w4_boss_board_embed(team_data)
                     else:
                         await interaction.response.send_message("Not made yet lol")
                         return
@@ -127,6 +133,13 @@ class PlayerCog(commands.Cog):
                         app_commands.Choice(name="Any Tome", value=5),
                         app_commands.Choice(name="Ice Quartz", value=6),
                     ],
+                    4: [
+                        app_commands.Choice(name="Holy Elixir", value=1),
+                        app_commands.Choice(name="Eternal Glory", value=2),
+                        app_commands.Choice(name="3x Raid Purples", value=3),
+                        app_commands.Choice(name="Nm Staff", value=4),
+                        app_commands.Choice(name="5x Armor/Wep Seeds OR 1x Enhanced", value=5),
+                    ],
                 }
                 
                 # Get trials for the current world, default to world 1 if not found
@@ -171,6 +184,9 @@ class PlayerCog(commands.Cog):
                     ],
                     3: [
                         app_commands.Choice(name="ZCB from scratch", value=1),
+                    ],
+                    4: [
+                        app_commands.Choice(name="5 HMT Kits", value=1),
                     ],
                 }
                 

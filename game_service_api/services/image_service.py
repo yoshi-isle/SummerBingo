@@ -28,14 +28,31 @@ class ImageService:
         
         if game_state == 0:
             return self.generate_overworld_image(team)
+        
+        # World 1
         elif game_state == 1 and world == 1:
             return self.generate_w1_key_image(team)
         elif game_state == 2 and world == 1:
             return self.generate_w1_boss_image(team)
+        
+        # World 2
         elif game_state == 1 and world == 2:
             return self.generate_w2_key_image(team)
         elif game_state == 2 and world == 2:
             return self.generate_w2_boss_image(team)
+        
+        # World 3 - Key images are basically in the overworld
+        elif game_state == 1 and world == 3:
+            return self.generate_overworld_image(team)
+        elif game_state == 2 and world == 3:
+            return self.generate_w3_boss_image(team)
+
+        
+        # World 4
+        elif game_state == 1 and world == 4:
+            return self.generate_w4_key_image(team)
+        elif game_state == 2 and world == 4:
+            return self.generate_w4_boss_image(team)
 
     def generate_overworld_image(self, team):
         level_name = level_name_from_team(team)
@@ -173,8 +190,17 @@ class ImageService:
             return img_io
         
     def generate_w2_key_image(self, team):
-        image_path = os.path.join(os.path.dirname(__file__), '../images/world2/board/board_background.png')
-        image_path = os.path.abspath(image_path)
+        current_path = team.get('w2_path_chosen', 0)
+        where = {
+            0: 'bottom',
+            -1: 'left',
+            1: 'right',
+            2: 'top'
+        }
+        if current_path in where:
+            image_path = os.path.join(os.path.dirname(__file__), f'../images/world2/keys/key_path_{where[current_path]}.png')
+            image_path = os.path.abspath(image_path)
+
         with Image.open(image_path) as base_img:
             draw = ImageDraw.Draw(base_img)
             self.draw_ui_panel(base_img)
@@ -232,6 +258,110 @@ class ImageService:
             img_io.seek(0)
             return img_io
 
+    def generate_w3_boss_image(self, team):
+        image_path = os.path.join(os.path.dirname(__file__), '../images/world3/board/boss_background.png')
+        image_path = os.path.abspath(image_path)
+        tile_info = world3_tiles['boss_tile']
+        with Image.open(image_path) as base_img:
+            draw = ImageDraw.Draw(base_img)
+            self.draw_ui_panel(base_img)
+            self.draw_team_text(draw, team["team_name"])
+            self.paste_image(base_img, '../images/key_tile.png', (20,16))
+            tile_label = ""
+            self.draw_tile_image(base_img, f'../images/world3/boss/0.png')
+            self.draw_outlined_wrapped_text(
+                draw=draw,
+                text=tile_info['tile_name'],
+                font=ImageFont.truetype(self.font_path, size=ImageSettings.LEVEL_TEXT_FONT_SIZE),
+                position=ImageSettings.TILE_IMAGE_TEXT_COORDINATES,
+                max_width=330,
+                fill="yellow",
+                outline_fill="black",
+                outline_range=2,
+                line_spacing=2,
+                align="center"
+            )
+            self.draw_outlined_wrapped_text(
+                draw=draw,
+                text=tile_info['description'],
+                font=ImageFont.truetype(self.font_path, size=ImageSettings.TILE_DESCRIPTION_FONT_SIZE),
+                position=ImageSettings.TILE_IMAGE_TEXT_COORDINATES_DESCRIPTION,
+                max_width=330,
+                fill="white",
+                outline_fill="black",
+                outline_range=2,
+                line_spacing=2,
+                align="left"
+            )
+            font = ImageFont.truetype(self.font_path, size=ImageSettings.LEVEL_TEXT_FONT_SIZE)
+            draw.text((ImageSettings.LEVEL_TEXT_COORDINATES[0]+4, ImageSettings.LEVEL_TEXT_COORDINATES[1] + 4), tile_label, fill="black", font=font, anchor="la", align="left")
+            draw.text(ImageSettings.LEVEL_TEXT_COORDINATES, tile_label, fill="white", font=font, anchor="la", align="left")
+            img_io = BytesIO()
+            base_img.save(img_io, 'PNG')
+            img_io.seek(0)
+            return img_io
+        
+    def generate_w4_key_image(self, team):
+        image_path = os.path.join(os.path.dirname(__file__), f'../images/world4/keys/trial_background.png')
+        image_path = os.path.abspath(image_path)
+
+        with Image.open(image_path) as base_img:
+            draw = ImageDraw.Draw(base_img)
+            self.draw_ui_panel(base_img)
+            self.draw_team_text(draw, team["team_name"])
+            tile_label = "Drakan's Trial"
+            self.paste_image(base_img, '../images/key_tile.png', (20,16))
+            font = ImageFont.truetype(self.font_path, size=ImageSettings.LEVEL_TEXT_FONT_SIZE)
+            draw.text((ImageSettings.LEVEL_TEXT_COORDINATES[0]+4, ImageSettings.LEVEL_TEXT_COORDINATES[1] + 4), tile_label, fill="black", font=font, anchor="la", align="left")
+            draw.text(ImageSettings.LEVEL_TEXT_COORDINATES, tile_label, fill="white", font=font, anchor="la", align="left")
+            img_io = BytesIO()
+            base_img.save(img_io, 'PNG')
+            img_io.seek(0)
+            return img_io
+        
+    def generate_w4_boss_image(self, team):
+        image_path = os.path.join(os.path.dirname(__file__), '../images/world4/board/boss_background.png')
+        image_path = os.path.abspath(image_path)
+        tile_info = world4_tiles['boss_tile']
+        with Image.open(image_path) as base_img:
+            draw = ImageDraw.Draw(base_img)
+            self.draw_ui_panel(base_img)
+            self.draw_team_text(draw, team["team_name"])
+            self.paste_image(base_img, '../images/key_tile.png', (20,16))
+            tile_label = "It's not over til..."
+            self.draw_tile_image(base_img, f'../images/world4/boss/0.png')
+            self.draw_outlined_wrapped_text(
+                draw=draw,
+                text=tile_info['tile_name'],
+                font=ImageFont.truetype(self.font_path, size=ImageSettings.LEVEL_TEXT_FONT_SIZE),
+                position=ImageSettings.TILE_IMAGE_TEXT_COORDINATES,
+                max_width=330,
+                fill="yellow",
+                outline_fill="black",
+                outline_range=2,
+                line_spacing=2,
+                align="center"
+            )
+            self.draw_outlined_wrapped_text(
+                draw=draw,
+                text=tile_info['description'],
+                font=ImageFont.truetype(self.font_path, size=ImageSettings.TILE_DESCRIPTION_FONT_SIZE),
+                position=ImageSettings.TILE_IMAGE_TEXT_COORDINATES_DESCRIPTION,
+                max_width=330,
+                fill="white",
+                outline_fill="black",
+                outline_range=2,
+                line_spacing=2,
+                align="left"
+            )
+            font = ImageFont.truetype(self.font_path, size=ImageSettings.LEVEL_TEXT_FONT_SIZE)
+            draw.text((ImageSettings.LEVEL_TEXT_COORDINATES[0]+4, ImageSettings.LEVEL_TEXT_COORDINATES[1] + 4), tile_label, fill="black", font=font, anchor="la", align="left")
+            draw.text(ImageSettings.LEVEL_TEXT_COORDINATES, tile_label, fill="white", font=font, anchor="la", align="left")
+            img_io = BytesIO()
+            base_img.save(img_io, 'PNG')
+            img_io.seek(0)
+            return img_io
+    
     def paste_image(self, base_img, path, location=(0,0)):
         img_path = os.path.join(os.path.dirname(__file__), path)
         img_path = os.path.abspath(img_path)

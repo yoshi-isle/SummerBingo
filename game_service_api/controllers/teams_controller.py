@@ -490,6 +490,40 @@ def complete_w3_trial(team_id, brazier_number):
     
     return jsonify(team), 200
 
+@teams_blueprint.route("/teams/<team_id>/complete_w4_trial", methods=["PUT"])
+def complete_w4_trial(team_id):
+    """
+    Completes the W4 trial and advances to the final boss
+    """
+    db = get_db()
+    team = db.teams.find_one({"_id": ObjectId(team_id)})
+    if not team:
+        abort(404, description="Team not found")
+
+    # Get the shuffled tiles and current tile
+    current_world = team.get("current_world", 1)
+    world_shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
+
+    next_tile = world_shuffled_tiles[0]
+
+    # calculate completion counter from the tile index
+    tile_info = get_tile_info(current_world, next_tile)
+    completion_counter = tile_info.get("completion_counter") if tile_info else None
+
+    db.teams.update_one(
+        {"_id": ObjectId(team_id)}, 
+        {"$set": {
+            "game_state": 2,
+            "last_rolled_at": datetime.now(timezone.utc)
+        }
+    })
+
+    # Convert ObjectId to string for JSON serialization
+    if "_id" in team:
+        team["_id"] = str(team["_id"])
+    
+    return jsonify(team), 200
+
 @teams_blueprint.route("/teams/<team_id>/next_world", methods=["PUT"])
 def advance_to_next_world(team_id):
     """

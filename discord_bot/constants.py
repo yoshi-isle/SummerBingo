@@ -54,6 +54,7 @@ class ApiUrls:
     
     TEAM_COMPLETE_W2_TRIAL = f"{BASE_URL}/teams/{{id}}/complete_w2_trial"
     TEAM_COMPLETE_W3_TRIAL = f"{BASE_URL}/teams/{{id}}/{{brazier_number}}/complete_w3_trial"
+    TEAM_COMPLETE_W4_TRIAL = f"{BASE_URL}/teams/{{id}}/complete_w4_trial"
    
     # Submissions
     SUBMISSION = f"{BASE_URL}/submission/{{id}}"

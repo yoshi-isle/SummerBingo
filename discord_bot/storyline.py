@@ -109,15 +109,20 @@ A voice hisses from the shadows:
 This is no longer a quest for glory. It is survival.
 '''
     }
-    W4_KEY = '''
+    W4_KEY = {
+        "title": "Chapter 4-T: The Trials of Drakan",
+        "dialogue": '''
 In the depths of a ruined cathedral, drenched in shadows, a black altar pulses with cursed energy.
 Above it floats a key, wrapped in chains of sinew and bone.
 
 A rasping voice fills the chamber:
 "Complete three of five trials... or become part of my collection."
-'''
+    '''
+}
 
-    W4_BOSS = '''
+    W4_BOSS = {
+        "title": "Chapter 4-B: The Final Confrontation",
+        "dialogue": '''
 A blood-curdling scream echoes through the void as the skies turn black and the moon disappears.
 
 From a swirl of shadow and smoke, Lord Drakan emerges—towering, ageless, and hungry.  
@@ -127,6 +132,7 @@ Crimson eyes pierce the gloom. His voice drips with venom:
 
 The air thickens. The void pulses. The final battle is upon them.
 '''
+}
 
     W4_END = '''
 With Drakan defeated and the final reward claimed, the island begins to tremble.
