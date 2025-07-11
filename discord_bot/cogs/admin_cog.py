@@ -310,8 +310,8 @@ class AdminCog(commands.Cog):
         
         if team[f"w3key{key_option}_completion_counter"] <= 0:
             await self.session.put(ApiUrls.TEAM_COMPLETE_W3_TRIAL.format(id=team["_id"], brazier_number=team["w3_braziers_lit"]))
-            await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_COMPLETE} Trial completed!"))
-            await post_team_board(self.session, submission['team_id'], team_channel, "w3_boss")
+            await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_COMPLETE} You light a brazier! But what does it mean...?"))
+            await post_team_board(self.session, submission['team_id'], team_channel, "overworld")
         else:
             remaining = team[f'w3key{key_option}_completion_counter']
             await team_channel.send(embed=Embed(
@@ -367,7 +367,7 @@ class AdminCog(commands.Cog):
                 if int(team[f"w{world}boss_completion_counter"]) <= 0:
                     # Win the event
                     if world == 4:
-                        await team_channel.send(embed=Embed(title=f"# Your team won the bingo!!!"))
+                        await team_channel.send(embed=Embed(title=f"Your team won the bingo!!!"))
                         return
 
                     await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_COMPLETE} Your team completed the boss tile!"))
@@ -435,6 +435,9 @@ class AdminCog(commands.Cog):
             await post_team_board(self.session, team_id, team_channel, "w2_boss")
         elif game_state == 1 and current_world == 3:
             await post_team_board(self.session, team_id, team_channel, "overworld")
+        elif game_state == 2 and current_world == 3:
+            await self._send_storyline_and_pin(team_channel, StoryLine.W3_BOSS)
+            await post_team_board(self.session, team_id, team_channel, "w3_boss")
         elif game_state == 1 and current_world == 4:
             await self._send_storyline_and_pin(team_channel, StoryLine.W4_KEY)
             await post_team_board(self.session, team_id, team_channel, "w4_key")

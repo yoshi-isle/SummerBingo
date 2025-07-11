@@ -39,22 +39,6 @@ async def post_team_board(session: aiohttp.ClientSession, team_id: str, team_cha
     # Create Discord file
     file = discord.File(io.BytesIO(image_data), filename="team_board.png")
     
-    # Determine board type if auto
-    if board_type == "auto":
-        game_state = int(team_data["game_state"])
-        current_world = int(team_data["current_world"])
-        
-        if game_state == 0:
-            board_type = "overworld"
-        elif game_state == 1 and current_world == 1:
-            board_type = "w1_key"
-        elif game_state == 1 and current_world == 2:
-            board_type = "w2_key"
-        elif game_state == 2 and current_world == 1:
-            board_type = "w1_boss"
-        else:
-            board_type = "overworld"  # fallback
-    
     # Build appropriate embed
     if board_type == "overworld":
         embed = build_team_board_embed(team_data, tile_info, level_number)
