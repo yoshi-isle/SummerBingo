@@ -71,7 +71,7 @@ class PlayerCog(commands.Cog):
                     elif int(team_data["game_state"]) == 2 and int(team_data["current_world"]) == 4:
                         embed = build_w4_boss_board_embed(team_data)
                     else:
-                        await interaction.response.send_message("Not made yet lol")
+                        await interaction.response.send_message(f"Error. Contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
                         return
                     embed.set_image(url="attachment://team_board.png")
                     await interaction.response.send_message(embed=embed, file=file)
