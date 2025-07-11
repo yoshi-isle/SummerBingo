@@ -1,6 +1,6 @@
 class StoryLine:
     W1_START={
-        "title":"Chapter 1: Humble Beginnings",
+        "title":"Chapter 1: Mystical Journey",
         "dialogue": '''
 The heroes arrive at a strange, forgotten island—drawn by whispers of treasure and glory.
 They step off their boat, boots sinking into wet sand... only to be greeted by a mob of snippy sand crabs.
@@ -30,45 +30,59 @@ A voice—ancient and cold—rattles their bones:
         "image": "story_3.png"}
 
     W2_START = {
-        "title": "Chapter 2: The Sands of Time",
+        "title": "Chapter 2: Desert Mirage",
         "dialogue": '''
-The blazing sun beats down as the heroes cross the shifting sands of Tumeken's Oasis.
-Golden scarabs skitter underfoot as they march forward, mirages dancing on the horizon.
+Under the blazing sun, the heroes journey deeper into the shifting sands, each step swallowed by the desert's fury.
+A violent sandstorm whips around them, blurring the horizon and testing their determination.
 
-Yet, as they approach the looming pyramid, a thick fog clings to the path ahead—concealing what lies beyond.
-The adventurers can't help but feel that something is missing... that the true challenge still awaits, hidden just out of sight.
+Through the swirling dust, the outline of a grand pyramid appears—its entrance aglow with ancient energy.
+A powerful voice echoes from within:
+"Face the trials of Tumeken, and the storm shall part."
+
+What secrets await beyond the storm?
 ''',
-    "image": "story_4.png"
+        "image": "story_4.png"
     }
 
-    W2_KEY = {"title": "Chapter 2-T: The Trials of Tumeken",
-              "dialogue": '''
-As sand spills from the walls, a voice booms from above:
-"Only those who endure the trials of Tumeken may continue. Complete three of five challenges to proceed."
+    W2_KEY = {
+        "title": "Chapter 2-T: The Trials of Tumeken",
+        "dialogue": '''
+The heroes step into the pyramid, its ancient halls echoing with secrets.
+Before them, two pathways stretch into darkness.
+
+A powerful voice reverberates through the stone:
+"Choose your path."
 '''
-}
+    }
     
 
-    W2_KEY_COMPLETE = {"title": "Chapter 2-T: The Trials of Tumeken - Complete",
-                       "dialogue": '''
-As the final mechanism clicks into place, the thick fog outside begins to lift.
-In the distance, a colossal arena emerges from the haze—its towering pillars and sun-bleached stands promising both glory and peril.
+    W2_KEY_COMPLETE = {
+        "title": "Chapter 2-T: The Trials of Tumeken - Complete",
+        "dialogue": '''
+With the final puzzle solved, ancient gears grind and the desert fog begins to thin.
+Beyond the clearing dust, a vast colosseum rises—its sunlit arches beckoning the heroes onward.
 
-The door groans open, revealing the path forward.
+A heavy door swings open, revealing the way ahead.
 '''
-}
+    }
 
     W2_BOSS = {
-    "title": "Chapter 2-B: The Sands of Time - Boss",
-    "dialogue": '''
-At the heart of the colosseum, beneath the ever-burning sun, the sand trembles.
-A thunderous crack splits the arena floor as a massive figure emerges—Sol Heredit, Champion of Ralos.
+        "title": "Chapter 2-B: A test of strength - Boss",
+        "dialogue": '''
+The heroes step into the grand colosseum, its sunlit arches casting long shadows across the shifting sands.
+At the center, seated upon a throne of gilded stone, awaits Sol Heredit—Champion of Ralos—his golden armor radiant beneath the desert sky.
 
-His voice echoes with divine authority:
-"To prove your worth... bring me Ralos, the rarest gift of the sands."
+He regards the adventurers with a measured gaze, his voice echoing through the arena:
+"You seek the treasure of Tumeken's Oasis, yet this domain now answers to Varlamore. Our banners claim new ground with every sunrise, and these sands are the latest prize."
 
-The crowd of spirits watches in silence. The battle begins.
-'''}
+The heroes are intimidated by Sol Heredit's presence, yet they stand their ground.
+
+Rising to his feet, Sol Heredit gestures to the vast arena:
+"Fine then, I'll face you myself!"
+
+The audience of the colosseum looks on, their anticipation palpable. Sol Heredit jumps from his throne, landing with a thud that shakes the ground beneath the heroes' feet.
+'''
+    }
 
     W3_START = {
         "title": "Chapter 3: Cold Rush",
