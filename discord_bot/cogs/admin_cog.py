@@ -311,7 +311,7 @@ class AdminCog(commands.Cog):
         if team[f"w3key{key_option}_completion_counter"] <= 0:
             await self.session.put(ApiUrls.TEAM_COMPLETE_W3_TRIAL.format(id=team["_id"], brazier_number=team["w3_braziers_lit"]))
             await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_COMPLETE} Trial completed!"))
-            await post_team_board(self.session, submission['team_id'], team_channel, "w4_boss")
+            await post_team_board(self.session, submission['team_id'], team_channel, "w3_boss")
         else:
             remaining = team[f'w3key{key_option}_completion_counter']
             await team_channel.send(embed=Embed(

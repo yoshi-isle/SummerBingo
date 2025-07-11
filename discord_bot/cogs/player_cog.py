@@ -168,13 +168,14 @@ class PlayerCog(commands.Cog):
                         trials = [trial for trial in trials if trial.value in [5, 6]]
 
                 # For world 4, filter based on the trial iteration
-                w4_trial_iteration = team_data.get('w4_trial_iteration', 0)
-                if w4_trial_iteration == 0:
-                    trials = [trial for trial in trials if trial.value in [1]]
-                elif w4_trial_iteration == 1:
-                    trials = [trial for trial in trials if trial.value in [2, 3, 4]]
-                elif w4_trial_iteration == 2:
-                    trials = [trial for trial in trials if trial.value in [5]]
+                if current_world == 4:
+                    w4_trial_iteration = team_data.get('w4_trial_iteration', 0)
+                    if w4_trial_iteration == 0:
+                        trials = [trial for trial in trials if trial.value in [1]]
+                    elif w4_trial_iteration == 1:
+                        trials = [trial for trial in trials if trial.value in [2, 3, 4]]
+                    elif w4_trial_iteration == 2:
+                        trials = [trial for trial in trials if trial.value in [5]]
 
                 # Filter based on current input if provided
                 if current:
