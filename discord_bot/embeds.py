@@ -262,13 +262,54 @@ def build_w4_key_board_embed(team_data):
     embed = discord.Embed(
         title=team_data['team_name']
     )
+
     embed.set_thumbnail(url=team_data["thumbnail_url"])
     embed.set_footer(text="Use /submit in your team channel to submit your trial completion.", icon_url=Emojis.SKW_LOGO)
-    embed.add_field(
-        name=f"Drakan's Trial",
-        value="Complete **one trial of your choosing** to advance to the next room.",
-        inline=False
-    )
+    
+    w4_trial_iteration = team_data.get('w4_trial_iteration', 0)
+    if w4_trial_iteration == 0:
+        embed.add_field(
+            name=f"Drakan's Trial",
+            value="Complete **this tile** to advance to the next room.",
+            inline=False
+        )
+        embed.add_field(
+            name=f"{Emojis.TRIAL_W4_1} Trial 1: Holy Elixir",
+            value=f"`{format_submission(team_data['w4key1_completion_counter'])}`",
+            inline=False
+        )
+    elif w4_trial_iteration == 1:
+        embed.add_field(
+            name=f"Drakan's Trial",
+            value="Choose **one of these 3** to advance to the next room.",
+            inline=False
+        )
+        embed.add_field(
+            name=f"{Emojis.TRIAL_W4_2} Trial 2-A: Amulet of Eternal Glory",
+            value=f"`{format_submission(team_data['w4key2_completion_counter'])}`",
+            inline=False
+        )
+        embed.add_field(
+            name=f"{Emojis.TRIAL_W4_3} Trial 2-B: 3x Raid Purples",
+            value=f"`{format_submission(team_data['w4key3_completion_counter'])}`",
+            inline=False
+        )
+        embed.add_field(
+            name=f"{Emojis.TRIAL_W4_4} Trial 2-C: Nightmare Staff",
+            value=f"`{format_submission(team_data['w4key4_completion_counter'])}`",
+            inline=False
+        )
+    elif w4_trial_iteration == 2:
+        embed.add_field(
+            name=f"Drakan's Trial",
+            value="Complete **this tile** to advance to the finale of the bingo!",
+            inline=False
+        )
+        embed.add_field(
+            name=f"{Emojis.TRIAL_W4_5} Trial 3: 5x Armor/Weapon Seeds OR 1x Enhanced Crystal Weapon Seed",
+            value=f"`{format_submission(team_data['w4key5_completion_counter'])}`",
+            inline=False
+        )
 
     return embed
 

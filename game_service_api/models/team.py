@@ -17,24 +17,20 @@ class Team:
     game_state: int = 0
     completion_counter: int = 1
 
-    world1_shuffled_tiles: Optional[List[int]] = None
-    world2_shuffled_tiles: Optional[List[int]] = None
-    world3_shuffled_tiles: Optional[List[int]] = None
-    world4_shuffled_tiles: Optional[List[int]] = None
+    # Boss tile completion counters
+    w1boss_completion_counter: int = 1
+    w2boss_completion_counter: int = 1
+    w3boss_completion_counter: int = 2
+    w4boss_completion_counter: int = 5
 
-    # Completion counters for W1 key tiles
+    # World 1 key tile completion counters
     w1key1_completion_counter: int = 1
     w1key2_completion_counter: int = 1
     w1key3_completion_counter: int = 4
     w1key4_completion_counter: int = 1
     w1key5_completion_counter: int = 10
 
-    w1boss_completion_counter: int = 1
-    w2boss_completion_counter: int = 1
-    w3boss_completion_counter: int = 2
-    w4boss_completion_counter: int = 5
-
-    # Completion counters for W2 key tiles
+    # World 2 key tile completion counters
     w2key1_completion_counter: int = 1
     w2key2_completion_counter: int = 5
     w2key3_completion_counter: int = 1
@@ -54,11 +50,17 @@ class Team:
     w3key6_completion_counter: int = 1
 
     # World 4 specific state variables
+    w4_trial_iteration: int = 0 # 0 = first trial, 1 = pick one of three, 2 = final
     w4key1_completion_counter: int = 1
-    w4key2_completion_counter: int = 5
-    w4key3_completion_counter: int = 1
-    w4key4_completion_counter: int = 3
-    w4key5_completion_counter: int = 1
+    w4key2_completion_counter: int = 1
+    w4key3_completion_counter: int = 3
+    w4key4_completion_counter: int = 1
+    w4key5_completion_counter: int = 5
 
     team_image_path: str = "1.png"
     thumbnail_url: str = ""
+
+    world1_shuffled_tiles: Optional[List[int]] = None
+    world2_shuffled_tiles: Optional[List[int]] = None
+    world3_shuffled_tiles: Optional[List[int]] = None
+    world4_shuffled_tiles: Optional[List[int]] = None

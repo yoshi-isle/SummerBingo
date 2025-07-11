@@ -167,6 +167,15 @@ class PlayerCog(commands.Cog):
                     elif braziers_lit == 2:
                         trials = [trial for trial in trials if trial.value in [5, 6]]
 
+                # For world 4, filter based on the trial iteration
+                w4_trial_iteration = team_data.get('w4_trial_iteration', 0)
+                if w4_trial_iteration == 0:
+                    trials = [trial for trial in trials if trial.value in [1]]
+                elif w4_trial_iteration == 1:
+                    trials = [trial for trial in trials if trial.value in [2, 3, 4]]
+                elif w4_trial_iteration == 2:
+                    trials = [trial for trial in trials if trial.value in [5]]
+
                 # Filter based on current input if provided
                 if current:
                     trials = [trial for trial in trials if current.lower() in trial.name.lower()]
@@ -227,6 +236,11 @@ class PlayerCog(commands.Cog):
         team_data = await get_team_from_id(self.session, interaction.user.id)
         if not team_data:
             await interaction.response.send_message(f"You are not part of a team. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>", ephemeral=True)
+            return
+        
+        in_correct_channel = str(interaction.channel_id) == team_data['discord_channel_id']
+        if not in_correct_channel:
+            await interaction.response.send_message("You can only use this command in your team channel.", ephemeral=True)
             return
 
         game_state = team_data["game_state"]
@@ -419,6 +433,11 @@ class PlayerCog(commands.Cog):
             else:
                 await interaction.response.send_message(f"Error finding team information. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
                 return
+            
+        in_correct_channel = str(interaction.channel_id) == team_data['discord_channel_id']
+        if not in_correct_channel:
+            await interaction.response.send_message("You can only use this command in your team channel.", ephemeral=True)
+            return
 
         if team_data["game_state"] == 1:
             await interaction.response.send_message(f"You cannot skip a trial tile.", ephemeral=True)

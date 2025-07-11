@@ -19,6 +19,13 @@ class Emojis:
     TRIAL_W2_4="<:Primordial_crystal:1392603490328776774>"
     TRIAL_W2_5="<:Elidinis27_ward:1392603633907929228>"
 
+    TRIAL_W4_1="<:Holy_elixir:1392977427025629194>"
+    TRIAL_W4_2="<:Amulet_of_eternal_glory:1392977534517379242>"
+    TRIAL_W4_3="<:Sanguinesti_staff:1392977699957510215>"
+    TRIAL_W4_4="<:Nightmare_staff:1392977819436318810>"
+    TRIAL_W4_5="<:Crystal_armour_seed:1392977899111579758>"
+
+
     TWISTED_BOW="<:Twisted_bow:1392562692472176641>"
 
     ADMIN="<:admin:1392259079497584844>"
