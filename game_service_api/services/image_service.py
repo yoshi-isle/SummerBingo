@@ -154,8 +154,6 @@ class ImageService:
             tile_label = "Mystic Cove Summit"
             self.paste_image(base_img, '../images/key_tile.png', (20,16))
             self.draw_tile_image(base_img, f'../images/world1/boss/0.png')
-            self.paste_image(base_img, f'../images/world1/path/bosspath.png')
-            self.paste_image(base_img, f'../images/teams/{team.get("team_image_path")}', (1083, 840))
             self.paste_image(base_img, f'../images/world1/olm_dialogue_4.png')
             self.draw_outlined_wrapped_text(
                 draw=draw,
