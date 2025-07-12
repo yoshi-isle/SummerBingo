@@ -32,7 +32,7 @@ class Team:
 
     # World 2 key tile completion counters
     w2key1_completion_counter: int = 1
-    w2key2_completion_counter: int = 5
+    w2key2_completion_counter: int = 3
     w2key3_completion_counter: int = 1
     w2key4_completion_counter: int = 3
     w2key5_completion_counter: int = 1

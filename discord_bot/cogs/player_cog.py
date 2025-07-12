@@ -120,7 +120,7 @@ class PlayerCog(commands.Cog):
                     ],
                     2: [
                         app_commands.Choice(name="Golden Tench", value=1),
-                        app_commands.Choice(name="5x Obsidian Armor Pieces", value=2),
+                        app_commands.Choice(name="3x Obsidian Armor Pieces", value=2),
                         app_commands.Choice(name="Uncut Onyx", value=3),
                         app_commands.Choice(name="3x Cerberus Crystals", value=4),
                         app_commands.Choice(name="Any ToA Purple", value=5),

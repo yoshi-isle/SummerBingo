@@ -96,7 +96,9 @@ class ImageService:
                 self.paste_image(base_img, '../images/world_map.png', (20, 16))
             # Team bubble
             self.paste_image(base_img, f'../images/teams/{team.get("team_image_path")}', team_bubble_coordinates[level_number_from_team(team)])
-            self.draw_tile_image(base_img, f'../images/world{team.get('current_world')}/tiles/{team.get('current_tile')}.png')
+
+            self.draw_tile_image(base_img, f'../images/{tile_info["image_url"]}')
+
             self.draw_level_text(draw, level_name)
             self.draw_outlined_wrapped_text(
                 draw=draw,
@@ -213,9 +215,17 @@ class ImageService:
             1: 'right',
             2: 'top'
         }
+        which_key_img_to_use = {
+            0: '../images/world2/keys/key_bottom.png',
+            -1: '../images/world2/keys/key_left.png',
+            1: '../images/world2/keys/key_right.png',
+            2: '../images/world2/keys/key_top.png'
+
+        }
         if current_path in where:
             image_path = os.path.join(os.path.dirname(__file__), f'../images/world2/keys/key_path_{where[current_path]}.png')
             image_path = os.path.abspath(image_path)
+        
 
         with Image.open(image_path) as base_img:
             draw = ImageDraw.Draw(base_img)
@@ -223,6 +233,7 @@ class ImageService:
             self.draw_team_text(draw, team["team_name"])
             tile_label = "Tumeken's Trial"
             self.paste_image(base_img, '../images/key_tile.png', (20,16))
+            self.paste_image(base_img, which_key_img_to_use[current_path])
             font = ImageFont.truetype(self.font_path, size=ImageSettings.LEVEL_TEXT_FONT_SIZE)
             draw.text((ImageSettings.LEVEL_TEXT_COORDINATES[0]+4, ImageSettings.LEVEL_TEXT_COORDINATES[1] + 4), tile_label, fill="black", font=font, anchor="la", align="left")
             draw.text(ImageSettings.LEVEL_TEXT_COORDINATES, tile_label, fill="white", font=font, anchor="la", align="left")
@@ -351,7 +362,7 @@ class ImageService:
             draw = ImageDraw.Draw(base_img)
             self.draw_ui_panel(base_img, team)
             self.draw_team_text(draw, team["team_name"])
-            tile_label = "Drakan's Trial"
+            tile_label = "Trial of the Void"
             self.paste_image(base_img, '../images/key_tile.png', (20,16))
             font = ImageFont.truetype(self.font_path, size=ImageSettings.LEVEL_TEXT_FONT_SIZE)
             draw.text((ImageSettings.LEVEL_TEXT_COORDINATES[0]+4, ImageSettings.LEVEL_TEXT_COORDINATES[1] + 4), tile_label, fill="black", font=font, anchor="la", align="left")

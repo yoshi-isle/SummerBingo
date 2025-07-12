@@ -151,7 +151,7 @@ def build_w2_key_board_embed(team_data):
             inline=False
         )
         embed.add_field(
-            name=f"**Trial 1-B: {Emojis.TRIAL_W2_2} 5x Obsidian Armor Pieces**",
+            name=f"**Trial 1-B: {Emojis.TRIAL_W2_2} 3x Obsidian Armor Pieces**",
             value=f"`{format_submission(team_data['w2key2_completion_counter'])}`",
             inline=False
         )
@@ -285,7 +285,7 @@ def build_w4_key_board_embed(team_data):
     w4_trial_iteration = team_data.get('w4_trial_iteration', 0)
     if w4_trial_iteration == 0:
         embed.add_field(
-            name=f"Drakan's Trial",
+            name=f"Trial of the void",
             value="Complete **this tile** to advance to the next room.",
             inline=False
         )
@@ -296,7 +296,7 @@ def build_w4_key_board_embed(team_data):
         )
     elif w4_trial_iteration == 1:
         embed.add_field(
-            name=f"Drakan's Trial",
+            name=f"Trial of the void",
             value="Choose **one of these 3** to advance to the next room.",
             inline=False
         )
@@ -317,7 +317,7 @@ def build_w4_key_board_embed(team_data):
         )
     elif w4_trial_iteration == 2:
         embed.add_field(
-            name=f"Drakan's Trial",
+            name=f"Trial of the void",
             value="Complete **this tile** to advance to the finale of the bingo!",
             inline=False
         )
