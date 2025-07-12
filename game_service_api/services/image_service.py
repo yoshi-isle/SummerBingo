@@ -304,7 +304,7 @@ class ImageService:
             self.draw_ui_panel(base_img)
             self.draw_team_text(draw, team["team_name"])
             self.paste_image(base_img, '../images/key_tile.png', (20,16))
-            tile_label = ""
+            tile_label = "Zaros Sanctum"
             self.draw_tile_image(base_img, f'../images/world3/boss/0.png')
             self.draw_outlined_wrapped_text(
                 draw=draw,
