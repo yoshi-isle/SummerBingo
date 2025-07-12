@@ -108,7 +108,7 @@ world4_tiles = {
         {"id": 8, "tile_name": "5x KBD heads", "description": "Obtain 5x KBD heads", "completion_counter": 5, "image_url": "world4/tiles/8.png", "wiki_url": "https://oldschool.runescape.wiki/w/King_black_dragon"},
         {"id": 9, "tile_name": "5x Blood Shards", "description": "Obtain 5x Blood Shards", "completion_counter": 5, "image_url": "world4/tiles/9.png", "wiki_url": "https://oldschool.runescape.wiki/w/Blood_shard"},
         {"id": 10, "tile_name": "3x Dossiers", "description": "Obtain 3x Dossiers", "completion_counter": 3, "image_url": "world4/tiles/10.png", "wiki_url": "https://oldschool.runescape.wiki/w/Dossier"},
-        {"id": 11, "tile_name": "2x Blood Quartz", "description": "Obtain 2x Blood Quartz", "completion_counter": 2, "image_url": "world4/tiles/11.png", "wiki_url": "https://oldschool.runescape.wiki/w/Blood_quartz"},
+        {"id": 11, "tile_name": "5x Blood Quartz", "description": "Obtain 5x Blood Quartz", "completion_counter": 5, "image_url": "world4/tiles/11.png", "wiki_url": "https://oldschool.runescape.wiki/w/Blood_quartz"},
         {"id": 12, "tile_name": "20x LMS Wins ", "description": "Obtain 20x LMS Wins", "completion_counter": 20, "image_url": "world4/tiles/12.png", "wiki_url": "https://oldschool.runescape.wiki/w/last_man_standing"},
         {"id": 13, "tile_name": "Ancient Crystal", "description": "Obtain 1x Ancient Crystal", "completion_counter": 1, "image_url": "world4/tiles/13.png", "wiki_url": "https://oldschool.runescape.wiki/w/Ancient_Crystal"},
         {"id": 14, "tile_name": "Any inq piece OR orb", "description": "Obtain 1x Any inq piece OR orb", "completion_counter": 1, "image_url": "world4/tiles/14.png", "wiki_url": "https://oldschool.runescape.wiki/w/Inquisitor's_Armour"},
