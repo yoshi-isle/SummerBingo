@@ -90,7 +90,8 @@ class AdminCog(commands.Cog):
                 await post_team_board(self.session, team_id, team_channel, "w2_key")
             elif current_world == 3:
                 await team_channel.send(embed=Embed(
-                    description=f"{Emojis.TRIAL_COMPLETE} The team come across a frozen brazier. Maybe completing the trial will light it..."
+                    description=f"{Emojis.TRIAL_COMPLETE} The team discovers a frozen brazier. Maybe completing the trial will light it?",
+                    color=discord.Color.blue()
                 ))
                 await post_team_board(self.session, team_id, team_channel, "w3_key")
             elif current_world == 4:
@@ -313,7 +314,12 @@ class AdminCog(commands.Cog):
         
         if team[f"w3key{key_option}_completion_counter"] <= 0:
             await self.session.put(ApiUrls.TEAM_COMPLETE_W3_TRIAL.format(id=team["_id"], brazier_number=team["w3_braziers_lit"]))
-            await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_COMPLETE} You light a brazier! But what does it mean...?"))
+            # Specialty case for final brazier
+            if team["w3_braziers_lit"] == 2:
+                await self._send_storyline_and_pin(team_channel, StoryLine.W3_TRANSITION_INTO_ZAROS_SANCTUM)
+                await post_team_board(self.session, team["_id"], team_channel, "overworld")
+                return
+            await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_COMPLETE} You light a brazier! The frozen door seems to be thawing..."))
             await post_team_board(self.session, submission['team_id'], team_channel, "overworld")
         else:
             remaining = team[f'w3key{key_option}_completion_counter']

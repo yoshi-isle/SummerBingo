@@ -277,6 +277,7 @@ class ImageService:
             0: '../images/world3/board/brazier_1.png',
             1: '../images/world3/board/brazier_2.png',
             2: '../images/world3/board/brazier_3.png',
+            3: '../images/world3/board/brazier_3.png',
         }
         image_path = os.path.join(os.path.dirname(__file__), which_background[team.get('w3_braziers_lit', 0)])
         image_path = os.path.abspath(image_path)

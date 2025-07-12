@@ -385,7 +385,7 @@ class PlayerCog(commands.Cog):
             
             embed = discord.Embed(
                 title=f"{Emojis.TRIAL_COMPLETE} Trial Completion Submitted!",
-                description=f"🟡 Status: Pending\n{interaction.user.mention} submitted for trial # {option}. Please wait for an admin to review.",
+                description=f"🟡 Status: Pending\n{interaction.user.mention} submitted for a trial. Please wait for an admin to review.",
                 color=discord.Color.orange()
             )
             embed.set_thumbnail(url=image.url)
@@ -396,7 +396,7 @@ class PlayerCog(commands.Cog):
 
             admin_embed = discord.Embed(
                 title=f"{Emojis.TRIAL_COMPLETE} Trial Submission",
-                description=f"{interaction.user.mention} submitted for world {team_data['current_world']} trial # {option}.\nTeam: {team_data['team_name']}",
+                description=f"{interaction.user.mention} submitted for world {team_data['current_world']} a trial.\nTeam: {team_data['team_name']}",
                 color=discord.Color.orange()
             )
             admin_embed.set_image(url=image.url)

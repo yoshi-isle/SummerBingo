@@ -189,7 +189,7 @@ def build_w2_boss_board_embed(team_data):
         value="Obtain 1x Tonalztics of Ralos",
         inline=False
     )
-    embed.set_footer(text="Use /boss in your team channel to submit your boss tile completion.", icon_url=Emojis.SKW_LOGO)
+    embed.set_footer(text="Use /submit in your team channel to submit your boss tile completion.", icon_url=Emojis.SKW_LOGO)
     return embed
 
 def build_w3_key_board_embed(team_data):
@@ -255,7 +255,7 @@ def build_w3_boss_board_embed(team_data):
         value=f"{team_data['w3boss_completion_counter']}",
         inline=False
     )
-    embed.set_footer(text="Use /boss in your team channel to submit your boss tile completion.", icon_url=Emojis.SKW_LOGO)
+    embed.set_footer(text="Use /submit in your team channel to submit your boss tile completion.", icon_url=Emojis.SKW_LOGO)
     return embed
 
 def build_w4_key_board_embed(team_data):
@@ -328,7 +328,7 @@ def build_w4_boss_board_embed(team_data):
         value=f"{team_data['w4boss_completion_counter']}",
         inline=False
     )
-    embed.set_footer(text="Use /boss in your team channel to submit your boss tile completion.", icon_url=Emojis.SKW_LOGO)
+    embed.set_footer(text="Use /submit in your team channel to submit your boss tile completion.", icon_url=Emojis.SKW_LOGO)
     return embed
 
 def build_storyline_embed(storyline):
