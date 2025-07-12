@@ -85,6 +85,9 @@ class AdminCog(commands.Cog):
             if current_world == 1:
                 await self._send_storyline_and_pin(team_channel, StoryLine.W1_KEY)
                 await post_team_board(self.session, team_id, team_channel, "w1_key")
+            elif current_world == 2:
+                await self._send_storyline_and_pin(team_channel, StoryLine.W2_KEY)
+                await post_team_board(self.session, team_id, team_channel, "w2_key")
             elif current_world == 3:
                 await team_channel.send(embed=Embed(
                     description=f"{Emojis.TRIAL_COMPLETE} The team come across a frozen brazier. Maybe completing the trial will light it..."
@@ -530,7 +533,7 @@ class AdminCog(commands.Cog):
                     image_data = await resp.read()
                     file = discord.File(io.BytesIO(image_data), filename="team_board.png")
                     
-                    embed = self._get_embed_for_board(team_data, board_information)
+                    embed = await self._get_embed_for_board(team_data, board_information)
                     embed.set_image(url="attachment://team_board.png")
                     await interaction.response.send_message(embed=embed, file=file)
                 else:

@@ -41,9 +41,9 @@ class ImageService:
         elif game_state == 2 and world == 2:
             return self.generate_w2_boss_image(team)
         
-        # World 3 - Key images are basically in the overworld
+        # World 3 
         elif game_state == 1 and world == 3:
-            return self.generate_overworld_image(team)
+            return self.generate_w3_key_image(team)
         elif game_state == 2 and world == 3:
             return self.generate_w3_boss_image(team)
 
@@ -65,6 +65,17 @@ class ImageService:
                 board_background_to_use = f'../images/world{team.get('current_world')}/board/board_background_no_fog.png'
             else:
                 board_background_to_use = f'../images/world{team.get('current_world')}/board/board_background_fog.png'
+            
+         # World 3 specific - braziers
+        if team.get('current_world') == 3:
+            if team.get('w3_braziers_lit', 0) == 0:
+                board_background_to_use = f'../images/world{team.get('current_world')}/board/board_background_1.png'
+            if team.get('w3_braziers_lit', 0) == 1:
+                board_background_to_use = f'../images/world{team.get('current_world')}/board/board_background_2.png'
+            if team.get('w3_braziers_lit', 0) == 2:
+                board_background_to_use = f'../images/world{team.get('current_world')}/board/board_background_3.png'
+            if team.get('w3_braziers_lit', 0) == 3:
+                board_background_to_use = f'../images/world{team.get('current_world')}/board/board_background_4.png'
 
         background_filepath = os.path.join(os.path.dirname(__file__), board_background_to_use)
         background_filepath = os.path.abspath(background_filepath)
@@ -75,7 +86,12 @@ class ImageService:
             # Path
             self.paste_image(base_img, f'../images/world{team.get('current_world')}/path/w{team.get('current_world')}path{level_number_from_team(team)-1}.png')
             # World Map Icon
-            self.paste_image(base_img, '../images/world_map.png', (20, 16))
+
+            # Caves
+            if team.get('current_world') == 3 and team.get('w3_braziers_lit', 0) == 3:
+                self.paste_image(base_img, '../images/dungeon.png', (20, 16))
+            else:
+                self.paste_image(base_img, '../images/world_map.png', (20, 16))
             # Team bubble
             self.paste_image(base_img, f'../images/teams/{team.get("team_image_path")}', team_bubble_coordinates[level_number_from_team(team)])
             self.draw_tile_image(base_img, f'../images/world{team.get('current_world')}/tiles/{team.get('current_tile')}.png')
@@ -248,6 +264,29 @@ class ImageService:
                 line_spacing=2,
                 align="left"
             )
+            font = ImageFont.truetype(self.font_path, size=ImageSettings.LEVEL_TEXT_FONT_SIZE)
+            draw.text((ImageSettings.LEVEL_TEXT_COORDINATES[0]+4, ImageSettings.LEVEL_TEXT_COORDINATES[1] + 4), tile_label, fill="black", font=font, anchor="la", align="left")
+            draw.text(ImageSettings.LEVEL_TEXT_COORDINATES, tile_label, fill="white", font=font, anchor="la", align="left")
+            img_io = BytesIO()
+            base_img.save(img_io, 'PNG')
+            img_io.seek(0)
+            return img_io
+        
+    def generate_w3_key_image(self, team):
+        which_background = {
+            0: '../images/world3/board/brazier_1.png',
+            1: '../images/world3/board/brazier_2.png',
+            2: '../images/world3/board/brazier_3.png',
+        }
+        image_path = os.path.join(os.path.dirname(__file__), which_background[team.get('w3_braziers_lit', 0)])
+        image_path = os.path.abspath(image_path)
+
+        with Image.open(image_path) as base_img:
+            draw = ImageDraw.Draw(base_img)
+            self.draw_ui_panel(base_img)
+            self.draw_team_text(draw, team["team_name"])
+            tile_label = f"Withering Frostlands 1-T-{team.get('w3_braziers_lit', 0) + 1}"
+            self.paste_image(base_img, '../images/w3_brazier.png', (20,16))
             font = ImageFont.truetype(self.font_path, size=ImageSettings.LEVEL_TEXT_FONT_SIZE)
             draw.text((ImageSettings.LEVEL_TEXT_COORDINATES[0]+4, ImageSettings.LEVEL_TEXT_COORDINATES[1] + 4), tile_label, fill="black", font=font, anchor="la", align="left")
             draw.text(ImageSettings.LEVEL_TEXT_COORDINATES, tile_label, fill="white", font=font, anchor="la", align="left")
