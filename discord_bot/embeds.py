@@ -13,12 +13,12 @@ def build_team_board_embed(team_data, tile_info, team_level_string):
     embed.set_thumbnail(url=team_data["thumbnail_url"])
     embed.set_footer(text="Use /submit in your team channel to submit your tile completion.", icon_url=Emojis.SKW_LOGO)
     embed.add_field(
-        name=f"🗺️ {WORLD_NAMES[team_data['current_world']]} {team_level_string}",
+        name=f"{Emojis.WORLD_MAP} {WORLD_NAMES[team_data['current_world']]} {team_level_string}",
         value=f"{tile_info['tile_name']} ([Wiki]({tile_info['wiki_url']}))",
         inline=False
     )
     embed.add_field(
-        name="📝 Submissions Remaining",
+        name=f"{Emojis.SUBMISSIONS} Submissions Remaining",
         value=f"{team_data['completion_counter']}",
         inline=False
     )
@@ -30,7 +30,7 @@ def build_team_board_embed(team_data, tile_info, team_level_string):
     can_skip = next_allowed_time < datetime.now(timezone.utc)
 
     embed.add_field(
-        name="⏭️ Skip",
+        name=f"{Emojis.SKIP} Skip",
         value=f"You can't skip this tile until <t:{discord_epoch_relative}:R>."
             if not can_skip else "Your team can skip this tile now!",
         inline=False
@@ -39,12 +39,13 @@ def build_team_board_embed(team_data, tile_info, team_level_string):
 
 def build_w1_key_board_embed(team_data):
     embed = discord.Embed(
-        title=team_data['team_name']
+        title=team_data['team_name'],
+        color=discord.Color.dark_purple()
     )
     embed.set_thumbnail(url=team_data["thumbnail_url"])
     embed.set_footer(text="Use /submit in your team channel to submit your trial completion. There will be multiple selections.", icon_url=Emojis.SKW_LOGO)
     embed.add_field(
-        name=f"{key_tile_names[team_data['current_world']]}",
+        name=f"{Emojis.TRIAL_COMPLETE} {key_tile_names[team_data['current_world']]}",
         value="Complete 3 out of 5 trials to unlock the boss key!",
         inline=False
     )
@@ -114,7 +115,7 @@ def build_w1_boss_board_embed(team_data):
         inline=False
     )
     embed.add_field(
-        name="📝 Submissions Remaining",
+        name=f"{Emojis.SUBMISSIONS} Submissions Remaining",
         value="1",
         inline=False
     )
@@ -182,11 +183,21 @@ def build_w2_key_board_embed(team_data):
 def build_w2_boss_board_embed(team_data):
     embed = discord.Embed(
         title=team_data['team_name'],
-        color=discord.Color.dark_purple()
+        color=discord.Color.yellow()
     )
     embed.add_field(
-        name="Eclipse of the Sun",
-        value="Obtain 1x Tonalztics of Ralos",
+        name=f"{Emojis.VARLAMORE_FLAG}  2-B: Eclipse of the Sun",
+        value=f"{Emojis.RALOS} Obtain 1x Tonalztics of Ralos",
+        inline=False
+    )
+    embed.add_field(
+        name=f"{Emojis.SUBMISSIONS} Submissions Remaining",
+        value=f"{team_data['w2boss_completion_counter']}",
+        inline=False
+    )
+    embed.add_field(
+        name=f"",
+        value="Complete the boss tile to advance to World 3!",
         inline=False
     )
     embed.set_footer(text="Use /submit in your team channel to submit your boss tile completion.", icon_url=Emojis.SKW_LOGO)
@@ -199,7 +210,7 @@ def build_w3_key_board_embed(team_data):
     embed.set_thumbnail(url=team_data["thumbnail_url"])
     embed.set_footer(text="Use /submit in your team channel to submit your trial completion.", icon_url=Emojis.SKW_LOGO)
     embed.add_field(
-        name=f"Ancient Brazier",
+        name=f"{Emojis.FIRE} Ancient Brazier",
         value="Complete **one trial of your choosing** to light the brazier.",
         inline=False
     )
@@ -218,7 +229,7 @@ def build_w3_key_board_embed(team_data):
         )    
     if w3_braziers_lit == 1:
         embed.add_field(
-            name=f"**Trial 2-A: 10x Vorkath Heads**",
+            name=f"**Trial 2-A: 5x Vorkath Heads**",
             value=f"`{format_submission(team_data['w3key3_completion_counter'])}`",
             inline=False
         )
@@ -246,13 +257,18 @@ def build_w3_boss_board_embed(team_data):
         color=discord.Color.dark_purple()
     )
     embed.add_field(
-        name="Ancient Confrontation",
-        value="Build a ZCB from scratch.\n\nObtain 1x Nihil Horn and 1x Armadyl Crossbow",
+        name=f"{Emojis.ANCIENT_ICON} Ancient Confrontation",
+        value=f"{Emojis.ZCB} **Build a ZCB from scratch.**\nObtain 1x Nihil Horn and 1x Armadyl Crossbow",
         inline=False
     )
     embed.add_field(
-        name="📝 Submissions Remaining",
+        name=f"{Emojis.SUBMISSIONS} Submissions Remaining",
         value=f"{team_data['w3boss_completion_counter']}",
+        inline=False
+    )
+    embed.add_field(
+        name=f"",
+        value="Complete the boss tile to advance to World 3!",
         inline=False
     )
     embed.set_footer(text="Use /submit in your team channel to submit your boss tile completion.", icon_url=Emojis.SKW_LOGO)
@@ -324,8 +340,13 @@ def build_w4_boss_board_embed(team_data):
         inline=False
     )
     embed.add_field(
-        name="📝 Submissions Remaining",
+        name=f"{Emojis.SUBMISSIONS} Submissions Remaining",
         value=f"{team_data['w4boss_completion_counter']}",
+        inline=False
+    )
+    embed.add_field(
+        name=f"",
+        value="Complete the boss tile to win the event!",
         inline=False
     )
     embed.set_footer(text="Use /submit in your team channel to submit your boss tile completion.", icon_url=Emojis.SKW_LOGO)

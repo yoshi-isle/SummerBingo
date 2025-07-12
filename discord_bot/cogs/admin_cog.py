@@ -76,7 +76,7 @@ class AdminCog(commands.Cog):
 
         # Normal overworld board
         if game_state == 0:
-            await team_channel.send(embed=Embed(title="Tile complete! Posting your new board:"))
+            await team_channel.send(embed=Embed(title=f"{Emojis.CHECKMARK_GIF} Tile complete! Posting your new board:", color=discord.Color.green()))
             await post_team_board(self.session, team_id, team_channel, "overworld")
             return
 
@@ -90,7 +90,7 @@ class AdminCog(commands.Cog):
                 await post_team_board(self.session, team_id, team_channel, "w2_key")
             elif current_world == 3:
                 await team_channel.send(embed=Embed(
-                    description=f"{Emojis.TRIAL_COMPLETE} The team discovers a frozen brazier. Maybe completing the trial will light it?",
+                    description=f"{Emojis.FIRE} The team discovers a frozen brazier. Maybe completing the trial will light it?",
                     color=discord.Color.blue()
                 ))
                 await post_team_board(self.session, team_id, team_channel, "w3_key")
@@ -319,7 +319,7 @@ class AdminCog(commands.Cog):
                 await self._send_storyline_and_pin(team_channel, StoryLine.W3_TRANSITION_INTO_ZAROS_SANCTUM)
                 await post_team_board(self.session, team["_id"], team_channel, "overworld")
                 return
-            await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_COMPLETE} You light a brazier! The frozen door seems to be thawing..."))
+            await team_channel.send(embed=Embed(title=f"{Emojis.FIRE} You light a brazier! The frozen door seems to be thawing...", color=discord.Color.orange()))
             await post_team_board(self.session, submission['team_id'], team_channel, "overworld")
         else:
             remaining = team[f'w3key{key_option}_completion_counter']

@@ -82,7 +82,7 @@ class ImageService:
         team_bubble_coordinates = TeamBubbleCoordinates.coordinate_map[team.get('current_world')]
         with Image.open(background_filepath) as base_img:
             draw = ImageDraw.Draw(base_img)
-            self.draw_ui_panel(base_img)
+            self.draw_ui_panel(base_img, team)
             # Path
             self.paste_image(base_img, f'../images/world{team.get('current_world')}/path/w{team.get('current_world')}path{level_number_from_team(team)-1}.png')
             # World Map Icon
@@ -90,6 +90,8 @@ class ImageService:
             # Caves
             if team.get('current_world') == 3 and team.get('w3_braziers_lit', 0) == 3:
                 self.paste_image(base_img, '../images/dungeon.png', (20, 16))
+            elif team.get('current_world') == 4:
+                self.paste_image(base_img, '../images/thevoid.png', (20, 16))
             else:
                 self.paste_image(base_img, '../images/world_map.png', (20, 16))
             # Team bubble
@@ -139,7 +141,7 @@ class ImageService:
         image_path = os.path.abspath(image_path)
         with Image.open(image_path) as base_img:
             draw = ImageDraw.Draw(base_img)
-            self.draw_ui_panel(base_img)
+            self.draw_ui_panel(base_img, team)
             if keys == 0:
                 self.paste_image(base_img, f'../images/world1/olm_dialogue_1.png')
             elif keys == 1:
@@ -165,7 +167,7 @@ class ImageService:
         tile_info = world1_tiles['boss_tile']
         with Image.open(image_path) as base_img:
             draw = ImageDraw.Draw(base_img)
-            self.draw_ui_panel(base_img)
+            self.draw_ui_panel(base_img, team)
             self.draw_team_text(draw, team["team_name"])
             tile_label = "Mystic Cove Summit"
             self.paste_image(base_img, '../images/key_tile.png', (20,16))
@@ -217,7 +219,7 @@ class ImageService:
 
         with Image.open(image_path) as base_img:
             draw = ImageDraw.Draw(base_img)
-            self.draw_ui_panel(base_img)
+            self.draw_ui_panel(base_img, team)
             self.draw_team_text(draw, team["team_name"])
             tile_label = "Tumeken's Trial"
             self.paste_image(base_img, '../images/key_tile.png', (20,16))
@@ -235,7 +237,7 @@ class ImageService:
         tile_info = world2_tiles['boss_tile']
         with Image.open(image_path) as base_img:
             draw = ImageDraw.Draw(base_img)
-            self.draw_ui_panel(base_img)
+            self.draw_ui_panel(base_img, team)
             self.draw_team_text(draw, team["team_name"])
             self.paste_image(base_img, '../images/key_tile.png', (20,16))
             tile_label = "Eclipse of the Sun"
@@ -284,10 +286,12 @@ class ImageService:
 
         with Image.open(image_path) as base_img:
             draw = ImageDraw.Draw(base_img)
-            self.draw_ui_panel(base_img)
+            self.draw_ui_panel(base_img, team)
             self.draw_team_text(draw, team["team_name"])
             tile_label = f"Withering Frostlands 1-T-{team.get('w3_braziers_lit', 0) + 1}"
             self.paste_image(base_img, '../images/w3_brazier.png', (20,16))
+            self.paste_image(base_img, f'../images/world3/keys/brazier_tiles_{team.get('w3_braziers_lit', 0) + 1}.png')
+
             font = ImageFont.truetype(self.font_path, size=ImageSettings.LEVEL_TEXT_FONT_SIZE)
             draw.text((ImageSettings.LEVEL_TEXT_COORDINATES[0]+4, ImageSettings.LEVEL_TEXT_COORDINATES[1] + 4), tile_label, fill="black", font=font, anchor="la", align="left")
             draw.text(ImageSettings.LEVEL_TEXT_COORDINATES, tile_label, fill="white", font=font, anchor="la", align="left")
@@ -302,7 +306,7 @@ class ImageService:
         tile_info = world3_tiles['boss_tile']
         with Image.open(image_path) as base_img:
             draw = ImageDraw.Draw(base_img)
-            self.draw_ui_panel(base_img)
+            self.draw_ui_panel(base_img, team)
             self.draw_team_text(draw, team["team_name"])
             self.paste_image(base_img, '../images/key_tile.png', (20,16))
             tile_label = "Zaros Sanctum"
@@ -345,7 +349,7 @@ class ImageService:
 
         with Image.open(image_path) as base_img:
             draw = ImageDraw.Draw(base_img)
-            self.draw_ui_panel(base_img)
+            self.draw_ui_panel(base_img, team)
             self.draw_team_text(draw, team["team_name"])
             tile_label = "Drakan's Trial"
             self.paste_image(base_img, '../images/key_tile.png', (20,16))
@@ -363,7 +367,7 @@ class ImageService:
         tile_info = world4_tiles['boss_tile']
         with Image.open(image_path) as base_img:
             draw = ImageDraw.Draw(base_img)
-            self.draw_ui_panel(base_img)
+            self.draw_ui_panel(base_img, team)
             self.draw_team_text(draw, team["team_name"])
             self.paste_image(base_img, '../images/key_tile.png', (20,16))
             tile_label = "It's not over til..."
@@ -407,8 +411,8 @@ class ImageService:
             img = img.convert("RGBA")
             base_img.paste(img, location, img if img.mode == 'RGBA' else None)
 
-    def draw_ui_panel(self, base_img):
-        ui_img_path = os.path.join(os.path.dirname(__file__), f'../images/user_interface.png')
+    def draw_ui_panel(self, base_img, team):
+        ui_img_path = os.path.join(os.path.dirname(__file__), f'../images/user_interface_{team["current_world"]}.png')
         ui_img_path = os.path.abspath(ui_img_path)
         with Image.open(ui_img_path) as ui_image:
             base_img.paste(ui_image, (0, 0), ui_image if ui_image.mode == 'RGBA' else None)

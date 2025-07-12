@@ -44,7 +44,7 @@ class Team:
     w3_braziers_lit: int = 0
     w3key1_completion_counter: int = 3
     w3key2_completion_counter: int = 1
-    w3key3_completion_counter: int = 10
+    w3key3_completion_counter: int = 5
     w3key4_completion_counter: int = 5
     w3key5_completion_counter: int = 1
     w3key6_completion_counter: int = 1

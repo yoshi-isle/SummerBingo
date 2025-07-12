@@ -4,6 +4,19 @@ class Emojis:
     DUNGEON="<:dungeon:1389648812355748051>"
     OLMLET="<:Olmlet:1389757224963801229>"
     SKW_LOGO="https://i.imgur.com/KHEg8dQ.png"
+
+    WORLD_MAP="<:World_map_icon:1393651056507879464>"
+    SUBMISSIONS="<:200pxPoll_icon:1393651395273555998>"
+    SKIP="<:Agility_shortcut_balance:1393651820047634534>"
+    CHECKMARK_GIF="<a:check:1393652924756005055>"
+
+    VARLAMORE_FLAG="<:240pxBanner_Varlamore:1393657344763756755>"
+    RALOS="<:Tonalztics_of_ralos:1393657151855005918>"
+
+    ANCIENT_ICON="<:Ancient_icon:1393667207887847494>"
+    ZCB="<:Zaryte_crossbow:1393667503967699155>"
+
+    FIRE="<:fire:1393662791835193444>"
     
     TRIAL_W1_1="<:any_cox_purple:1391970457217007677>"
     TRIAL_W1_2="<:Crystal_tool_seed:1391971507365740555>"

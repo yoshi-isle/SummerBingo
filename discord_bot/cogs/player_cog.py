@@ -128,7 +128,7 @@ class PlayerCog(commands.Cog):
                     3: [
                         app_commands.Choice(name="3x Chromium Ingots (Whisperer)", value=1),
                         app_commands.Choice(name="Moxi", value=2),
-                        app_commands.Choice(name="10x Vorkath Heads", value=3),
+                        app_commands.Choice(name="5x Vorkath Heads", value=3),
                         app_commands.Choice(name="Full Ancient Ceremonial Robes", value=4),
                         app_commands.Choice(name="Any Tome", value=5),
                         app_commands.Choice(name="Ice Quartz", value=6),
@@ -299,30 +299,28 @@ class PlayerCog(commands.Cog):
         if game_state == 0:
             # Create submission for admin channel
             admin_embed = discord.Embed(
-                title="🗺️ Overworld Tile Submission",
+                title=f"{Emojis.WORLD_MAP} Overworld Tile Submission",
                 description=f"Submission by {interaction.user.mention}.",
                 color=discord.Color.yellow()
             )
             admin_embed.add_field(
                 name="Team",
                 value=team_data['team_name'],
-                inline=True
             )
             admin_embed.add_field(
                 name="Tile",
                 value=current_tile,
-                inline=True
             )
             admin_embed.set_image(url=image.url)
             admin_embed.set_footer(text="Approve or reject this submission.", icon_url=Emojis.SKW_LOGO)
 
             embed = discord.Embed(
-                title="Tile Submitted!",
+                title=f"{Emojis.SUBMISSIONS} Tile Submitted!",
                 description=f"🟡 Status: Pending\n{interaction.user.mention} submitted for {current_tile}. Please wait for an admin to review.",
                 color=discord.Color.yellow()
             )
             embed.set_thumbnail(url=image.url)
-            embed.set_footer(text="Mistake with screenshot? Contact an admin.")
+            embed.set_footer(text="Mistake with screenshot? Contact an admin.", icon_url=Emojis.SKW_LOGO)
 
             team_msg = await interaction.response.send_message(embed=embed)
             team_msg = await interaction.original_response()
