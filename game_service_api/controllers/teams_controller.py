@@ -49,22 +49,11 @@ def create_team():
         world4_shuffled_tiles=world4_shuffled_tiles,
         completion_counter=tile_info.get("completion_counter"),
         game_state=0,
-        w1key1_completion_counter=1,
-        w1key2_completion_counter=1,
-        w1key3_completion_counter=4,
-        w1key4_completion_counter=1,
-        w1key5_completion_counter=10,
-        w1boss_completion_counter=1,
-        w2boss_completion_counter=1,
-        w3boss_completion_counter=2,
-        w4boss_completion_counter=5,
         last_rolled_at=datetime.now(timezone.utc),
-        w2key1_completion_counter=1,
-        w2key2_completion_counter=5,
-        w2key3_completion_counter=1,        
-        w2key4_completion_counter=3,
-        w2key5_completion_counter=1,
         w2_path_chosen=0,
+        team_image_path=data.get("team_image_path", "1.png"),
+        thumbnail_url=data.get("thumbnail_url", ""),
+
     )
 
     # Convert the Team and Player objects to dictionaries for MongoDB
@@ -380,6 +369,35 @@ def get_board_information_by_team_id(team_id):
 
     tile_info = get_tile_info(current_world, current_tile)
 
+    # Get team placement
+    teams = list(db.teams.find({}))
+    
+    for t in teams:
+        # Calculate current level for each team
+        t_current_world = t.get("current_world", 1)
+        t_current_tile = t.get("current_tile")
+        t_shuffled_tiles = t.get(f"world{t_current_world}_shuffled_tiles", [])
+        
+        try:
+            tile_index = t_shuffled_tiles.index(t_current_tile)
+            level = tile_index + 1
+            t["world_number"] = t_current_world
+            t["level_number"] = level
+        except ValueError:
+            # If current_tile not found in shuffled_tiles, default to level 1
+            t["world_number"] = t_current_world
+            t["level_number"] = 1
+    
+    # Sort teams by world (descending) then by level (descending) for leaderboard order
+    teams.sort(key=lambda x: (x["world_number"], x["level_number"]), reverse=True)
+    
+    # Find the placement of the target team
+    placement = None
+    for i, t in enumerate(teams):
+        if str(t["_id"]) == team_id:
+            placement = i + 1  # 1-based ranking
+            break
+
     # Convert ObjectId to string for JSON serialization
     if "_id" in team:
         team["_id"] = str(team["_id"])
@@ -388,6 +406,7 @@ def get_board_information_by_team_id(team_id):
         "level_number": level_string,
         "tile": tile_info,
         "team": team,
+        "placement": placement,
         "w1key1_completion_counter": team["w1key1_completion_counter"],
         "w1key2_completion_counter": team["w1key2_completion_counter"],
         "w1key3_completion_counter": team["w1key3_completion_counter"],
@@ -615,6 +634,55 @@ def get_game_started():
         "running": running != None
     }), 200
 
+@teams_blueprint.route("/teams/<team_id>/placement", methods=["GET"])
+def get_team_placement(team_id):
+    """
+    Get the placement/ranking of a specific team in the leaderboard.
+    Returns the team's position (1st, 2nd, 3rd, etc.) based on world and level progress.
+    """
+    db = get_db()
+    
+    # Get the specific team first
+    target_team = db.teams.find_one({"_id": ObjectId(team_id)})
+    if not target_team:
+        abort(404, description="Team not found")
+    
+    # Get all teams and calculate their levels (same logic as get_all_teams)
+    teams = list(db.teams.find({}))
+    
+    for team in teams:
+        # Calculate current level for each team
+        current_world = team.get("current_world", 1)
+        current_tile = team.get("current_tile")
+        shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
+        
+        try:
+            tile_index = shuffled_tiles.index(current_tile)
+            level = tile_index + 1
+            team["world_number"] = current_world
+            team["level_number"] = level
+        except ValueError:
+            # If current_tile not found in shuffled_tiles, default to level 1
+            team["world_number"] = current_world
+            team["level_number"] = 1
+    
+    # Sort teams by world (descending) then by level (descending) for leaderboard order
+    teams.sort(key=lambda x: (x["world_number"], x["level_number"]), reverse=True)
+    
+    # Find the placement of the target team
+    placement = None
+    for i, team in enumerate(teams):
+        if str(team["_id"]) == team_id:
+            placement = i + 1  # 1-based ranking
+            break
+    
+    if placement is None:
+        abort(404, description="Team not found in leaderboard")
+    
+    return jsonify({
+        "placement": placement,
+    })
+
 @teams_blueprint.route("/teams", methods=["GET"])
 def get_all_teams():
     """
@@ -674,6 +742,25 @@ def update_w4_trial_iteration(team_id):
         "w4_trial_iteration": new_iteration
     })
 
+@teams_blueprint.route("/sync_reroll_timers", methods=["PUT"])
+def sync_reroll_timers():
+    """
+    Synchronizes all teams' last_rolled_at field to the current time.
+    Useful for resetting timers when the event starts.
+    """
+    db = get_db()
+    
+    # Update all teams' last_rolled_at to current time
+    result = db.teams.update_many(
+        {},  # Empty filter to match all teams
+        {"$set": {"last_rolled_at": datetime.now(timezone.utc)}}
+    )
+    
+    return jsonify({
+        "message": f"Successfully synchronized reroll timers for {result.modified_count} teams",
+        "teams_updated": result.modified_count,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }), 200
 
 def get_tile_info(current_world: int, current_tile:int):
     world_tiles_map = {

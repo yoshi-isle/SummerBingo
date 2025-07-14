@@ -95,7 +95,10 @@ class ImageService:
             else:
                 self.paste_image(base_img, '../images/world_map.png', (20, 16))
             # Team bubble
-            self.paste_image(base_img, f'../images/teams/{team.get("team_image_path")}', team_bubble_coordinates[level_number_from_team(team)])
+            try:
+                self.paste_image(base_img, f'../images/teams/{team.get("team_image_path")}', team_bubble_coordinates[level_number_from_team(team)])
+            except Exception as e:
+                print(f"Error pasting team bubble image: {e}")
 
             self.draw_tile_image(base_img, f'../images/{tile_info["image_url"]}')
 
