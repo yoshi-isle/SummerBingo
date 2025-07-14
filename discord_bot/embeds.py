@@ -5,7 +5,7 @@ from constants import WORLD_NAMES
 from dateutil import parser
 import os
 
-def build_team_board_embed(team_data, tile_info, team_level_string):
+def build_team_board_embed(team_data, tile_info, team_level_string, ranking=None):
     embed = discord.Embed(
         title=team_data['team_name']
     )
@@ -20,18 +20,41 @@ def build_team_board_embed(team_data, tile_info, team_level_string):
     embed.add_field(
         name=f"{Emojis.SUBMISSIONS} Submissions Remaining",
         value=f"{team_data['completion_counter']}",
-        inline=False
+        inline=True
     )
-    last_rolled_at = parser.parse(team_data['last_rolled_at'])  # handles RFC 1123
-    next_allowed_time = last_rolled_at + timedelta(hours=12)
+    embed.add_field(
+        name=f"{Emojis.TROPHY} Ranking",
+        value=ranking,
+        inline=True
+    )
+
+    hours_map = {
+        1: 999,
+        2: 16,
+        3: 16,
+        4: 16,
+        5: 16,
+        6: 12,
+    }
+
+    last_rolled_at = parser.parse(team_data['last_rolled_at'])
+    next_allowed_time = last_rolled_at + timedelta(hours=hours_map[ranking])
     discord_epoch_relative = int(next_allowed_time.timestamp())
 
-    # can skip if over 12 hrs
+    hours_text_based_on_placement = {
+        1: "You cannot skip the tile in 1st place.",
+        2: f"You cannot skip the tile until <t:{discord_epoch_relative}:R>.",
+        3: f"You cannot skip the tile until <t:{discord_epoch_relative}:R>.",
+        4: f"You cannot skip the tile until <t:{discord_epoch_relative}:R>.",
+        5: f"You cannot skip the tile until <t:{discord_epoch_relative}:R>.",
+        6: f"You cannot skip the tile until <t:{discord_epoch_relative}:R>.",
+    }
+
     can_skip = next_allowed_time < datetime.now(timezone.utc)
 
     embed.add_field(
         name=f"{Emojis.SKIP} Skip",
-        value=f"You can't skip this tile until <t:{discord_epoch_relative}:R>."
+        value=hours_text_based_on_placement[ranking]
             if not can_skip else "Your team can skip this tile now!",
         inline=False
     )

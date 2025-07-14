@@ -41,7 +41,7 @@ async def post_team_board(session: aiohttp.ClientSession, team_id: str, team_cha
     
     # Build appropriate embed
     if board_type == "overworld":
-        embed = build_team_board_embed(team_data, tile_info, level_number)
+        embed = build_team_board_embed(team_data, tile_info, level_number, info.get("placement"))
     elif board_type == "w1_key":
         embed = build_w1_key_board_embed(team_data)
     elif board_type == "w2_key":
@@ -60,7 +60,7 @@ async def post_team_board(session: aiohttp.ClientSession, team_id: str, team_cha
         embed = build_w4_boss_board_embed(team_data)
     else:
         # fallback to overworld
-        embed = build_team_board_embed(team_data, tile_info, level_number)
+        embed = build_team_board_embed(team_data, tile_info, level_number, info.get("placement"))
     
     # Set image and send
     embed.set_image(url="attachment://team_board.png")

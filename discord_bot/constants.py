@@ -9,6 +9,7 @@ class Emojis:
     SUBMISSIONS="<:200pxPoll_icon:1393651395273555998>"
     SKIP="<:Agility_shortcut_balance:1393651820047634534>"
     CHECKMARK_GIF="<a:check:1393652924756005055>"
+    TROPHY="<:Trailblazer_reloaded_dragon_trop:1394184136939274362>"
 
     VARLAMORE_FLAG="<:240pxBanner_Varlamore:1393657344763756755>"
     RALOS="<:Tonalztics_of_ralos:1393657151855005918>"
@@ -78,7 +79,9 @@ class ApiUrls:
     TEAM_COMPLETE_W3_TRIAL = f"{BASE_URL}/teams/{{id}}/{{brazier_number}}/complete_w3_trial"
     TEAM_ITERATE_W4_TRIAL = f"{BASE_URL}/teams/{{id}}/update_w4_trial_iteration"
     TEAM_COMPLETE_W4_TRIAL = f"{BASE_URL}/teams/{{id}}/complete_w4_trial"
-   
+
+    TEAM_PLACEMENT = f"{BASE_URL}/teams/{{id}}/placement"
+
     # Submissions
     SUBMISSION = f"{BASE_URL}/submission/{{id}}"
     KEY_SUBMISSION = f"{BASE_URL}/key_submission/{{id}}"

@@ -116,7 +116,7 @@ class AdminCog(commands.Cog):
 
     @app_commands.command(name="admin_register_team", description="(Admin) Registers a new team")
     @app_commands.checks.has_role("Admin")
-    async def register_team(self, interaction: discord.Interaction, users: str, team_name: str):
+    async def register_team(self, interaction: discord.Interaction, users: str, team_name: str, icon: Optional[str], thumbnail_url: Optional[str]):
         try:
             member_ids = [int(u.strip('<@!>')) for u in users.split() if u.startswith('<@')]
             players = [{"discord_id": str(uid), "runescape_accounts": []} for uid in member_ids]
@@ -124,7 +124,9 @@ class AdminCog(commands.Cog):
             data = {
                 "team_name": team_name,
                 "players": players,
-                "discord_channel_id": str(interaction.channel.id)
+                "discord_channel_id": str(interaction.channel.id),
+                "team_image_path": icon if icon else "1.png",
+                "thumbnail_url": thumbnail_url
             }
             
             async with self.session.post(ApiUrls.TEAM, json=data) as resp:
@@ -502,7 +504,7 @@ class AdminCog(commands.Cog):
         current_world = int(team_data["current_world"])
         
         if game_state == 0:
-            return build_team_board_embed(team_data, board_information["tile"], board_information["level_number"])
+            return build_team_board_embed(team_data, board_information["tile"], board_information["level_number"], board_information["placement"])
         elif game_state == 1:
             if current_world == 1:
                 return build_w1_key_board_embed(team_data)
@@ -515,7 +517,7 @@ class AdminCog(commands.Cog):
                 return build_w2_boss_board_embed(team_data)
         
         # Default fallback
-        return build_team_board_embed(team_data, board_information["tile"], board_information["level_number"])
+        return build_team_board_embed(team_data, board_information["tile"], board_information["level_number"], board_information["placement"])
 
     @app_commands.command(name="admin_view_a_board", description="(Admin) View a player's board.")
     @app_commands.checks.has_role("Admin")
