@@ -285,7 +285,7 @@ def build_w4_key_board_embed(team_data):
     w4_trial_iteration = team_data.get('w4_trial_iteration', 0)
     if w4_trial_iteration == 0:
         embed.add_field(
-            name=f"Trial of the void",
+            name=f"{Emojis.BLOOD_RUNE} Trial of the Void",
             value="Complete **this tile** to advance to the next room.",
             inline=False
         )
@@ -296,7 +296,7 @@ def build_w4_key_board_embed(team_data):
         )
     elif w4_trial_iteration == 1:
         embed.add_field(
-            name=f"Trial of the void",
+            name=f"{Emojis.BLOOD_RUNE} Trial of the Void",
             value="Choose **one of these 3** to advance to the next room.",
             inline=False
         )
@@ -317,8 +317,8 @@ def build_w4_key_board_embed(team_data):
         )
     elif w4_trial_iteration == 2:
         embed.add_field(
-            name=f"Trial of the void",
-            value="Complete **this tile** to advance to the finale of the bingo!",
+            name=f"{Emojis.BLOOD_RUNE} Trial of the Void",
+            value="Complete **this tile** to advance to the finale of the game!",
             inline=False
         )
         embed.add_field(
@@ -335,8 +335,8 @@ def build_w4_boss_board_embed(team_data):
         color=discord.Color.dark_purple()
     )
     embed.add_field(
-        name="It's not over til...",
-        value="5 Hmt kits",
+        name=f"{Emojis.BLOOD_RUNE} It's not over til...",
+        value="Obtain 5x HMT kits (Holy, Sanguine, Dust)",
         inline=False
     )
     embed.add_field(

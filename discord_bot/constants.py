@@ -17,6 +17,8 @@ class Emojis:
     ZCB="<:Zaryte_crossbow:1393667503967699155>"
 
     FIRE="<:fire:1393662791835193444>"
+
+    BLOOD_RUNE="<:Blood_rune:1394108157076177020>"
     
     TRIAL_W1_1="<:any_cox_purple:1391970457217007677>"
     TRIAL_W1_2="<:Crystal_tool_seed:1391971507365740555>"
@@ -74,6 +76,7 @@ class ApiUrls:
     
     TEAM_COMPLETE_W2_TRIAL = f"{BASE_URL}/teams/{{id}}/complete_w2_trial"
     TEAM_COMPLETE_W3_TRIAL = f"{BASE_URL}/teams/{{id}}/{{brazier_number}}/complete_w3_trial"
+    TEAM_ITERATE_W4_TRIAL = f"{BASE_URL}/teams/{{id}}/update_w4_trial_iteration"
     TEAM_COMPLETE_W4_TRIAL = f"{BASE_URL}/teams/{{id}}/complete_w4_trial"
    
     # Submissions

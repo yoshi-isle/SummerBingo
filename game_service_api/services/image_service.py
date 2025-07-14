@@ -355,13 +355,25 @@ class ImageService:
             return img_io
         
     def generate_w4_key_image(self, team):
-        image_path = os.path.join(os.path.dirname(__file__), f'../images/world4/keys/trial_background.png')
+        which_trial={
+            0: '../images/world4/keys/trial_background_1.png',
+            1: '../images/world4/keys/trial_background_2.png',
+            2: '../images/world4/keys/trial_background_3.png'
+        }
+        which_keyimage={
+            0: '../images/world4/keys/key_desc_1.png',
+            1: '../images/world4/keys/key_desc_2.png',
+            2: '../images/world4/keys/key_desc_3.png'
+        }
+        image_path = os.path.join(os.path.dirname(__file__), which_trial[team.get('w4_trial_iteration', 0)])
         image_path = os.path.abspath(image_path)
 
         with Image.open(image_path) as base_img:
             draw = ImageDraw.Draw(base_img)
             self.draw_ui_panel(base_img, team)
             self.draw_team_text(draw, team["team_name"])
+            self.paste_image(base_img, which_keyimage[team.get('w4_trial_iteration', 0)])
+
             tile_label = "Trial of the Void"
             self.paste_image(base_img, '../images/key_tile.png', (20,16))
             font = ImageFont.truetype(self.font_path, size=ImageSettings.LEVEL_TEXT_FONT_SIZE)

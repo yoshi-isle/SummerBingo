@@ -123,19 +123,20 @@ No longer seeking treasure, the heroes must now fight to survive as the final ch
 '''
     }
     W4_KEY = {
-        "title": "Chapter 4-T: The Trials of the Void",
+        "title": "Chapter 4-T: The Void Cave",
         "dialogue": '''
-In the depths of a ruined cathedral, drenched in shadows, a black altar pulses with cursed energy.
-Above it floats a key, wrapped in chains of sinew and bone.
+The heroes find themselves in a cave carved from the very fabric of the void.
+A faint light creature glimmers in the distance, illuminating a path forward.
+
 A disembodied voice echoes through the void:
-"To claim the key, you must complete three of five trials... and prove your worth to me."
+"You made a mistake coming here... Don't come any closer."
 '''
 }
 
     W4_BOSS = {
         "title": "Chapter 4-B: It's Not Over Til... ",
         "dialogue": '''
-As the heroes step out of the cathedral, the void around them warps and twists.
+As the heroes step out of the cave reality seems to reform. The void around them warps and twists.
 A familiar castle emerges before them, one they've seen many times on the surface world.
 
 The Theatre of Blood.

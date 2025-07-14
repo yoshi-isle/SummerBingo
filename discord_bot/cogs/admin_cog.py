@@ -277,7 +277,7 @@ class AdminCog(commands.Cog):
         else:
             remaining = team[f'w{current_world}key{key_option}_completion_counter']
             await team_channel.send(embed=Embed(
-                title=f"{Emojis.TRIAL_INCOMPLETE} Progress updated on trial # {key_option}. You still need to complete {remaining} more submissions to complete it."
+                title=f"{Emojis.TRIAL_INCOMPLETE} Progress updated on a trial! You still need to complete {remaining} more submissions to complete it."
             ))
 
     async def _handle_world2_key_approval(self, submission: Dict, team: Dict, team_channel: discord.TextChannel) -> None:
@@ -297,7 +297,7 @@ class AdminCog(commands.Cog):
                 await post_team_board(self.session, submission['team_id'], team_channel, "w2_key")
             else:
                 await team_channel.send(embed=Embed(
-                    title=f"{Emojis.TRIAL_INCOMPLETE} Progress updated on the trial. You still need to complete {remaining} more submissions to complete it."
+                    title=f"{Emojis.TRIAL_INCOMPLETE} Progress updated on a trial! You still need to complete {remaining} more submissions to complete it."
                 ))
         elif path_chosen == 2:  # Top of the path
             if trial_complete:
@@ -324,7 +324,7 @@ class AdminCog(commands.Cog):
         else:
             remaining = team[f'w3key{key_option}_completion_counter']
             await team_channel.send(embed=Embed(
-                title=f"{Emojis.TRIAL_INCOMPLETE} Progress updated on trial # {key_option}. You still need to complete {remaining} more submissions to complete it."
+                title=f"{Emojis.TRIAL_INCOMPLETE} Progress updated on a trial! You still need to complete {remaining} more submissions to complete it."
             ))
     
     async def _handle_world4_key_approval(self, submission: Dict, team: Dict, team_channel: discord.TextChannel) -> None:
@@ -338,9 +338,16 @@ class AdminCog(commands.Cog):
             await post_team_board(self.session, submission['team_id'], team_channel, "w4_boss")
         else:
             remaining = team[f'w4key{key_option}_completion_counter']
-            await team_channel.send(embed=Embed(
-                title=f"{Emojis.TRIAL_INCOMPLETE} Progress updated on trial # {key_option}. You still need to complete {remaining} more submissions to complete it."
-            ))
+            if remaining <= 0:
+                await team_channel.send(embed=Embed(
+                    title=f"{Emojis.BLOOD_RUNE} You complete the trial. A door opens, revealing the path forward."
+                ))
+                await self.session.put(ApiUrls.TEAM_ITERATE_W4_TRIAL.format(id=team["_id"]))
+                await post_team_board(self.session, submission['team_id'], team_channel, "w4_key")
+            else:
+                await team_channel.send(embed=Embed(
+                    title=f"{Emojis.BLOOD_RUNE} Progress updated on a trial! You still need to complete {remaining} more submissions to complete it."
+                ))
 
     async def _handle_key_approval(self, submission: Dict, team_channel: discord.TextChannel) -> None:
         """Handle key submission approval"""

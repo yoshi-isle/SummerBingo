@@ -115,8 +115,6 @@ world4_tiles = {
         {"id": 15, "tile_name": "Lesser Demon Scroll", "description": "Obtain 1x Lesser Demon Scroll", "completion_counter": 1, "image_url": "world4/tiles/15.png", "wiki_url": "https://oldschool.runescape.wiki/w/Lesser_Demon"},
         {"id": 16, "tile_name": "3x Elder Chaos Pieces", "description": "Obtain 3x Elder Chaos Pieces", "completion_counter": 3, "image_url": "world4/tiles/16.png", "wiki_url": "https://oldschool.runescape.wiki/w/Elder_Chaos"},
         {"id": 17, "tile_name": "3x ToB Purples", "description": "Obtain 3x ToB Purples", "completion_counter": 3, "image_url": "world4/tiles/17.png", "wiki_url": "https://oldschool.runescape.wiki/w/Theatre_of_Blood"},
-        {"id": 18, "tile_name": "Soulflame Horn", "description": "Obtain 1x Soulflame Horn", "completion_counter": 1, "image_url": "world4/tiles/18.png", "wiki_url": "https://oldschool.runescape.wiki/w/Soulflame_Horn"},
-
     ],
     "key_tiles": [
         {"id": 0, "tile_name": "Holy Elixir", "description": "", "completion_counter": 1, "image_url": "world3/keys/0.png", "wiki_url": ""},
