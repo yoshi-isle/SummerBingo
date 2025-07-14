@@ -188,18 +188,18 @@ def advance_tile(team_id):
             team["_id"] = str(team["_id"])
         return jsonify(team), 200
 
-    # World 4 - go to key
-    if current_world == 4 and team.get("game_state") == 0:
-        db.teams.update_one(
-            {"_id": ObjectId(team_id)}, 
-            {"$set": 
-             {"game_state": 1,
-              "last_rolled_at": datetime.now(timezone.utc)}
-            })
-        # Convert ObjectId to string for JSON serialization
-        if "_id" in team:
-            team["_id"] = str(team["_id"])
-        return jsonify(team), 200
+    # # World 4 - go to key
+    # if current_world == 4 and team.get("game_state") == 0:
+    #     db.teams.update_one(
+    #         {"_id": ObjectId(team_id)}, 
+    #         {"$set": 
+    #          {"game_state": 1,
+    #           "last_rolled_at": datetime.now(timezone.utc)}
+    #         })
+    #     # Convert ObjectId to string for JSON serialization
+    #     if "_id" in team:
+    #         team["_id"] = str(team["_id"])
+    #     return jsonify(team), 200
 
     # Check if on a key tile to update gamestate
     key_tile_level_index = key_tiles[current_world]
@@ -229,6 +229,17 @@ def advance_tile(team_id):
         return jsonify(team), 200
 
     if idx + 1 >= len(shuffled_tiles):
+        if current_world == 4:
+            db.teams.update_one(
+                {"_id": ObjectId(team_id)}, 
+                {"$set": 
+                 {"game_state": 1,
+                  "last_rolled_at": datetime.now(timezone.utc)}
+                })
+            # Convert ObjectId to string for JSON serialization
+            if "_id" in team:
+                team["_id"] = str(team["_id"])
+            return jsonify(team), 200
         abort(400, description="Already at last tile")
 
     # Advance to the next tile
