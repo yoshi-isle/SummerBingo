@@ -638,7 +638,8 @@ def get_game_started():
 def get_team_placement(team_id):
     """
     Get the placement/ranking of a specific team in the leaderboard.
-    Returns the team's position (1st, 2nd, 3rd, etc.) based on world and level progress.
+    Returns the team's position (1st, 2nd, 3rd, etc.) based on world, level progress, and tie breakers.
+    Tie breakers: world (desc), level (desc), last_rolled_at (asc).
     """
     db = get_db()
     
@@ -651,23 +652,36 @@ def get_team_placement(team_id):
     teams = list(db.teams.find({}))
     
     for team in teams:
-        # Calculate current level for each team
         current_world = team.get("current_world", 1)
         current_tile = team.get("current_tile")
         shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
-        
         try:
             tile_index = shuffled_tiles.index(current_tile)
             level = tile_index + 1
             team["world_number"] = current_world
             team["level_number"] = level
         except ValueError:
-            # If current_tile not found in shuffled_tiles, default to level 1
             team["world_number"] = current_world
             team["level_number"] = 1
-    
-    # Sort teams by world (descending) then by level (descending) for leaderboard order
-    teams.sort(key=lambda x: (x["world_number"], x["level_number"]), reverse=True)
+        # Ensure last_rolled_at is a datetime for sorting
+        last_rolled_at = team.get("last_rolled_at")
+        if not isinstance(last_rolled_at, datetime):
+            try:
+                last_rolled_at = datetime.fromisoformat(str(last_rolled_at))
+            except Exception:
+                last_rolled_at = datetime.min.replace(tzinfo=timezone.utc)
+        if last_rolled_at.tzinfo is None or last_rolled_at.tzinfo.utcoffset(last_rolled_at) is None:
+            last_rolled_at = last_rolled_at.replace(tzinfo=timezone.utc)
+        team["last_rolled_at_sort"] = last_rolled_at
+
+    # Sort teams by world (desc), level (desc), completion_counter (desc for tie-breaking)
+    teams.sort(
+        key=lambda x: (
+            -x["world_number"],  # descending world
+            -x["level_number"],  # descending level
+            -x.get("completion_counter", 0)  # descending completion_counter for tie-breaking
+        )
+    )
     
     # Find the placement of the target team
     placement = None
@@ -682,6 +696,7 @@ def get_team_placement(team_id):
     return jsonify({
         "placement": placement,
     })
+
 
 @teams_blueprint.route("/teams", methods=["GET"])
 def get_all_teams():
