@@ -189,7 +189,12 @@ class AdminCog(commands.Cog):
         # Handle reactions
         try:
             if emoji == '✅':
-                await self.handle_approval(submission, message, user, game_state)
+                if message.reactions:
+                    if not any(str(reaction.emoji) == '❌' for reaction in message.reactions):
+                        pass
+                    else:
+                        await message.clear_reactions()
+                        await self.handle_approval(submission, message, user, game_state)
             elif emoji == '❌':
                 await self.handle_denial(submission, message, user, game_state)
         except Exception as e:
@@ -415,12 +420,20 @@ class AdminCog(commands.Cog):
         await self._update_embed_status(submission, message, user, approved=True)
 
         # Route to appropriate handler based on game state
-        if game_state == GameState.OVERWORLD:
-            await self._handle_overworld_approval(submission, team, team_channel)
-        elif game_state == GameState.KEY:
-            await self._handle_key_approval(submission, team_channel)
-        elif game_state == GameState.BOSS:
-            await self._handle_boss_approval(submission, team_channel)
+        try:
+            if game_state == GameState.OVERWORLD:
+                await self._handle_overworld_approval(submission, team, team_channel)
+            elif game_state == GameState.KEY:
+                await self._handle_key_approval(submission, team_channel)
+            elif game_state == GameState.BOSS:
+                await self._handle_boss_approval(submission, team_channel)
+        except Exception as e:
+            approved_channel = message.guild.get_channel(DiscordIDs.APPROVED_SUBMISSIONS_CHANNEL_ID)
+            await approved_channel.send(embed=Embed(
+                title="Admin Note: An error occurred while processing the approval.",
+                description=str(e),
+                color=discord.Color.red()
+            ))            
 
     async def handle_denial(self, submission: Dict, message: discord.Message, user: discord.Member, game_state: GameState = GameState.OVERWORLD) -> None:
         """Handle submission denial"""

@@ -454,7 +454,7 @@ class PlayerCog(commands.Cog):
                 await interaction.response.send_message(f"{Emojis.SKIP} You cannot skip tiles when your team is in 1st place.", ephemeral=True)
                 return
             else:
-                if rank_data.get('placement', 9999) in [2, 3, 4, 5]:
+                if rank_data.get('placement', 9999) in [2, 3, 4]:
                     skip_timer_hours = 16
 
         async with self.session.get(ApiUrls.TEAM_LAST_ROLLED.format(id=team_data["_id"])) as resp:
