@@ -174,25 +174,25 @@ def build_w2_key_board_embed(team_data):
             inline=False
         )
         embed.add_field(
-            name=f"**Trial 1-B: {Emojis.TRIAL_W2_2} 3x Obsidian Armor Pieces**",
+            name=f"**Trial 1-B: {Emojis.TRIAL_W2_2} Golden Pheasant egg**",
             value=f"`{format_submission(team_data['w2key2_completion_counter'])}`",
             inline=False
         )
     elif w2_path_chosen == 1:
         embed.add_field(
-            name=f"**Trial 2: {Emojis.TRIAL_W2_4} 3x Cerberus Crystals**",
+            name=f"**Trial 2: {Emojis.TRIAL_W2_4} 3x Sunfire Fanatic Pieces**",
             value=f"`{format_submission(team_data['w2key4_completion_counter'])}`",
             inline=False
         )
     elif w2_path_chosen == -1:
         embed.add_field(
-            name=f"**Trial 2: {Emojis.TRIAL_W2_3} Uncut Onyx**",
+            name=f"**Trial 2: {Emojis.TRIAL_W2_3} 3x Cerberus Crystals**",
             value=f"`{format_submission(team_data['w2key3_completion_counter'])}`",
             inline=False
         )
     elif w2_path_chosen == 2:
         embed.add_field(
-            name=f"**Trial 3: {Emojis.TRIAL_W2_5} Any ToA Purple**",
+            name=f"**Trial 3: {Emojis.TRIAL_W2_5} 3x Weapons from CoX/ToB/ToA**",
             value=f"`{format_submission(team_data['w2key5_completion_counter'])}`",
             inline=False
         )
@@ -241,34 +241,34 @@ def build_w3_key_board_embed(team_data):
     w3_braziers_lit = team_data.get("w3_braziers_lit", 0)
     if w3_braziers_lit == 0:
         embed.add_field(
-            name=f"**Trial 1-A: 3x Chromium Ingots from Whisperer**",
+            name=f"**Trial 1-A: 10x Vorkath Heads**",
             value=f"`{format_submission(team_data['w3key1_completion_counter'])}`",
             inline=False
         )
         embed.add_field(
-            name=f"**Trial 1-B: Moxi**",
+            name=f"**Trial 1-B: Dragon Hunter Wand**",
             value=f"`{format_submission(team_data['w3key2_completion_counter'])}`",
             inline=False
         )    
     if w3_braziers_lit == 1:
         embed.add_field(
-            name=f"**Trial 2-A: 5x Vorkath Heads**",
+            name=f"**Trial 2-A: Granite Man**\nGranite helmet, body, legs, weapon, shield, ring, boots, gloves",
             value=f"`{format_submission(team_data['w3key3_completion_counter'])}`",
             inline=False
         )
         embed.add_field(
-            name=f"**Trial 2-B: Full Ancient Ceremonial Robes**",
+            name=f"**Trial 2-B: Build-a-kitten**\nRaid unique helmet slot, chestplate, legs, weapon, and shield.\n*(2h counts for weapon + shield)*",
             value=f"`{format_submission(team_data['w3key4_completion_counter'])}`",
             inline=False
         )
     if w3_braziers_lit == 2:
         embed.add_field(
-            name=f"**Trial 3-A: Any Tome**",
+            name=f"**Trial 3-A: Bran**",
             value=f"`{format_submission(team_data['w3key5_completion_counter'])}`",
             inline=False
         )
         embed.add_field(
-            name=f"**Trial 3-B: Ice Quartz**",
+            name=f"**Trial 3-B: Moxi**",
             value=f"`{format_submission(team_data['w3key6_completion_counter'])}`",
             inline=False
         )
@@ -313,7 +313,7 @@ def build_w4_key_board_embed(team_data):
             inline=False
         )
         embed.add_field(
-            name=f"{Emojis.TRIAL_W4_1} Trial 1: Holy Elixir",
+            name=f"{Emojis.TRIAL_W4_1} Trial 1: Any 3x Armor Pieces from ToB/CoX/ToA",
             value=f"`{format_submission(team_data['w4key1_completion_counter'])}`",
             inline=False
         )
@@ -324,12 +324,12 @@ def build_w4_key_board_embed(team_data):
             inline=False
         )
         embed.add_field(
-            name=f"{Emojis.TRIAL_W4_2} Trial 2-A: Amulet of Eternal Glory",
+            name=f"{Emojis.TRIAL_W4_2} Trial 2-A: 3x Oathplate Armor Pieces",
             value=f"`{format_submission(team_data['w4key2_completion_counter'])}`",
             inline=False
         )
         embed.add_field(
-            name=f"{Emojis.TRIAL_W4_3} Trial 2-B: 3x Raid Purples",
+            name=f"{Emojis.TRIAL_W4_3} Trial 2-B: Enhanced Weapon Seed",
             value=f"`{format_submission(team_data['w4key3_completion_counter'])}`",
             inline=False
         )
@@ -345,7 +345,7 @@ def build_w4_key_board_embed(team_data):
             inline=False
         )
         embed.add_field(
-            name=f"{Emojis.TRIAL_W4_5} Trial 3: 5x Armor/Weapon Seeds OR 1x Enhanced Crystal Weapon Seed",
+            name=f"{Emojis.TRIAL_W4_5} Trial 3: Holy Elixir",
             value=f"`{format_submission(team_data['w4key5_completion_counter'])}`",
             inline=False
         )

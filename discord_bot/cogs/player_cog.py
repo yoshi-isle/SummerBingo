@@ -40,25 +40,25 @@ class PlayerCog(commands.Cog):
             },
             2: {
                 1: "Golden Tench",
-                2: "3x Obsidian Armor Pieces",
-                3: "Uncut Onyx",
+                2: "Golden Pheasant egg",
+                3: "3x Sunfire Fanatic Pieces",
                 4: "3x Cerberus Crystals",
-                5: "Any ToA Purple",
+                5: "3x Weapons from CoX/ToB/ToA",
             },
             3: {
-                1: "3x Chromium Ingots (Whisperer)",
-                2: "Moxi",
-                3: "5x Vorkath Heads",
-                4: "Full Ancient Ceremonial Robes",
-                5: "Any Tome",
-                6: "Ice Quartz",
+                1: "10x Vorkath Heads",
+                2: "Dragon Hunter Wand",
+                3: "Granite Man",
+                4: "Build-a-kitten",
+                5: "Bran",
+                6: "Moxi",
             },
             4: {
-                1: "Holy Elixir",
-                2: "Eternal Glory",
-                3: "3x Raid Purples",
-                4: "Nm Staff",
-                5: "5x Armor/Wep Seeds OR 1x Enhanced",
+                1: "Any 3x Armor Pieces from ToB/CoX/ToA",
+                2: "3x Oathplate Armor Pieces",
+                3: "Enhanced Weapon Seed",
+                4: "Nightmare Staff",
+                5: "5x Holy Elixir",
             },
         }
         
@@ -148,33 +148,33 @@ class PlayerCog(commands.Cog):
                 # Define different trial options for each world
                 world_trials = {
                     1: [
-                        app_commands.Choice(name="Any CoX Purple", value=1),
+                        app_commands.Choice(name="2x Dex/Arcane Scrolls or Twisted Kits from CoX", value=1),
                         app_commands.Choice(name="Crystal Tool Seed", value=2),
-                        app_commands.Choice(name="4x Burning Claws", value=3),
+                        app_commands.Choice(name="4x Burning Claws or Synapses", value=3),
                         app_commands.Choice(name="Bryophyta's Essence OR Hill Giant Club", value=4),
                         app_commands.Choice(name="10x Elite Clues", value=5),
                     ],
                     2: [
                         app_commands.Choice(name="Golden Tench", value=1),
-                        app_commands.Choice(name="3x Obsidian Armor Pieces", value=2),
-                        app_commands.Choice(name="Uncut Onyx", value=3),
+                        app_commands.Choice(name="Golden Pheasant egg", value=2),
+                        app_commands.Choice(name="3x Sunfire Fanatic Pieces", value=3),
                         app_commands.Choice(name="3x Cerberus Crystals", value=4),
-                        app_commands.Choice(name="Any ToA Purple", value=5),
+                        app_commands.Choice(name="3x Weapons from CoX/ToB/ToA", value=5),
                     ],
                     3: [
-                        app_commands.Choice(name="3x Chromium Ingots (Whisperer)", value=1),
-                        app_commands.Choice(name="Moxi", value=2),
-                        app_commands.Choice(name="5x Vorkath Heads", value=3),
-                        app_commands.Choice(name="Full Ancient Ceremonial Robes", value=4),
-                        app_commands.Choice(name="Any Tome", value=5),
-                        app_commands.Choice(name="Ice Quartz", value=6),
+                        app_commands.Choice(name="10x Vorkath Heads", value=1),
+                        app_commands.Choice(name="Dragon Hunter Wand", value=2),
+                        app_commands.Choice(name="Granite Man", value=3),
+                        app_commands.Choice(name="Build-a-kitten", value=4),
+                        app_commands.Choice(name="Bran", value=5),
+                        app_commands.Choice(name="Moxi", value=6),
                     ],
                     4: [
-                        app_commands.Choice(name="Holy Elixir", value=1),
-                        app_commands.Choice(name="Eternal Glory", value=2),
-                        app_commands.Choice(name="3x Raid Purples", value=3),
-                        app_commands.Choice(name="Nm Staff", value=4),
-                        app_commands.Choice(name="5x Armor/Wep Seeds OR 1x Enhanced", value=5),
+                        app_commands.Choice(name="Any 3x Armor Pieces from ToB/CoX/ToA", value=1),
+                        app_commands.Choice(name="3x Oathplate Armor Pieces", value=2),
+                        app_commands.Choice(name="Enhanced Weapon Seed", value=3),
+                        app_commands.Choice(name="Nightmare Staff", value=4),
+                        app_commands.Choice(name="Holy Elixir", value=5),
                     ],
                 }
                 
@@ -223,7 +223,7 @@ class PlayerCog(commands.Cog):
             elif game_state == 2:
                 world_bosses = {
                     1: [
-                        app_commands.Choice(name="Any CoX Mega-rare", value=1),
+                        app_commands.Choice(name="Any CoX Mega-rare or Dust", value=1),
                     ],
                     2: [
                         app_commands.Choice(name="Tonalztics of Ralos", value=1),

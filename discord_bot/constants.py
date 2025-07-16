@@ -30,16 +30,23 @@ class Emojis:
     TRIAL_ICON_W1="<:Ancient_remnant:1392604921190289530>"
 
     TRIAL_W2_1="<:Golden_tench:1392602820737368220>"
-    TRIAL_W2_2="<:Obsidian_platebody:1392603054955696199>"
-    TRIAL_W2_3="<:Uncut_onyx:1392603338293379202>"
+    TRIAL_W2_2="<:Golden_pheasant_egg:1394904233177911347>"
+    TRIAL_W2_3="<:Sunfire_fanatic_helm:1394904324248965164>"
     TRIAL_W2_4="<:Primordial_crystal:1392603490328776774>"
-    TRIAL_W2_5="<:Elidinis27_ward:1392603633907929228>"
+    TRIAL_W2_5="<:Osmumtens_fang:1394904462715392071>"
 
-    TRIAL_W4_1="<:Holy_elixir:1392977427025629194>"
-    TRIAL_W4_2="<:Amulet_of_eternal_glory:1392977534517379242>"
-    TRIAL_W4_3="<:Sanguinesti_staff:1392977699957510215>"
+    TRIAL_W3_1="<:Vorkaths_head:1394904134335070289>"
+    TRIAL_W3_2="<:Dragon_hunter_wand:1394903984363409479>"
+    TRIAL_W3_3="<:Granite_helm:1394903840029020190>"
+    TRIAL_W3_4="<:Worn_Equipment:1394903804628959304>"
+    TRIAL_W3_5="<:Bran:1394903413011120228>"
+    TRIAL_W3_6="<:Moxi:1394903647321850007>"
+
+    TRIAL_W4_1="<:Justiciar_chestguard:1394904637093576714>"
+    TRIAL_W4_2="<:Oathplate_chest:1394904700381560954>"
+    TRIAL_W4_3="<:Enhanced_crystal_weapon_seed:1394904799119409172>"
     TRIAL_W4_4="<:Nightmare_staff:1392977819436318810>"
-    TRIAL_W4_5="<:Crystal_armour_seed:1392977899111579758>"
+    TRIAL_W4_5="<:Holy_elixir:1392977427025629194>"
 
 
     TWISTED_BOW="<:Twisted_bow:1392562692472176641>"
