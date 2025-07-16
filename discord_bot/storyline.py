@@ -83,11 +83,11 @@ The crowd murmurs in anticipation as Sol Heredit leaps from his throne, landing 
     W3_START = {
         "title": "Chapter 3: The Frozen Door",
         "dialogue": '''
-The heroes trudge through a relentless blizzard, the wind howling like a banshee around them.
-They come across a frozen, ancient door carved with Zarosian runes, half-buried in ice and snow.
+Battling through a fierce blizzard, the heroes stumble upon a massive, ice-encrusted door etched with Zarosian runes.
+Its surface is sealed tight, impervious to force or magic.
 
-Finding it impossible to break through the magical ice, they notice 3 magical braziers around the arena and set out to light them.
-Perhaps these are the key to unlocking the door?
+Surveying the area, they spot three mystical braziers positioned around the arena, each unlit and covered in frost.
+Perhaps igniting these braziers will be enough to thaw out the ancient ice.
 '''
     }
     W3_TRANSITION_INTO_ZAROS_SANCTUM = {

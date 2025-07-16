@@ -26,7 +26,7 @@ from storyline import StoryLine
 from enums.gamestate import GameState
 from utils.count_keys import count_w1_keys
 from utils.post_board import post_team_board
-from embeds import build_w1_boss_board_embed, build_team_board_embed, build_w1_key_board_embed, build_w2_boss_board_embed, build_w2_key_board_embed, build_storyline_embed
+from embeds import build_w1_boss_board_embed, build_team_board_embed, build_w1_key_board_embed, build_w2_boss_board_embed, build_w2_key_board_embed, build_storyline_embed, build_w3_key_board_embed, build_w3_boss_board_embed, build_w4_key_board_embed, build_w4_boss_board_embed   
 
 class AdminCog(commands.Cog):
     def __init__(self, bot):
@@ -214,13 +214,6 @@ class AdminCog(commands.Cog):
             action = "approving" if emoji == '✅' else "denying"
             await self._handle_reaction_error(channel, action, e)
 
-    @app_commands.command(name="admin_clear_channel", description="(Admin) Deletes all messages in the current channel")
-    @app_commands.checks.has_role("Admin")
-    async def clear_channel(self, interaction: discord.Interaction):
-        await interaction.response.defer(ephemeral=True)
-        await interaction.channel.purge()
-        await interaction.followup.send("Channel cleared!", ephemeral=True)
-
     async def _update_embed_status(self, submission: Dict, message: discord.Message, 
                                  user: discord.Member, approved: bool) -> None:
         """Update submission embed and handle channel routing"""
@@ -403,7 +396,8 @@ class AdminCog(commands.Cog):
                 if int(team[f"w{world}boss_completion_counter"]) <= 0:
                     # Win the event
                     if world == 4:
-                        await team_channel.send(embed=Embed(title=f"Your team won the bingo!!!"))
+                        await team_channel.send(embed=Embed(title=f"I didn't think anyone would get this far...\nYour team beat the final boss! Congratulations!"))
+                        await team_channel.send(embed=Embed(title="Hey <@726237123857874975> and <@296465926629490689>, someone actually did it lmfao"))
                         return
 
                     await team_channel.send(embed=Embed(title=f"{Emojis.TRIAL_COMPLETE} Your team completed the boss tile!"))
@@ -493,6 +487,9 @@ class AdminCog(commands.Cog):
     @app_commands.checks.has_role("Admin")
     async def force_complete(self, interaction: discord.Interaction, user: discord.User):
         try:
+            await interaction.response.send_message(
+                f"{Emojis.ADMIN} {interaction.user.mention} Force completed tile for {user.mention}'s team - posting new board..."
+            )
             team_data = await self._get_team_by_user_id(user.id)
             if not team_data:
                 await interaction.response.send_message("User is not part of a team", ephemeral=True)
@@ -509,10 +506,6 @@ class AdminCog(commands.Cog):
                     async with self.session.get(ApiUrls.TEAM_BOARD_INFORMATION.format(id=team_data['_id'])) as resp:
                         info = await resp.json()
                         await self._handle_force_complete_transition(info["team"], team_channel)
-                    
-                    await interaction.response.send_message(
-                        f"{Emojis.ADMIN} {interaction.user.mention} Force completed tile for {user.mention}'s team - posting new board..."
-                    )
                 else:
                     error = await advance_resp.text()
                     await interaction.response.send_message(f"Failed to advance tile: {error}", ephemeral=True)
@@ -573,12 +566,31 @@ class AdminCog(commands.Cog):
                 if resp.status == 200:
                     image_data = await resp.read()
                     file = discord.File(io.BytesIO(image_data), filename="team_board.png")
-                    
-                    embed = await self._get_embed_for_board(team_data, board_information)
+                    if int(team_data["game_state"]) == 0:
+                        embed = build_team_board_embed(team_data, board_information["tile"], board_information["level_number"], board_information["placement"])
+                    elif int(team_data["game_state"]) == 1 and int(team_data["current_world"]) == 1:
+                        embed = build_w1_key_board_embed(team_data)
+                    elif int(team_data["game_state"]) == 2 and int(team_data["current_world"]) == 1:
+                        embed = build_w1_boss_board_embed(team_data)
+                    elif int(team_data["game_state"]) == 1 and int(team_data["current_world"]) == 2:
+                        embed = build_w2_key_board_embed(team_data)
+                    elif int(team_data["game_state"]) == 2 and int(team_data["current_world"]) == 2:
+                        embed = build_w2_boss_board_embed(team_data)
+                    elif int(team_data["game_state"]) == 1 and int(team_data["current_world"]) == 3:
+                        embed = build_w3_key_board_embed(team_data)
+                    elif int(team_data["game_state"]) == 2 and int(team_data["current_world"]) == 3:
+                        embed = build_w3_boss_board_embed(team_data)
+                    elif int(team_data["game_state"]) == 1 and int(team_data["current_world"]) == 4:
+                        embed = build_w4_key_board_embed(team_data)
+                    elif int(team_data["game_state"]) == 2 and int(team_data["current_world"]) == 4:
+                        embed = build_w4_boss_board_embed(team_data)
+                    else:
+                        await interaction.response.send_message(f"Error. Contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
+                        return
                     embed.set_image(url="attachment://team_board.png")
                     await interaction.response.send_message(embed=embed, file=file)
                 else:
-                    await interaction.response.send_message("There was an error getting the user's board image.")
+                    await interaction.response.send_message(f"There was an error getting your board image. Please contact <@{DiscordIDs.TANGY_DISCORD_ID}>")
         except Exception as e:
             print(f"Error in send_team_board_to_interaction: {e}")
             await interaction.response.send_message("There was an error displaying the board.")

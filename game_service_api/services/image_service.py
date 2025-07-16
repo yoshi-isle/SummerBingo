@@ -396,7 +396,7 @@ class ImageService:
             self.draw_ui_panel(base_img, team)
             self.draw_team_text(draw, team["team_name"])
             self.paste_image(base_img, '../images/key_tile.png', (20,16))
-            tile_label = "It's not over til..."
+            tile_label = "It's not over til.."
             self.draw_tile_image(base_img, f'../images/world4/boss/0.png')
             self.draw_outlined_wrapped_text(
                 draw=draw,

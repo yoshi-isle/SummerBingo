@@ -134,7 +134,7 @@ def build_w1_boss_board_embed(team_data):
     )
     embed.add_field(
         name=f"{Emojis.OLMLET} 1-B: Showdown at the Summit",
-        value=f"{Emojis.TWISTED_BOW} Obtain 1x CoX megarare - Twisted Bow, Kodai Insignia, Elder Maul, or Olmlet",
+        value=f"{Emojis.TWISTED_BOW} Obtain 1x CoX megarare or Metamorphic Dust - Twisted Bow, Kodai Insignia, Elder Maul, or Olmlet",
         inline=False
     )
     embed.add_field(
@@ -180,19 +180,19 @@ def build_w2_key_board_embed(team_data):
         )
     elif w2_path_chosen == 1:
         embed.add_field(
-            name=f"**Trial 2: {Emojis.TRIAL_W2_4} 3x Sunfire Fanatic Pieces**",
+            name=f"**Trial 2: {Emojis.TRIAL_W2_4} 3x Cerberus Crystals**",
             value=f"`{format_submission(team_data['w2key4_completion_counter'])}`",
             inline=False
         )
     elif w2_path_chosen == -1:
         embed.add_field(
-            name=f"**Trial 2: {Emojis.TRIAL_W2_3} 3x Cerberus Crystals**",
+            name=f"**Trial 2: {Emojis.TRIAL_W2_3} 3x Sunfire Fanatic Pieces**",
             value=f"`{format_submission(team_data['w2key3_completion_counter'])}`",
             inline=False
         )
     elif w2_path_chosen == 2:
         embed.add_field(
-            name=f"**Trial 3: {Emojis.TRIAL_W2_5} 3x Weapons from CoX/ToB/ToA**",
+            name=f"**Trial 3: {Emojis.TRIAL_W2_5} 3x Weapons from CoX/ToB/ToA**\n*Ghrazi Rapier, Scythe of Vitur, Sanguinesti Staff, Osmumten's Fang, Tumeken's Shadow, Twisted Bow, Kodai Wand, Elder Maul, Dinh's Bulwark, Dragon Hunter Crossbow, Dragon Claws*",
             value=f"`{format_submission(team_data['w2key5_completion_counter'])}`",
             inline=False
         )
@@ -241,34 +241,34 @@ def build_w3_key_board_embed(team_data):
     w3_braziers_lit = team_data.get("w3_braziers_lit", 0)
     if w3_braziers_lit == 0:
         embed.add_field(
-            name=f"**Trial 1-A: 10x Vorkath Heads**",
+            name=f"**{Emojis.TRIAL_W3_1} Trial 1-A: 10x Vorkath Heads**",
             value=f"`{format_submission(team_data['w3key1_completion_counter'])}`",
             inline=False
         )
         embed.add_field(
-            name=f"**Trial 1-B: Dragon Hunter Wand**",
+            name=f"**{Emojis.TRIAL_W3_2} Trial 1-B: Dragon Hunter Wand**",
             value=f"`{format_submission(team_data['w3key2_completion_counter'])}`",
             inline=False
         )    
     if w3_braziers_lit == 1:
         embed.add_field(
-            name=f"**Trial 2-A: Granite Man**\nGranite helmet, body, legs, weapon, shield, ring, boots, gloves",
+            name=f"**{Emojis.TRIAL_W3_3} Trial 2-A: Granite Man**\nGranite helmet, body, legs, weapon, shield, ring, boots, gloves.\n*(2h counts for weapon + shield)*",
             value=f"`{format_submission(team_data['w3key3_completion_counter'])}`",
             inline=False
         )
         embed.add_field(
-            name=f"**Trial 2-B: Build-a-kitten**\nRaid unique helmet slot, chestplate, legs, weapon, and shield.\n*(2h counts for weapon + shield)*",
+            name=f"**{Emojis.TRIAL_W3_4} Trial 2-B: Raid Man**\nRaid unique helmet slot, chestplate, legs, weapon, ring, and shield.\n*(2h counts for weapon + shield)*",
             value=f"`{format_submission(team_data['w3key4_completion_counter'])}`",
             inline=False
         )
     if w3_braziers_lit == 2:
         embed.add_field(
-            name=f"**Trial 3-A: Bran**",
+            name=f"**{Emojis.TRIAL_W3_5} Trial 3-A: Bran**",
             value=f"`{format_submission(team_data['w3key5_completion_counter'])}`",
             inline=False
         )
         embed.add_field(
-            name=f"**Trial 3-B: Moxi**",
+            name=f"**{Emojis.TRIAL_W3_6} Trial 3-B: Moxi**",
             value=f"`{format_submission(team_data['w3key6_completion_counter'])}`",
             inline=False
         )
