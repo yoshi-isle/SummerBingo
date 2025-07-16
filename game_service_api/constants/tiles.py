@@ -20,7 +20,7 @@ world1_tiles = {
         {"id": 17, "tile_name": "Shaman mask", "description": "Obtain 1x Shaman mask", "completion_counter": 1, "image_url": "world1/tiles/17.png", "wiki_url": "https://oldschool.runescape.wiki/w/shaman_mask"}
     ],
     "key_tiles": [
-        {"id": 0, "tile_name": "2x Scrolls or Twisted Kits from CoX", "description": "Obtain 2x Scrolls or Twisted Kits from CoX", "completion_counter": 2, "image_url": "world1/keys/0.png", "wiki_url": "https://oldschool.runescape.wiki/w/Chambers_of_Xeric"},
+        {"id": 0, "tile_name": "2x Dex/Arcane Scrolls or Twisted Kits from CoX", "description": "Obtain 2x Scrolls or Twisted Kits from CoX", "completion_counter": 2, "image_url": "world1/keys/0.png", "wiki_url": "https://oldschool.runescape.wiki/w/Chambers_of_Xeric"},
         {"id": 1, "tile_name": "Crystal Tool Seed", "description": "Obtain 1x Crystal Tool Seed", "completion_counter": 1, "image_url": "world1/keys/1.png", "wiki_url": "https://oldschool.runescape.wiki/w/crystal_tool_seed"},
         {"id": 2, "tile_name": "4x Burning Claws or Synapses", "description": "Obtain 4x Burning Claws or Synapses", "completion_counter": 4, "image_url": "world1/keys/2.png", "wiki_url": "https://oldschool.runescape.wiki/w/tormented_demon"},
         {"id": 3, "tile_name": "Bryophyta's Essence\n OR Hill Giant Club", "description": "Obtain 1x Bryophyta's Essence OR Hill Giant Club", "completion_counter": 1, "image_url": "world1/keys/3.png", "wiki_url": "https://oldschool.runescape.wiki/w/Bryophyta%27s_essence"},

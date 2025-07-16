@@ -32,9 +32,9 @@ class PlayerCog(commands.Cog):
         """Get the trial option name based on world and option value."""
         world_trials = {
             1: {
-                1: "Any CoX Purple",
+                1: "2x Scrolls or Twisted Kits from CoX",
                 2: "Crystal Tool Seed",
-                3: "4x Burning Claws",
+                3: "4x Burning Claws or Synapses",
                 4: "Bryophyta's Essence OR Hill Giant Club",
                 5: "10x Elite Clues",
             },

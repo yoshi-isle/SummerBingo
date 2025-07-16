@@ -24,7 +24,7 @@ class Team:
     w4boss_completion_counter: int = 5
 
     # World 1 key tile completion counters
-    w1key1_completion_counter: int = 1
+    w1key1_completion_counter: int = 2
     w1key2_completion_counter: int = 1
     w1key3_completion_counter: int = 4
     w1key4_completion_counter: int = 1

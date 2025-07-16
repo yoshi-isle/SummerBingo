@@ -82,7 +82,7 @@ def build_w1_key_board_embed(team_data):
         trial_count += counter == 0
 
     embed.add_field(
-        name=f"{Emojis.TRIAL_W1_1} Trial 1: Any CoX Purple",
+        name=f"{Emojis.TRIAL_W1_1} Trial 1: 2x Scrolls or Twisted Kits from CoX",
         value=f"`{format_submission(team_data['w1key1_completion_counter'])}`",
         inline=False
     )
@@ -92,7 +92,7 @@ def build_w1_key_board_embed(team_data):
         inline=False
     )
     embed.add_field(
-        name=f"{Emojis.TRIAL_W1_3} Trial 3: 4x Burning Claws",
+        name=f"{Emojis.TRIAL_W1_3} Trial 3: 4x Burning Claws or Synapses",
         value=f"`{format_submission(team_data['w1key3_completion_counter'])}`",
         inline=False
     )
