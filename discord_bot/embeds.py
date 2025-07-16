@@ -33,7 +33,7 @@ def build_team_board_embed(team_data, tile_info, team_level_string, ranking=None
         2: 16,
         3: 16,
         4: 16,
-        5: 16,
+        5: 12,
         6: 12,
     }
 
