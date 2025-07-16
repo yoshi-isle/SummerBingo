@@ -348,7 +348,7 @@ class PlayerCog(commands.Cog):
                 value=current_tile,
             )
             # Convert last_rolled_at to Discord timestamp format
-            last_rolled_dt = parser.isoparse(team_data["last_rolled_at"])
+            last_rolled_dt = parser.parse(team_data["last_rolled_at"])
             discord_timestamp = f"<t:{int(last_rolled_dt.timestamp())}:F>"
             admin_embed.add_field(
                 name="Tile landed on time",
