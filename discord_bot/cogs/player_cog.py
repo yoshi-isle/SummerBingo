@@ -28,6 +28,42 @@ class PlayerCog(commands.Cog):
     async def cog_unload(self):
         await self.session.close()
 
+    def get_trial_option_name(self, world: int, option: int) -> str:
+        """Get the trial option name based on world and option value."""
+        world_trials = {
+            1: {
+                1: "Any CoX Purple",
+                2: "Crystal Tool Seed",
+                3: "4x Burning Claws",
+                4: "Bryophyta's Essence OR Hill Giant Club",
+                5: "10x Elite Clues",
+            },
+            2: {
+                1: "Golden Tench",
+                2: "3x Obsidian Armor Pieces",
+                3: "Uncut Onyx",
+                4: "3x Cerberus Crystals",
+                5: "Any ToA Purple",
+            },
+            3: {
+                1: "3x Chromium Ingots (Whisperer)",
+                2: "Moxi",
+                3: "5x Vorkath Heads",
+                4: "Full Ancient Ceremonial Robes",
+                5: "Any Tome",
+                6: "Ice Quartz",
+            },
+            4: {
+                1: "Holy Elixir",
+                2: "Eternal Glory",
+                3: "3x Raid Purples",
+                4: "Nm Staff",
+                5: "5x Armor/Wep Seeds OR 1x Enhanced",
+            },
+        }
+        
+        return world_trials.get(world, {}).get(option, f"Trial {option}")
+
     @app_commands.command(name="board", description="View your current tile board.")
     async def view_board(self, interaction: discord.Interaction):
         try:
@@ -381,6 +417,9 @@ class PlayerCog(commands.Cog):
                 await interaction.response.send_message(f"{Emojis.TRIAL_COMPLETE} You already have this trial completed. Wrong option?", ephemeral=True)
                 return
             
+            # Get the trial option name
+            trial_option_name = self.get_trial_option_name(team_data['current_world'], option)
+            
             embed = discord.Embed(
                 title=f"{Emojis.TRIAL_COMPLETE} Trial Completion Submitted!",
                 description=f"🟡 Status: Pending\n{interaction.user.mention} submitted for a trial. Please wait for an admin to review.",
@@ -394,7 +433,7 @@ class PlayerCog(commands.Cog):
 
             admin_embed = discord.Embed(
                 title=f"{Emojis.TRIAL_COMPLETE} Trial Submission",
-                description=f"{interaction.user.mention} submitted for world {team_data['current_world']} a trial.\nTeam: {team_data['team_name']}",
+                description=f"{interaction.user.mention} submitted for a world {team_data['current_world']} trial.\nTeam: {team_data['team_name']}\nTrial: {trial_option_name}",
                 color=discord.Color.orange()
             )
             admin_embed.set_image(url=image.url)
