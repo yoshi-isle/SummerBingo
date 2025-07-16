@@ -15,7 +15,7 @@ world1_tiles = {
         {"id": 12, "tile_name": "Imcando hammer", "description": "Obtain 1x imcando hammer (broken) from camdozal.", "completion_counter": 1, "image_url": "world1/tiles/12.png", "wiki_url": "https://oldschool.runescape.wiki/w/Imcando_hammer"},
         {"id": 13, "tile_name": "Giant Champion Scroll", "description": "Obtain 1x Giant Champion Scroll", "completion_counter": 1, "image_url": "world1/tiles/13.png", "wiki_url": "https://oldschool.runescape.wiki/w/giant_champion_scroll"},
         {"id": 14, "tile_name": "Tormented Synapse", "description": "Obtain 1x Tormented Synapse", "completion_counter": 1, "image_url": "world1/tiles/14.png", "wiki_url": "https://oldschool.runescape.wiki/w/Tormented_Synapse"},
-        {"id": 15, "tile_name": "6x Enhanced Teleport Seeds", "description": "Obtain 6x Enhanced Teleport Seeds", "completion_counter": 6, "image_url": "world1/tiles/15.png", "wiki_url": "https://oldschool.runescape.wiki/w/Enhanced_Teleport_Seeds"},
+        {"id": 15, "tile_name": "6x Enhanced Teleport Seeds", "description": "Obtain 6x Enhanced Teleport Seeds. Can be thieved or killed. (Submit double if thieved)", "completion_counter": 6, "image_url": "world1/tiles/15.png", "wiki_url": "https://oldschool.runescape.wiki/w/Enhanced_Teleport_Seeds"},
         {"id": 16, "tile_name": "Crystal grail", "description": "Obtain 1x Crystal grail", "completion_counter": 1, "image_url": "world1/tiles/16.png", "wiki_url": "https://oldschool.runescape.wiki/w/crystal_grail"},
         {"id": 17, "tile_name": "Shaman mask", "description": "Obtain 1x Shaman mask", "completion_counter": 1, "image_url": "world1/tiles/17.png", "wiki_url": "https://oldschool.runescape.wiki/w/shaman_mask"}
     ],

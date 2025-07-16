@@ -14,6 +14,7 @@ Refactored for better maintainability:
 - Used type hints for better code documentation
 """
 
+import time
 import discord
 import io
 import aiohttp
@@ -31,6 +32,8 @@ class AdminCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.session = aiohttp.ClientSession()
+        self.cooldown = 5
+        self.last_used = 0
 
     async def cog_unload(self):
         await self.session.close()
@@ -179,6 +182,16 @@ class AdminCog(commands.Cog):
         message = await channel.fetch_message(payload.message_id)
         user = guild.get_member(payload.user_id)
         emoji = str(payload.emoji)
+
+        # Cooldown
+        if time.time() < self.last_used + self.cooldown:
+            await channel.send(
+            f"On cooldown. please wait {round((self.last_used + self.cooldown) - time.time())} seconds and react again.",
+            reference=message,
+            delete_after=7
+            )
+            return
+        self.last_used = time.time()
         
         # Get submission data
         submission, game_state = await self._get_submission_by_type(str(message.id))
@@ -189,7 +202,12 @@ class AdminCog(commands.Cog):
         # Handle reactions
         try:
             if emoji == '✅':
-                await self.handle_approval(submission, message, user, game_state)
+                if message.reactions:
+                    if not any(str(reaction.emoji) == '❌' for reaction in message.reactions):
+                        pass
+                    else:
+                        await message.clear_reactions()
+                        await self.handle_approval(submission, message, user, game_state)
             elif emoji == '❌':
                 await self.handle_denial(submission, message, user, game_state)
         except Exception as e:
@@ -234,7 +252,7 @@ class AdminCog(commands.Cog):
                     await self._send_progress_update(submission, team, team_channel)
             elif approve_resp.status == 208:
                 approved_channel = team_channel.guild.get_channel(DiscordIDs.APPROVED_SUBMISSIONS_CHANNEL_ID)
-                await approved_channel.send(embed=Embed(title="Admin Note: Submission was outdated so system deleted it. (No harm done)"))
+                await approved_channel.send(embed=Embed(title="Admin Note: Submission was outdated so system deleted it. (No harm done)", color=discord.Color.red()))
 
     async def _advance_tile_and_handle_transition(self, submission: Dict, team_channel: discord.TextChannel) -> None:
         """Advance tile and handle game state transitions"""
@@ -245,7 +263,7 @@ class AdminCog(commands.Cog):
                     await self._handle_game_state_transition(info["team"], submission, team_channel)
             else:
                 approved_channel = team_channel.guild.get_channel(DiscordIDs.APPROVED_SUBMISSIONS_CHANNEL_ID)
-                await approved_channel.send(embed=Embed(title="Admin Note: Submission was outdated so system deleted it. (No harm done)"))
+                await approved_channel.send(embed=Embed(title="Admin Note: Submission was outdated so system deleted it. (No harm done)", color=discord.Color.red()))
 
     async def _send_progress_update(self, submission: Dict, team: Dict, team_channel: discord.TextChannel) -> None:
         """Send progress update for incomplete tiles"""
@@ -256,7 +274,7 @@ class AdminCog(commands.Cog):
         total_required = board_information['tile']['completion_counter']
         
         embed = Embed(
-            title="Tile Progress Updated!", 
+            title=f"{Emojis.SUBMISSIONS} Tile Progress Updated!", 
             description=f"Currently at: {current_progress}/{total_required}",
             color=Color.green()
         )
@@ -342,7 +360,7 @@ class AdminCog(commands.Cog):
             remaining = team[f'w4key{key_option}_completion_counter']
             if remaining <= 0:
                 await team_channel.send(embed=Embed(
-                    title=f"{Emojis.BLOOD_RUNE} You complete the trial. A door opens, revealing the path forward."
+                    title=f"{Emojis.BLOOD_RUNE} You complete the trial and let the light creature carry you to the next room..."
                 ))
                 await self.session.put(ApiUrls.TEAM_ITERATE_W4_TRIAL.format(id=team["_id"]))
                 await post_team_board(self.session, submission['team_id'], team_channel, "w4_key")
@@ -415,12 +433,20 @@ class AdminCog(commands.Cog):
         await self._update_embed_status(submission, message, user, approved=True)
 
         # Route to appropriate handler based on game state
-        if game_state == GameState.OVERWORLD:
-            await self._handle_overworld_approval(submission, team, team_channel)
-        elif game_state == GameState.KEY:
-            await self._handle_key_approval(submission, team_channel)
-        elif game_state == GameState.BOSS:
-            await self._handle_boss_approval(submission, team_channel)
+        try:
+            if game_state == GameState.OVERWORLD:
+                await self._handle_overworld_approval(submission, team, team_channel)
+            elif game_state == GameState.KEY:
+                await self._handle_key_approval(submission, team_channel)
+            elif game_state == GameState.BOSS:
+                await self._handle_boss_approval(submission, team_channel)
+        except Exception as e:
+            approved_channel = message.guild.get_channel(DiscordIDs.APPROVED_SUBMISSIONS_CHANNEL_ID)
+            await approved_channel.send(embed=Embed(
+                title="Admin Note: An error occurred while processing the approval.",
+                description=str(e),
+                color=discord.Color.red()
+            ))            
 
     async def handle_denial(self, submission: Dict, message: discord.Message, user: discord.Member, game_state: GameState = GameState.OVERWORLD) -> None:
         """Handle submission denial"""
