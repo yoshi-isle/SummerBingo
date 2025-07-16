@@ -14,7 +14,7 @@ def build_team_board_embed(team_data, tile_info, team_level_string, ranking=None
     embed.set_footer(text="Use /submit in your team channel to submit your tile completion.", icon_url=Emojis.SKW_LOGO)
     embed.add_field(
         name=f"{Emojis.WORLD_MAP} {WORLD_NAMES[team_data['current_world']]} {team_level_string}",
-        value=f"{tile_info['tile_name']} ([Wiki]({tile_info['wiki_url']}))",
+        value=f"{tile_info['tile_name']} ([Wiki]({tile_info['wiki_url']}))\n*{tile_info['description']}*",
         inline=False
     )
     embed.add_field(
