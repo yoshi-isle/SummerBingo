@@ -59,7 +59,7 @@ class AdminCog(commands.Cog):
         
         embed = pending_message.embeds[0].copy()
         embed.color = color
-        embed.title = f"{status} by {user.mention}"
+        embed.title = f"{status} by {user.display_name}"
         embed.set_footer(text="")
         embed.description = f"{'🟢' if status == 'Approved' else '🔴'} Status: {status} by {user.mention}."
         await pending_message.edit(embed=embed)
@@ -232,7 +232,7 @@ class AdminCog(commands.Cog):
         # Send to appropriate channel
         channel_id = DiscordIDs.APPROVED_SUBMISSIONS_CHANNEL_ID if approved else DiscordIDs.DENIED_SUBMISSIONS_CHANNEL_ID
         target_channel = message.guild.get_channel(channel_id)
-        embed.description = f"See the submission in the team's channel here: https://discord.com/channels/{pending_message.guild.id}/{pending_message.channel.id}/{pending_message.id}"
+        embed.description += f"See the submission in the team's channel here: https://discord.com/channels/{pending_message.guild.id}/{pending_message.channel.id}/{pending_message.id}"
         await target_channel.send(embed=embed)
 
     async def _handle_overworld_approval(self, submission: Dict, team: Dict, team_channel: discord.TextChannel) -> None:
