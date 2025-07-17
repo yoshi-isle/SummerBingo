@@ -9,7 +9,7 @@ class Emojis:
     SUBMISSIONS="<:200pxPoll_icon:1393651395273555998>"
     SKIP="<:Agility_shortcut_balance:1393651820047634534>"
     CHECKMARK_GIF="<a:check:1393652924756005055>"
-    TROPHY="<:Trailblazer_reloaded_dragon_trop:1394184136939274362>"
+    TROPHY="<:Diamond_speedrun_trophy:1395248100913844345>"
 
     VARLAMORE_FLAG="<:240pxBanner_Varlamore:1393657344763756755>"
     RALOS="<:Tonalztics_of_ralos:1393657151855005918>"
