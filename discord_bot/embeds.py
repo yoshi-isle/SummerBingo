@@ -51,11 +51,11 @@ def build_team_board_embed(team_data, tile_info, team_level_string, ranking=None
 
     hours_text_based_on_placement = {
         1: "You cannot skip the tile in 1st place.",
-        2: f"You cannot skip the tile until <t:{discord_epoch_relative}:R>.",
-        3: f"You cannot skip the tile until <t:{discord_epoch_relative}:R>.",
-        4: f"You cannot skip the tile until <t:{discord_epoch_relative}:R>.",
-        5: f"You cannot skip the tile until <t:{discord_epoch_relative}:R>.",
-        6: f"You cannot skip the tile until <t:{discord_epoch_relative}:R>.",
+        2: f"You can skip the tile: <t:{discord_epoch_relative}:R>.",
+        3: f"You can skip the tile: <t:{discord_epoch_relative}:R>.",
+        4: f"You can skip the tile: <t:{discord_epoch_relative}:R>.",
+        5: f"You can skip the tile: <t:{discord_epoch_relative}:R>.",
+        6: f"You can skip the tile: <t:{discord_epoch_relative}:R>.",
     }
 
     can_skip = next_allowed_time < datetime.now(timezone.utc)
