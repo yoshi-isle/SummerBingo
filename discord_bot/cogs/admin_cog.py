@@ -264,11 +264,10 @@ class AdminCog(commands.Cog):
             board_information = await team_resp.json()
         
         current_progress = team['completion_counter'] - 1
-        total_required = board_information['tile']['completion_counter']
         
         embed = Embed(
             title=f"{Emojis.SUBMISSIONS} Tile Progress Updated!", 
-            description=f"Currently at: {current_progress}/{total_required}",
+            description=f"You need to obtain {current_progress} more.",
             color=Color.green()
         )
         await team_channel.send(embed=embed)

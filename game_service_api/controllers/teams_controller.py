@@ -371,32 +371,7 @@ def get_board_information_by_team_id(team_id):
 
     # Get team placement
     teams = list(db.teams.find({}))
-    
-    for t in teams:
-        # Calculate current level for each team
-        t_current_world = t.get("current_world", 1)
-        t_current_tile = t.get("current_tile")
-        t_shuffled_tiles = t.get(f"world{t_current_world}_shuffled_tiles", [])
-        
-        try:
-            tile_index = t_shuffled_tiles.index(t_current_tile)
-            level = tile_index + 1
-            t["world_number"] = t_current_world
-            t["level_number"] = level
-        except ValueError:
-            # If current_tile not found in shuffled_tiles, default to level 1
-            t["world_number"] = t_current_world
-            t["level_number"] = 1
-    
-    # Sort teams by world (descending) then by level (descending) for leaderboard order
-    teams.sort(key=lambda x: (x["world_number"], x["level_number"]), reverse=True)
-    
-    # Find the placement of the target team
-    placement = None
-    for i, t in enumerate(teams):
-        if str(t["_id"]) == team_id:
-            placement = i + 1  # 1-based ranking
-            break
+    placement = calculate_team_placement(team_id, teams)
 
     # Convert ObjectId to string for JSON serialization
     if "_id" in team:
@@ -639,7 +614,7 @@ def get_team_placement(team_id):
     """
     Get the placement/ranking of a specific team in the leaderboard.
     Returns the team's position (1st, 2nd, 3rd, etc.) based on world, level progress, and tie breakers.
-    Tie breakers: world (desc), level (desc), last_rolled_at (asc).
+    Tie breakers: world (desc), level (desc), game_state (desc with world 3 adjustments).
     """
     db = get_db()
     
@@ -648,50 +623,12 @@ def get_team_placement(team_id):
     if not target_team:
         abort(404, description="Team not found")
     
-    # Get all teams and calculate their levels (same logic as get_all_teams)
+    # Get all teams and calculate placement
     teams = list(db.teams.find({}))
-    
-    for team in teams:
-        current_world = team.get("current_world", 1)
-        current_tile = team.get("current_tile")
-        shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
-        try:
-            tile_index = shuffled_tiles.index(current_tile)
-            level = tile_index + 1
-            team["world_number"] = current_world
-            team["level_number"] = level
-        except ValueError:
-            team["world_number"] = current_world
-            team["level_number"] = 1
-        # Ensure last_rolled_at is a datetime for sorting
-        last_rolled_at = team.get("last_rolled_at")
-        if not isinstance(last_rolled_at, datetime):
-            try:
-                last_rolled_at = datetime.fromisoformat(str(last_rolled_at))
-            except Exception:
-                last_rolled_at = datetime.min.replace(tzinfo=timezone.utc)
-        if last_rolled_at.tzinfo is None or last_rolled_at.tzinfo.utcoffset(last_rolled_at) is None:
-            last_rolled_at = last_rolled_at.replace(tzinfo=timezone.utc)
-        team["last_rolled_at_sort"] = last_rolled_at
-
-    # Sort teams by world (desc), level (desc), completion_counter (desc for tie-breaking)
-    teams.sort(
-        key=lambda x: (
-            -x["world_number"],  # descending world
-            -x["level_number"],  # descending level
-            -x.get("completion_counter", 0)  # descending completion_counter for tie-breaking
-        )
-    )
-    
-    # Find the placement of the target team
-    placement = None
-    for i, team in enumerate(teams):
-        if str(team["_id"]) == team_id:
-            placement = i + 1  # 1-based ranking
-            break
+    placement = calculate_team_placement(team_id, teams)
     
     if placement is None:
-        abort(404, description="Team not found in leaderboard")
+        abort(404, description="Team not found in placement calculation")
     
     return jsonify({
         "placement": placement,
@@ -776,6 +713,76 @@ def sync_reroll_timers():
         "teams_updated": result.modified_count,
         "timestamp": datetime.now(timezone.utc).isoformat()
     }), 200
+
+def get_effective_game_state(game_state, world):
+    """
+    Adjust game state for world 3 (exclude game state 1 checks)
+    For world 3, treat game state 1 as 0, but keep game state 2 as 2
+    """
+    if world == 3 and game_state == 1:
+        return 0  # Treat game state 1 as 0 for world 3
+    return game_state
+
+def calculate_team_placement(target_team_id, teams):
+    """
+    Calculate the placement/ranking of a specific team in the leaderboard.
+    Returns the team's position (1st, 2nd, 3rd, etc.) based on world, level progress, and tie breakers.
+    Tie breakers: world (desc), level (desc), game_state (desc with world 3 adjustments).
+    """
+    
+    # Find the target team
+    target_team = None
+    for team in teams:
+        if str(team["_id"]) == target_team_id:
+            target_team = team
+            break
+    
+    if not target_team:
+        return None
+    
+    # Calculate levels for all teams
+    for team in teams:
+        current_world = team.get("current_world", 1)
+        current_tile = team.get("current_tile")
+        shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
+        try:
+            tile_index = shuffled_tiles.index(current_tile)
+            level = tile_index + 1
+            team["world_number"] = current_world
+            team["level_number"] = level
+        except ValueError:
+            team["world_number"] = current_world
+            team["level_number"] = 1
+    
+    # Get target team info
+    target_world = target_team.get("current_world", 1)
+    target_tile = target_team.get("current_tile")
+    target_shuffled_tiles = target_team.get(f"world{target_world}_shuffled_tiles", [])
+    try:
+        target_tile_index = target_shuffled_tiles.index(target_tile)
+        target_level = target_tile_index + 1
+    except ValueError:
+        target_level = 1
+    target_world_number = target_world
+    target_level_number = target_level
+    target_game_state = target_team.get("game_state", 0)
+    target_effective_game_state = get_effective_game_state(target_game_state, target_world_number)
+    
+    # Count how many teams are ahead of the target team
+    teams_ahead = 0
+    for team in teams:
+        team_world = team["world_number"]
+        team_level = team["level_number"]
+        team_game_state = team.get("game_state", 0)
+        team_effective_game_state = get_effective_game_state(team_game_state, team_world)
+        
+        # If this team is ahead (higher world or same world but higher level or same world/level but higher game state)
+        if (team_world > target_world_number or 
+            (team_world == target_world_number and team_level > target_level_number) or
+            (team_world == target_world_number and team_level == target_level_number and team_effective_game_state > target_effective_game_state)):
+            teams_ahead += 1
+    
+    return teams_ahead + 1  # 1-based ranking
 
 def get_tile_info(current_world: int, current_tile:int):
     world_tiles_map = {
