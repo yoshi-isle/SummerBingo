@@ -22,9 +22,17 @@ def build_team_board_embed(team_data, tile_info, team_level_string, ranking=None
         value=f"{team_data['completion_counter']}",
         inline=True
     )
+    rank_texts = {
+        1: "1st Place",
+        2: "2nd Place",
+        3: "3rd Place",
+        4: "4th Place",
+        5: "5th Place",
+        6: "6th Place",
+    }
     embed.add_field(
         name=f"{Emojis.TROPHY} Ranking",
-        value=ranking,
+        value=rank_texts.get(ranking, "Unknown"),
         inline=True
     )
 
