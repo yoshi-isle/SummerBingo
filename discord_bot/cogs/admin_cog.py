@@ -59,7 +59,7 @@ class AdminCog(commands.Cog):
         
         embed = pending_message.embeds[0].copy()
         embed.color = color
-        embed.title = f"{status} by {user.display_name}"
+        embed.title = f"{status} by {user.mention}"
         embed.set_footer(text="")
         embed.description = f"{'🟢' if status == 'Approved' else '🔴'} Status: {status} by {user.mention}."
         await pending_message.edit(embed=embed)
