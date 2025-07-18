@@ -121,9 +121,16 @@ class AdminCog(commands.Cog):
     @app_commands.checks.has_role("Admin")
     async def register_team(self, interaction: discord.Interaction, users: str, team_name: str, icon: Optional[str], thumbnail_url: Optional[str]):
         try:
-            member_ids = [int(u.strip('<@!>')) for u in users.split() if u.startswith('<@')]
-            players = [{"discord_id": str(uid), "runescape_accounts": []} for uid in member_ids]
+            # Fixed mention parsing - properly handles Discord mention format
+            import re
+            mention_pattern = r'<@!?(\d+)>'
+            member_ids = [int(match) for match in re.findall(mention_pattern, users)]
             
+            if not member_ids:
+                await interaction.response.send_message("No valid user mentions found. Please mention users with @username", ephemeral=True)
+                return
+                
+            players = [{"discord_id": str(uid), "runescape_accounts": []} for uid in member_ids]
             data = {
                 "team_name": team_name,
                 "players": players,

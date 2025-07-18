@@ -21,7 +21,7 @@ class LeaderboardCog(commands.Cog):
         """Update the leaderboard every 3 minutes"""
         if self.leaderboard_message is None:
             # TODO
-            self.leaderboard_message = await self.bot.get_channel(1379166550451294268).fetch_message(1392910933394722948)
+            self.leaderboard_message = await self.bot.get_channel(1393644796056436786).fetch_message(1395558080099385507)
             return
 
         try:
