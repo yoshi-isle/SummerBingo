@@ -136,6 +136,79 @@ def get_team_by_id(team_id):
 
     return jsonify(team), 200
 
+def get_teams_in_first_place(teams):
+    """
+    Get all team IDs that are currently in 1st place (tied for first).
+    Returns a set of team ID strings.
+    """
+    if not teams:
+        return set()
+    
+    # Calculate levels for all teams and find the best position
+    best_world = 0
+    best_level = 0
+    best_game_state = 0
+    
+    for team in teams:
+        current_world = team.get("current_world", 1)
+        current_tile = team.get("current_tile")
+        shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
+        try:
+            tile_index = shuffled_tiles.index(current_tile)
+            level = tile_index + 1
+        except ValueError:
+            level = 1
+        
+        game_state = team.get("game_state", 0)
+        effective_game_state = get_effective_game_state(game_state, current_world)
+        
+        # Check if this team has a better position
+        if (current_world > best_world or 
+            (current_world == best_world and level > best_level) or
+            (current_world == best_world and level == best_level and effective_game_state > best_game_state)):
+            best_world = current_world
+            best_level = level
+            best_game_state = effective_game_state
+    
+    # Find all teams that match the best position
+    first_place_teams = set()
+    for team in teams:
+        current_world = team.get("current_world", 1)
+        current_tile = team.get("current_tile")
+        shuffled_tiles = team.get(f"world{current_world}_shuffled_tiles", [])
+        try:
+            tile_index = shuffled_tiles.index(current_tile)
+            level = tile_index + 1
+        except ValueError:
+            level = 1
+        
+        game_state = team.get("game_state", 0)
+        effective_game_state = get_effective_game_state(game_state, current_world)
+        
+        if (current_world == best_world and level == best_level and effective_game_state == best_game_state):
+            first_place_teams.add(str(team["_id"]))
+    
+    return first_place_teams
+
+def handle_dethronement_check(db, teams_in_first_before):
+    """
+    Check for teams that were dethroned and reset their last_rolled_at timer.
+    """
+    # Get updated team rankings after the advancement
+    all_teams_after = list(db.teams.find({}))
+    teams_in_first_after = get_teams_in_first_place(all_teams_after)
+    
+    # Find teams that were in first before but not after (dethroned teams)
+    dethroned_teams = teams_in_first_before - teams_in_first_after
+    
+    # Reset last_rolled_at for dethroned teams
+    if dethroned_teams:
+        dethroned_object_ids = [ObjectId(team_id_str) for team_id_str in dethroned_teams]
+        db.teams.update_many(
+            {"_id": {"$in": dethroned_object_ids}},
+            {"$set": {"last_rolled_at": datetime.now(timezone.utc)}}
+        )
+
 @teams_blueprint.route("/teams/<team_id>/advance_tile", methods=["POST"])
 def advance_tile(team_id):
     """
@@ -146,6 +219,10 @@ def advance_tile(team_id):
     team = db.teams.find_one({"_id": ObjectId(team_id)})
     if not team:
         abort(404, description="Team not found")
+
+    # Get all teams and determine who is currently in 1st place BEFORE advancement
+    all_teams = list(db.teams.find({}))
+    teams_in_first_before = get_teams_in_first_place(all_teams)
 
     # Get the shuffled tiles and current tile
     current_tile = team.get("current_tile")
@@ -172,6 +249,10 @@ def advance_tile(team_id):
               "current_tile": shuffled_tiles[7],
               "last_rolled_at": datetime.now(timezone.utc)}
             })
+        
+        # Check for dethronement after advancement
+        handle_dethronement_check(db, teams_in_first_before)
+        
         # Convert ObjectId to string for JSON serialization
         if "_id" in team:
             team["_id"] = str(team["_id"])
@@ -199,6 +280,10 @@ def advance_tile(team_id):
          {"game_state": 1,
         },
         })
+        
+        # Check for dethronement after advancement
+        handle_dethronement_check(db, teams_in_first_before)
+        
         # Convert ObjectId to string for JSON serialization
         if "_id" in team:
             team["_id"] = str(team["_id"])
@@ -212,6 +297,10 @@ def advance_tile(team_id):
              {"game_state": 2,
               "last_rolled_at": datetime.now(timezone.utc)}
             })
+        
+        # Check for dethronement after advancement
+        handle_dethronement_check(db, teams_in_first_before)
+        
         # Convert ObjectId to string for JSON serialization
         if "_id" in team:
             team["_id"] = str(team["_id"])
@@ -225,6 +314,10 @@ def advance_tile(team_id):
                  {"game_state": 1,
                   "last_rolled_at": datetime.now(timezone.utc)}
                 })
+            
+            # Check for dethronement after advancement
+            handle_dethronement_check(db, teams_in_first_before)
+            
             # Convert ObjectId to string for JSON serialization
             if "_id" in team:
                 team["_id"] = str(team["_id"])
@@ -243,6 +336,9 @@ def advance_tile(team_id):
         })
     team["current_tile"] = next_tile
     team["completion_counter"] = completion_counter
+
+    # Check for dethronement after advancement
+    handle_dethronement_check(db, teams_in_first_before)
 
     # Convert ObjectId to string for JSON serialization
     if "_id" in team:
